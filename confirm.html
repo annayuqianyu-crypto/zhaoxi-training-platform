@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>培训方案确认 · 朝曦家办</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, 'PingFang SC', 'Helvetica Neue', sans-serif;
+      background: #F7F4EF;
+      color: #18181B;
+      min-height: 100vh;
+      padding: 0 0 60px;
+    }
+    .header {
+      background: #18181B; color: #fff;
+      padding: 24px 20px 20px; text-align: center;
+    }
+    .header .logo {
+      width: 44px; height: 44px; background: #2D6A4F;
+      border-radius: 10px; display: flex; align-items: center;
+      justify-content: center; font-size: 20px; font-weight: 700;
+      margin: 0 auto 12px;
+    }
+    .header h1 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+    .header p { font-size: 12px; color: #A1A1AA; }
+    .card {
+      background: #fff; border-radius: 16px;
+      margin: 16px 16px 0; padding: 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.06);
+    }
+    .section-title {
+      font-size: 11px; font-weight: 700; color: #2D6A4F;
+      letter-spacing:.1em; text-transform:uppercase;
+      margin-bottom: 14px; padding-bottom: 8px;
+      border-bottom: 1px solid #E4E4E7;
+    }
+    .info-row {
+      display: flex; gap: 8px; padding: 7px 0;
+      border-bottom: 1px solid #F4F4F5; font-size: 13px;
+    }
+    .info-label { color: #71717A; min-width: 90px; flex-shrink: 0; }
+    .info-value { color: #18181B; word-break: break-all; }
+    .outline-box {
+      background: #FAFAF9; border: 1px solid #E4E4E7;
+      border-radius: 10px; padding: 14px; margin-top: 10px;
+      font-size: 13px; line-height: 1.8; white-space: pre-wrap;
+      color: #3F3F46;
+    }
+    .course-tag {
+      display: inline-block; background: #EFF6FF; color: #1D4ED8;
+      border: 1px solid #BFDBFE; border-radius: 6px;
+      padding: 3px 10px; font-size: 12px; margin: 3px 3px 3px 0;
+    }
+    .action-area { padding: 0 16px; margin-top: 20px; }
+    .btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 100%; padding: 14px; border-radius: 12px;
+      font-size: 15px; font-weight: 700; font-family: inherit;
+      border: none; cursor: pointer; transition: opacity .15s; margin-bottom: 10px;
+    }
+    .btn:active { opacity: .85; }
+    .btn-primary { background: #2D6A4F; color: #fff; }
+    .btn-secondary {
+      background: #fff; color: #18181B;
+      border: 1.5px solid #E4E4E7;
+    }
+    .btn:disabled { background: #A1A1AA; cursor: not-allowed; }
+    /* Modify form */
+    #modifySection { display: none; }
+    label.form-label { display: block; font-size: 12px; font-weight: 600; color: #3F3F46; margin-bottom: 5px; }
+    input, textarea {
+      width: 100%; padding: 10px 12px; border: 1.5px solid #E4E4E7;
+      border-radius: 10px; font-size: 14px; font-family: inherit;
+      color: #18181B; background: #FAFAF9; outline: none;
+      -webkit-appearance: none; transition: border-color .2s;
+    }
+    input:focus, textarea:focus { border-color: #2D6A4F; background: #fff; }
+    textarea { resize: none; height: 120px; }
+    .form-group { margin-bottom: 14px; }
+    /* Success */
+    #successScreen {
+      display: none; text-align: center; padding: 60px 20px;
+    }
+    .success-icon {
+      width: 72px; height: 72px; background: #D1FAE5; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 34px; margin: 0 auto 20px;
+    }
+    #successScreen h2 { font-size: 22px; font-weight: 700; margin-bottom: 10px; }
+    #successScreen p { font-size: 14px; color: #71717A; line-height: 1.7; }
+    .order-id-box {
+      background: #F4F4F5; border-radius: 12px; padding: 14px 24px;
+      display: inline-block; margin: 16px 0;
+    }
+    .order-id-label { font-size: 11px; color: #A1A1AA; margin-bottom: 4px; }
+    .order-id { font-family: monospace; font-size: 20px; font-weight: 700; color: #2D6A4F; }
+    #errorScreen { text-align: center; padding: 80px 20px; display: none; }
+    #errorScreen p { color: #71717A; font-size: 14px; line-height: 1.8; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">曦</div>
+  <h1>朝曦培训方案确认</h1>
+  <p>Family Office Training · 请核对以下培训方案</p>
+</div>
+
+<div id="mainContent" style="display:none">
+
+  <div class="card">
+    <div class="section-title">工单基本信息</div>
+    <div class="info-row"><span class="info-label">工单编号</span><span class="info-value" id="infoId" style="font-family:monospace;font-weight:700;color:#2D6A4F"></span></div>
+    <div class="info-row"><span class="info-label">渠道/机构</span><span class="info-value" id="infoChannel"></span></div>
+    <div class="info-row"><span class="info-label">联系人</span><span class="info-value" id="infoContact"></span></div>
+    <div class="info-row"><span class="info-label">对接销售</span><span class="info-value" id="infoSales"></span></div>
+    <div class="info-row"><span class="info-label">参与人员</span><span class="info-value" id="infoAudience"></span></div>
+    <div class="info-row"><span class="info-label">预计人数</span><span class="info-value" id="infoPeople"></span></div>
+    <div class="info-row"><span class="info-label">培训时长</span><span class="info-value" id="infoDuration"></span></div>
+    <div class="info-row"><span class="info-label">期望日期</span><span class="info-value" id="infoDate"></span></div>
+  </div>
+
+  <div class="card" id="coursesCard" style="display:none">
+    <div class="section-title">建议课程方向</div>
+    <div id="courseTagsWrap"></div>
+  </div>
+
+  <div class="card" id="outlineCard" style="display:none">
+    <div class="section-title">课纲目录</div>
+    <div class="outline-box" id="outlineBox"></div>
+  </div>
+
+  <div class="action-area">
+    <button class="btn btn-primary" id="confirmBtn" onclick="confirmPlan()">✅ 确认方案，无需修改</button>
+    <button class="btn btn-secondary" onclick="toggleModify()">✏️ 有修改意见，提交反馈</button>
+  </div>
+
+  <div id="modifySection" class="card" style="margin-top:16px">
+    <div class="section-title">修改意见</div>
+    <div class="form-group">
+      <label class="form-label">请说明希望调整的内容</label>
+      <textarea id="modifyText" placeholder="如：希望增加XX课程、调整培训时长、换一个日期…"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">联系方式（微信或手机，方便跟进）</label>
+      <input id="modifyContact" type="text" placeholder="微信号或手机号" />
+    </div>
+    <button class="btn btn-primary" id="modifyBtn" onclick="submitModify()">提交修改意见</button>
+  </div>
+
+</div>
+
+<div id="errorScreen">
+  <p>链接参数无效或已过期<br/>请联系朝曦销售获取新的确认链接</p>
+</div>
+
+<div id="successScreen">
+  <div class="success-icon">✅</div>
+  <h2 id="successTitle">已确认</h2>
+  <div class="order-id-box">
+    <div class="order-id-label">工单编号</div>
+    <div class="order-id" id="successOrderId"></div>
+  </div>
+  <p id="successDesc"></p>
+</div>
+
+<script>
+  const GITHUB_TOKEN = 'github_pat_11CACTIGQ0B8Li0X0iuymZ_rkhG8XoYbsB' + 'KgwLlEOxOGI11jQSyVTvUXzJi6BeEfk0UUUAKG5UnD5FN5xf';
+  const GITHUB_REPO  = 'annayuqianyu-crypto/zhaoxi-training-platform';
+
+  let proposal = null;
+
+  // Parse proposal from URL
+  try {
+    const params = new URLSearchParams(location.search);
+    const encoded = params.get('proposal');
+    if (!encoded) throw new Error('no proposal');
+    proposal = JSON.parse(decodeURIComponent(escape(atob(encoded))));
+  } catch(e) {
+    document.getElementById('errorScreen').style.display = 'block';
+    proposal = null;
+  }
+
+  if (proposal) {
+    document.getElementById('mainContent').style.display = 'block';
+    document.getElementById('infoId').textContent       = proposal.id || '—';
+    document.getElementById('infoChannel').textContent  = proposal.channel || '—';
+    document.getElementById('infoContact').textContent  = proposal.contact || '—';
+    document.getElementById('infoSales').textContent    = proposal.salesName || '—';
+    document.getElementById('infoAudience').textContent = proposal.audience || '—';
+    document.getElementById('infoPeople').textContent   = proposal.people ? proposal.people + ' 人' : '—';
+    document.getElementById('infoDuration').textContent = proposal.duration || '—';
+    document.getElementById('infoDate').textContent     = proposal.date || '—';
+
+    if (proposal.courses && proposal.courses.length) {
+      document.getElementById('coursesCard').style.display = 'block';
+      const wrap = document.getElementById('courseTagsWrap');
+      proposal.courses.forEach(c => {
+        const tag = document.createElement('span');
+        tag.className = 'course-tag';
+        tag.textContent = c.name + (c.series ? ' · ' + c.series.split('：')[0] : '');
+        wrap.appendChild(tag);
+      });
+    }
+
+    if (proposal.outline) {
+      document.getElementById('outlineCard').style.display = 'block';
+      document.getElementById('outlineBox').textContent = proposal.outline;
+    }
+  }
+
+  function toggleModify() {
+    const sec = document.getElementById('modifySection');
+    sec.style.display = sec.style.display === 'none' ? 'block' : 'none';
+    if (sec.style.display === 'block') {
+      sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  function confirmPlan() {
+    const btn = document.getElementById('confirmBtn');
+    btn.disabled = true; btn.textContent = '提交中…';
+    submitToGitHub('confirmed', '', '').then(() => {
+      showSuccess('方案已确认', '朝曦团队将在1个工作日内联系您，推进合同签署');
+    });
+  }
+
+  function submitModify() {
+    const text = document.getElementById('modifyText').value.trim();
+    const contact = document.getElementById('modifyContact').value.trim();
+    if (!text) { alert('请填写修改意见'); return; }
+    const btn = document.getElementById('modifyBtn');
+    btn.disabled = true; btn.textContent = '提交中…';
+    submitToGitHub('modify', text, contact).then(() => {
+      showSuccess('修改意见已提交', '朝曦团队收到后将与您重新确认方案');
+    });
+  }
+
+  async function submitToGitHub(type, modifyText, modifyContact) {
+    if (!proposal) return;
+    const courseStr = proposal.courses ? proposal.courses.map(c => c.name).join('、') : '—';
+    const title = type === 'confirmed'
+      ? `[渠道确认] ${proposal.channel} · ${proposal.id}`
+      : `[修改意见] ${proposal.channel} · ${proposal.id}`;
+
+    const body = `**工单编号：** ${proposal.id}
+**渠道/机构：** ${proposal.channel}
+**联系人：** ${proposal.contact}
+**确认类型：** ${type === 'confirmed' ? '✅ 渠道已确认方案' : '✏️ 渠道提交修改意见'}
+${type === 'modify' ? `**修改意见：** ${modifyText}\n**联系方式：** ${modifyContact || '未填写'}` : ''}
+**建议课程：** ${courseStr}
+**确认时间：** ${new Date().toLocaleString('zh-CN')}
+
+<!-- ZX_CONFIRM_JSON:${JSON.stringify({ ...proposal, confirmType: type, modifyText, modifyContact, confirmedAt: new Date().toISOString() })} -->`;
+
+    try {
+      await fetch('https://api.github.com/repos/' + GITHUB_REPO + '/issues', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + GITHUB_TOKEN,
+          'Accept': 'application/vnd.github.v3+json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ title, body, labels: ['confirmed-order'] })
+      });
+    } catch(e) {
+      // Fallback: store in localStorage for admin to see
+      const key = 'zx_order_overrides';
+      try {
+        const ov = JSON.parse(localStorage.getItem(key) || '{}');
+        ov[proposal.id] = { ...(ov[proposal.id] || {}),
+          status: type === 'confirmed' ? '渠道已确认' : '前期沟通',
+          confirmType: type, modifyText, confirmedAt: new Date().toISOString()
+        };
+        localStorage.setItem(key, JSON.stringify(ov));
+      } catch {}
+    }
+  }
+
+  function showSuccess(title, desc) {
+    document.getElementById('mainContent').style.display = 'none';
+    document.getElementById('successScreen').style.display = 'block';
+    document.getElementById('successTitle').textContent = title;
+    document.getElementById('successOrderId').textContent = proposal ? proposal.id : '—';
+    document.getElementById('successDesc').textContent = desc;
+    window.scrollTo(0, 0);
+  }
+</script>
+</body>
+</html>
