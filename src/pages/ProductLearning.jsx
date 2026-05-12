@@ -1,192 +1,204 @@
 import { useState, useMemo } from 'react'
-import { SKU_LIST } from '../data/mock'
+import { SKU_FULL } from '../data/skuFull'
 
-const DEPT_ALL = '全部'
-const DEPTS = [DEPT_ALL, ...Array.from(new Set(SKU_LIST.map(s => s.dept)))]
-
-const MATCH_LABEL = { exact: '精确匹配', fuzzy: '模糊匹配', overview: '概览资料' }
-const MATCH_COLOR = { exact: { bg:'#D1FAE5', color:'#065F46' }, fuzzy: { bg:'#FEF3C7', color:'#92400E' }, overview: { bg:'#EFF6FF', color:'#1D4ED8' } }
+const DEPT_COLORS = {
+  '法律':    { bg:'#EFF6FF', border:'#93C5FD', color:'#1D4ED8', dot:'#3B82F6' },
+  '税务':    { bg:'#F5F3FF', border:'#C4B5FD', color:'#6D28D9', dot:'#8B5CF6' },
+  '资本市场': { bg:'#F0FDF4', border:'#86EFAC', color:'#15803D', dot:'#22C55E' },
+}
 
 export function ProductLearning() {
-  const [search, setSearch] = useState('')
-  const [dept, setDept] = useState(DEPT_ALL)
-  const [expanded, setExpanded] = useState(null)
+  const [activeDept, setActiveDept] = useState('法律')
+  const [search, setSearch]         = useState('')
+  const [openL1, setOpenL1]         = useState({})
+  const [openL2, setOpenL2]         = useState({})
 
-  const filtered = useMemo(() => {
+  const deptCounts = useMemo(() =>
+    ['法律','税务','资本市场'].map(d => ({
+      dept: d, count: SKU_FULL.filter(s => s.dept === d).length,
+    })), [])
+
+  const grouped = useMemo(() => {
     const q = search.trim().toLowerCase()
-    return SKU_LIST.filter(sku => {
-      const matchDept = dept === DEPT_ALL || sku.dept === dept
-      const matchQ = !q ||
-        sku.name.toLowerCase().includes(q) ||
-        sku.id.toLowerCase().includes(q) ||
-        (sku.cat1 && sku.cat1.toLowerCase().includes(q)) ||
-        (sku.cat2 && sku.cat2.toLowerCase().includes(q))
-      return matchDept && matchQ
-    })
-  }, [search, dept])
+    const items = SKU_FULL.filter(s =>
+      s.dept === activeDept &&
+      (!q || s.name.toLowerCase().includes(q) || s.id.toLowerCase().includes(q) ||
+             s.level1.includes(q) || s.level2.includes(q))
+    )
+    const map = new Map()
+    for (const s of items) {
+      if (!map.has(s.level1)) map.set(s.level1, new Map())
+      const l2 = map.get(s.level1)
+      if (!l2.has(s.level2)) l2.set(s.level2, [])
+      l2.get(s.level2).push(s)
+    }
+    return map
+  }, [activeDept, search])
 
-  const BASE = `${location.origin}${location.pathname.replace(/\/[^/]*$/, '')}/courses`
+  const totalFiltered = useMemo(() => {
+    let n = 0; grouped.forEach(l2 => l2.forEach(a => n += a.length)); return n
+  }, [grouped])
 
-  function downloadPPT(sku) {
-    const url = `${BASE}/${sku.id}.pptx`
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `${sku.id}_${sku.name}.pptx`
-    a.target = '_blank'
-    a.click()
-  }
+  const searching = search.trim().length > 0
+
+  function toggleL1(k) { setOpenL1(p => ({ ...p, [k]: p[k] === false })) }
+  function toggleL2(k) { setOpenL2(p => ({ ...p, [k]: p[k] === false })) }
+  function l1Open(k)   { return searching || openL1[k] !== false }
+  function l2Open(k)   { return searching || openL2[k] !== false }
+
+  const dc = DEPT_COLORS[activeDept]
 
   return (
-    <>
-      <div className="topbar">
-        <span className="topbar-title">产品学习</span>
-        <span className="topbar-sub">· 架构师产品研学中心</span>
+    <div className="page">
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">产品学习</h1>
+          <p className="page-sub">全量 SKU 知识卡片 · 共 {SKU_FULL.length} 个产品</p>
+        </div>
+        <input className="form-input" style={{ width:260, margin:0 }}
+          placeholder="搜索编号 / 名称 / 分类…"
+          value={search} onChange={e => setSearch(e.target.value)} />
       </div>
 
-      <div className="content">
-        <div className="page-hero">
-          <h1>产品研学中心</h1>
-          <p>输入产品名称或编号，调取对应 SKU 课件进行下载与学习</p>
-        </div>
+      {/* BU tabs */}
+      <div style={{ display:'flex', gap:10, marginBottom:24 }}>
+        {deptCounts.map(({ dept, count }) => {
+          const c = DEPT_COLORS[dept]
+          const active = dept === activeDept
+          return (
+            <button key={dept} onClick={() => { setActiveDept(dept); setSearch('') }}
+              style={{
+                flex:1, padding:'14px 10px', borderRadius:12, textAlign:'left', cursor:'pointer',
+                border: active ? `2px solid ${c.border}` : '1.5px solid var(--border)',
+                background: active ? c.bg : 'var(--surface)',
+                boxShadow: active ? `0 0 0 1px ${c.border}` : 'none',
+                transition:'all .15s',
+              }}>
+              <div style={{ fontSize:22, fontWeight:800, color: active ? c.color : 'var(--text-1)' }}>{count}</div>
+              <div style={{ fontSize:13, fontWeight:700, color: active ? c.color : 'var(--text-2)', marginTop:2 }}>{dept}</div>
+              <div style={{ fontSize:10, color:'var(--text-3)', marginTop:1 }}>个产品</div>
+            </button>
+          )
+        })}
+      </div>
 
-        {/* Search + filter bar */}
-        <div style={{ display:'flex', gap:10, marginBottom:20, flexWrap:'wrap' }}>
-          <input
-            className="form-input"
-            style={{ flex:'1 1 280px', minWidth:200 }}
-            placeholder="搜索产品名称、编号（如 Tax-2471、CRS…）"
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-          />
-          <div style={{ display:'flex', gap:6 }}>
-            {DEPTS.map(d => (
-              <button key={d}
-                className={`chip-tab${dept === d ? ' active' : ''}`}
-                style={{ cursor:'pointer' }}
-                onClick={() => setDept(d)}>
-                {d}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Results count */}
+      {searching && (
         <div style={{ fontSize:12, color:'var(--text-3)', marginBottom:12 }}>
-          共找到 <strong>{filtered.length}</strong> 条产品 · 点击卡片展开详情
+          共找到 {totalFiltered} 个结果
         </div>
+      )}
 
-        {/* SKU cards */}
-        <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
-          {filtered.length === 0 && (
-            <div style={{ textAlign:'center', padding:'48px', color:'var(--text-3)', fontSize:14 }}>
-              未找到匹配产品，请尝试其他关键词
-            </div>
-          )}
-
-          {filtered.map(sku => {
-            const isOpen = expanded === sku.id
-            const mc = sku.match ? MATCH_COLOR[sku.match] : { bg:'#F4F4F5', color:'#71717A' }
-            const ml = sku.match ? (MATCH_LABEL[sku.match] || sku.match) : '暂无评级'
-            const hasFile = sku.slides > 0
-
+      {grouped.size === 0
+        ? <div style={{ textAlign:'center', padding:'60px 0', color:'var(--text-3)' }}>没有匹配的产品</div>
+        : Array.from(grouped.entries()).map(([l1, l2map]) => {
+            const l1Count = Array.from(l2map.values()).reduce((n, a) => n + a.length, 0)
+            const l1IsOpen = l1Open(l1)
             return (
-              <div key={sku.id} className="card"
-                style={{ cursor:'pointer', transition:'box-shadow .15s', padding:'0' }}
-                onClick={() => setExpanded(isOpen ? null : sku.id)}>
+              <div key={l1} style={{ marginBottom:14 }}>
+                {/* 一级分类 */}
+                <button onClick={() => toggleL1(l1)} style={{
+                  width:'100%', display:'flex', alignItems:'center', gap:10,
+                  padding:'11px 16px', borderRadius:10, cursor:'pointer', textAlign:'left',
+                  background: dc.bg, border:`1.5px solid ${dc.border}`,
+                  marginBottom: l1IsOpen ? 8 : 0,
+                }}>
+                  <span style={{ fontSize:14, color: dc.color }}>{l1IsOpen ? '▾' : '▸'}</span>
+                  <span style={{ flex:1, fontWeight:800, fontSize:14, color: dc.color }}>{l1}</span>
+                  <span style={{ fontSize:11, fontWeight:700, background: dc.color, color:'#fff', padding:'2px 10px', borderRadius:20 }}>
+                    {l1Count}
+                  </span>
+                </button>
 
-                {/* Card header */}
-                <div style={{ display:'flex', alignItems:'center', gap:12, padding:'14px 18px' }}>
-                  <div style={{ fontFamily:'monospace', fontSize:13, fontWeight:700, color:'var(--accent)', minWidth:90, flexShrink:0 }}>
-                    {sku.id}
-                  </div>
-                  <div style={{ flex:1 }}>
-                    <div style={{ fontWeight:600, fontSize:14, color:'var(--text-1)' }}>{sku.name}</div>
-                    <div style={{ fontSize:11, color:'var(--text-3)', marginTop:2 }}>
-                      {sku.dept} · {sku.cat1}{sku.cat2 ? ` / ${sku.cat2}` : ''}
-                    </div>
-                  </div>
-                  <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-                    {hasFile && (
-                      <span style={{ fontSize:11, color:'var(--text-3)' }}>{sku.slides}页 / {(sku.words / 1000).toFixed(1)}K字</span>
-                    )}
-                    <span style={{ fontSize:11, padding:'2px 8px', borderRadius:6, background: mc.bg, color: mc.color, fontWeight:600 }}>
-                      {ml}
-                    </span>
-                    {!hasFile && (
-                      <span style={{ fontSize:11, padding:'2px 8px', borderRadius:6, background:'#F4F4F5', color:'#A1A1AA' }}>
-                        待上传
-                      </span>
-                    )}
-                    <span style={{ fontSize:12, color:'var(--text-3)' }}>{isOpen ? '▲' : '▼'}</span>
-                  </div>
-                </div>
-
-                {/* Expanded detail */}
-                {isOpen && (
-                  <div style={{ borderTop:'1px solid var(--border)', padding:'16px 18px', background:'var(--bg)' }}
-                    onClick={e => e.stopPropagation()}>
-
-                    <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginBottom:14 }}>
-                      {[
-                        ['产品编号', sku.id],
-                        ['产品名称', sku.name],
-                        ['所属部门', sku.dept],
-                        ['一级分类', sku.cat1],
-                        ['二级分类', sku.cat2 || '—'],
-                        ['课件页数', hasFile ? `${sku.slides} 页` : '待上传'],
-                        ['字数估算', hasFile ? `${sku.words.toLocaleString()} 字` : '待上传'],
-                        ['匹配等级', ml],
-                      ].map(([label, value]) => (
-                        <div key={label} style={{ fontSize:12 }}>
-                          <div style={{ color:'var(--text-3)', marginBottom:2 }}>{label}</div>
-                          <div style={{ color:'var(--text-1)', fontWeight:500 }}>{value}</div>
-                        </div>
-                      ))}
-                    </div>
-
-                    {sku.relatedCourseIds && sku.relatedCourseIds.length > 0 && (
-                      <div style={{ marginBottom:14 }}>
-                        <div style={{ fontSize:11, color:'var(--text-3)', marginBottom:6 }}>关联课程模块</div>
-                        <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
-                          {sku.relatedCourseIds.map(cid => (
-                            <span key={cid} style={{ fontSize:11, padding:'2px 8px', borderRadius:6, background:'#EFF6FF', border:'1px solid #BFDBFE', color:'#1D4ED8' }}>
-                              {cid}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    <div style={{ display:'flex', gap:8, justifyContent:'flex-end' }}>
-                      {hasFile ? (
-                        <>
-                          <a href={`${BASE}/${sku.id}.pptx`} target="_blank" rel="noreferrer"
-                            className="btn btn-secondary btn-sm"
-                            onClick={e => e.stopPropagation()}>
-                            👁 在线查看
-                          </a>
-                          <button className="btn btn-primary btn-sm" onClick={() => downloadPPT(sku)}>
-                            ⬇️ 下载 PPT
+                {l1IsOpen && (
+                  <div style={{ paddingLeft:14 }}>
+                    {Array.from(l2map.entries()).map(([l2, skus]) => {
+                      const l2Key = `${l1}||${l2}`
+                      const l2IsOpen = l2Open(l2Key)
+                      return (
+                        <div key={l2} style={{ marginBottom:8 }}>
+                          {/* 二级分类 */}
+                          <button onClick={() => toggleL2(l2Key)} style={{
+                            width:'100%', display:'flex', alignItems:'center', gap:8,
+                            padding:'7px 12px', borderRadius:8, cursor:'pointer', textAlign:'left',
+                            background:'var(--surface)', border:'1px solid var(--border)',
+                            marginBottom: l2IsOpen ? 6 : 0,
+                          }}>
+                            <span style={{ fontSize:12, color:'var(--text-3)' }}>{l2IsOpen ? '▾' : '▸'}</span>
+                            <span style={{ width:7, height:7, borderRadius:'50%', background: dc.dot, flexShrink:0 }} />
+                            <span style={{ flex:1, fontWeight:700, fontSize:13, color:'var(--text-1)' }}>{l2}</span>
+                            <span style={{
+                              fontSize:10, fontWeight:700, color: dc.color,
+                              background: dc.bg, border:`1px solid ${dc.border}`,
+                              padding:'1px 8px', borderRadius:10,
+                            }}>{skus.length}</span>
                           </button>
-                        </>
-                      ) : (
-                        <span style={{ fontSize:12, color:'var(--text-3)', fontStyle:'italic' }}>
-                          该 SKU 课件暂未上传，请联系产品中心
-                        </span>
-                      )}
-                    </div>
+
+                          {l2IsOpen && (
+                            <div style={{
+                              display:'grid',
+                              gridTemplateColumns:'repeat(auto-fill, minmax(320px,1fr))',
+                              gap:8, paddingLeft:8,
+                            }}>
+                              {skus.map(sku => <SkuCard key={sku.id} sku={sku} dc={dc} />)}
+                            </div>
+                          )}
+                        </div>
+                      )
+                    })}
                   </div>
                 )}
               </div>
             )
-          })}
-        </div>
+          })
+      }
+    </div>
+  )
+}
 
-        <div style={{ marginTop:32, fontSize:11, color:'var(--text-3)', textAlign:'center', lineHeight:1.8 }}>
-          PPT 文件存放于 <code style={{ background:'var(--bg)', padding:'2px 6px', borderRadius:4 }}>/courses/&#123;SKU编号&#125;.pptx</code><br/>
-          如需上传新课件，请联系管理员或产品中心
-        </div>
+function SkuCard({ sku, dc }) {
+  const idColor = sku.id.startsWith('Legal') ? '#1D4ED8'
+    : (sku.id.startsWith('Tax') || sku.id.startsWith('TAX')) ? '#6D28D9'
+    : '#15803D'
+
+  const base    = (import.meta.env.BASE_URL || '/').replace(/\/$/, '')
+  const href    = sku.pageUrl ? base + sku.pageUrl : null
+
+  return (
+    <div style={{
+      background:'var(--surface)', border:'1px solid var(--border)',
+      borderRadius:10, padding:'11px 13px',
+      display:'flex', flexDirection:'column', gap:7,
+      transition:'box-shadow .15s',
+    }}
+      onMouseEnter={e => e.currentTarget.style.boxShadow='0 2px 12px rgba(0,0,0,.1)'}
+      onMouseLeave={e => e.currentTarget.style.boxShadow=''}
+    >
+      <div style={{ display:'flex', alignItems:'flex-start', gap:8 }}>
+        <span style={{
+          fontFamily:'monospace', fontSize:10, fontWeight:700, whiteSpace:'nowrap',
+          color: idColor, background: dc.bg, border:`1px solid ${dc.border}`,
+          padding:'2px 6px', borderRadius:4, flexShrink:0, marginTop:1,
+        }}>{sku.id}</span>
+        <span style={{ fontSize:12, fontWeight:600, color:'var(--text-1)', lineHeight:1.4 }}>
+          {sku.name}
+        </span>
       </div>
-    </>
+
+      {href
+        ? <a href={href} target="_blank" rel="noopener noreferrer"
+            style={{
+              display:'inline-flex', alignItems:'center', gap:5,
+              padding:'5px 12px', borderRadius:6, alignSelf:'flex-start',
+              background: dc.color, color:'#fff',
+              fontSize:11, fontWeight:700, textDecoration:'none',
+            }}
+            onMouseEnter={e => e.currentTarget.style.opacity='.8'}
+            onMouseLeave={e => e.currentTarget.style.opacity='1'}
+          >
+            📖 查看知识卡片 ↗
+          </a>
+        : <span style={{ fontSize:11, color:'var(--text-3)' }}>暂无链接</span>
+      }
+    </div>
   )
 }
