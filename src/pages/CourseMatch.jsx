@@ -208,7 +208,7 @@ async function callDeepSeekAPI(prompt) {
 /* ════════════════════════════════════════════════════════════
    Main component
 ════════════════════════════════════════════════════════════ */
-export function CourseMatch({ navigate }) {
+export function CourseMatch({ navigate, portalMode = false }) {
   const [ctx, setCtx]                                   = useState(null)
   const [tab, setTab]                                   = useState('courses')
   const [editForm, setEditForm]                         = useState({})
@@ -253,8 +253,12 @@ export function CourseMatch({ navigate }) {
         </div>
         <div className="content" style={{ textAlign:'center', paddingTop:80 }}>
           <div style={{ fontSize:32, marginBottom:16 }}>📋</div>
-          <div style={{ fontSize:15, color:'var(--text-2)', marginBottom:20 }}>请先从「需求工单」中选择一条前期沟通工单，点击「前往课程匹配」进入本页</div>
-          <button className="btn btn-primary" onClick={() => navigate('workorders')}>← 返回需求工单</button>
+          <div style={{ fontSize:15, color:'var(--text-2)', marginBottom:20 }}>
+            {portalMode ? '请先填写客户信息以开始匹配' : '请先从「需求工单」中选择一条前期沟通工单，点击「前往课程匹配」进入本页'}
+          </div>
+          <button className="btn btn-primary" onClick={() => navigate('workorders')}>
+            {portalMode ? '← 返回填写信息' : '← 返回需求工单'}
+          </button>
         </div>
       </>
     )
@@ -353,7 +357,7 @@ export function CourseMatch({ navigate }) {
       {/* ─── Topbar ─── */}
       <div className="topbar">
         <button className="btn btn-ghost btn-sm" onClick={() => navigate('workorders')} style={{ marginRight:4 }}>
-          ← 返回需求工单
+          {portalMode ? '← 重新匹配' : '← 返回需求工单'}
         </button>
         <span className="topbar-title" style={{ marginLeft:8 }}>课程匹配</span>
         <span className="topbar-sub">· {order.id} &nbsp;·&nbsp; {order.channel}</span>

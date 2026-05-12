@@ -42,6 +42,14 @@ export function LoginPage({ onLogin }) {
         <p style={{fontSize:11,color:'var(--text-3)',textAlign:'center',lineHeight:1.8}}>
           管理员密码：000000 &nbsp;|&nbsp; 其他角色：sales123 / teacher123 / bu123
         </p>
+        <div style={{textAlign:'center',marginTop:12}}>
+          <button
+            onClick={() => { window.location.hash = '#portal'; window.location.reload() }}
+            style={{background:'none',border:'none',cursor:'pointer',fontSize:12,color:'var(--accent)',fontWeight:600}}
+          >
+            📚 进入知识中心（销售 / 讲师专属入口）→
+          </button>
+        </div>
       </div>
     </div>
   )
