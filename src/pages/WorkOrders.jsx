@@ -12,7 +12,7 @@ const GITHUB_REPO = 'annayuqianyu-crypto/zhaoxi-training-platform'
 /* ─── DeepSeek API 配置（公司后台） ─── */
 const DS_API_URL   = 'https://api.deepseek.com/v1/chat/completions'
 const DS_API_KEY   = 'sk-603a729e51d54a82bf8b8de3e06530b4'
-const DS_MODEL     = 'deepseek-v4-pro'
+const DS_MODEL     = 'deepseek-chat'
 
 /* ─── localStorage helpers ─── */
 function loadLocal()  { try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]') } catch { return [] } }
@@ -740,12 +740,6 @@ export function WorkOrders({ navigate }) {
                   {aiError && (
                     <div style={{ background:'#FEF2F2', border:'1px solid #FCA5A5', borderRadius:8, padding:'10px 14px', fontSize:12, color:'#DC2626', marginBottom:16 }}>
                       ⚠️ {aiError}
-                      {aiError.includes('401') && (
-                        <button className="btn btn-ghost btn-sm" style={{ marginLeft:8 }}
-                          onClick={() => { localStorage.removeItem(AI_KEY); setShowAiKeySetup(true) }}>
-                          重新配置 API Key
-                        </button>
-                      )}
                     </div>
                   )}
 
