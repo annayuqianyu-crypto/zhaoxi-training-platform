@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>员工股权激励设计——如何让核心人才留下来一起干</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Microsoft YaHei",Arial,sans-serif;background:#F4F6F9;color:#2c2c2c;line-height:1.7}
+a{text-decoration:none}
+
+/* Top bar */
+.topbar{background:#04385F;color:#fff;padding:12px 28px;display:flex;align-items:center;
+  justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.logo{font-size:17px;font-weight:700;color:#AC9079;letter-spacing:1px}
+.back-btn{color:#bbb;font-size:13px;transition:color .2s}
+.back-btn:hover{color:#fff}
+
+/* Hero */
+.hero{background:linear-gradient(135deg,#04385F 0%,#04385Fdd 100%);color:#fff;padding:36px 32px 32px}
+.series-tag{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);
+  color:#fff;font-size:11px;padding:3px 12px;border-radius:12px;margin-bottom:12px;letter-spacing:.5px}
+.hero-title{font-size:24px;font-weight:700;line-height:1.4;margin-bottom:14px}
+.hero-meta{display:flex;flex-wrap:wrap;gap:12px;font-size:13px;color:rgba(255,255,255,.85)}
+.meta-chip{background:rgba(255,255,255,.15);border-radius:20px;padding:4px 14px}
+.hours-badge{background:#AC9079;color:#fff;font-size:12px;font-weight:700;
+  padding:4px 14px;border-radius:20px}
+
+/* Content */
+.content{max-width:900px;margin:28px auto;padding:0 20px 60px}
+.section{background:#fff;border-radius:12px;padding:24px 28px;margin-bottom:20px;
+  box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.section-title{font-size:13px;font-weight:700;color:#04385F;letter-spacing:1px;
+  text-transform:uppercase;margin-bottom:14px;padding-bottom:10px;
+  border-bottom:2px solid #04385F20;display:flex;align-items:center;gap:8px}
+.section-title::before{content:"";display:block;width:4px;height:16px;
+  background:#04385F;border-radius:2px}
+.section-body{font-size:14.5px;color:#444;line-height:1.8}
+
+/* Benefits list */
+.benefits-list{list-style:none;padding:0}
+.benefits-list li{padding:8px 0 8px 22px;border-bottom:1px solid #f0f0f0;
+  position:relative;font-size:14px;color:#333;line-height:1.7}
+.benefits-list li:last-child{border-bottom:none}
+.benefits-list li::before{content:counter(benefit);counter-increment:benefit;
+  position:absolute;left:0;top:9px;background:#04385F;color:#fff;
+  width:16px;height:16px;border-radius:50%;font-size:10px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;line-height:1}
+.benefits-list{counter-reset:benefit}
+
+/* Info row */
+.info-row{display:flex;gap:24px;flex-wrap:wrap}
+.info-item{flex:1;min-width:200px}
+.info-label{font-size:11px;font-weight:700;color:#999;letter-spacing:.5px;
+  text-transform:uppercase;margin-bottom:4px}
+.info-value{font-size:14px;color:#333}
+
+/* Outline */
+.part-title{font-size:15px;font-weight:700;color:#04385F;margin:20px 0 10px;
+  padding:8px 14px;background:#04385F10;border-left:4px solid #04385F;border-radius:0 6px 6px 0}
+.part-items{list-style:none;padding:0;margin:0 0 4px 0}
+.part-items li{padding:6px 0 6px 20px;border-bottom:1px solid #f5f5f5;
+  position:relative;font-size:14px;color:#444;line-height:1.7}
+.part-items li:last-child{border-bottom:none}
+.part-items li::before{content:"▸";position:absolute;left:4px;color:#04385F;font-size:12px;top:8px}
+.part-items li.sub-item{padding-left:36px;color:#666;font-size:13.5px}
+.part-items li.sub-item::before{content:"–";color:#aaa;left:20px}
+
+/* Progress indicator */
+.unit-nav{background:#fff;border-radius:12px;padding:16px 24px;margin-bottom:20px;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);display:flex;align-items:center;gap:12px}
+.unit-label{font-size:12px;color:#999}
+.unit-num{font-size:18px;font-weight:700;color:#04385F}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="logo">朝曦家办</div>
+  <a href="../index.html" class="back-btn">← 返回课程目录</a>
+</div>
+
+<div class="hero">
+  <div class="series-tag">课程1 · 企业初创与成长期</div>
+  <div class="hero-title">员工股权激励设计——如何让核心人才留下来一起干</div>
+  <div class="hero-meta">
+    <span class="meta-chip">单元 3</span>
+    <span class="hours-badge">2.5 课时</span>
+    <span class="meta-chip">对象：银行私行客户经理、理财经理；服务科技型、制造型、拟上市企业的对公客户经理</span>
+    <span class="meta-chip">讲师讲授、案例分析、实战演练</span>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class="section"><div class="section-title">课程背景</div><div class="section-body">
+股权激励是企业留住核心人才的重要工具，也是银行服务企业客户时最高频的议题之一。然而激励方案落地难、税负过高导致效果打折、乃至引发合规风险，是困扰众多企业主的核心痛点。本课程聚焦处于初创期、转型期或上市进程中的各类企业，系统讲解股权激励工具选择、方案设计四大要素、个税合规全流程与落地实施要点，帮助银行客户经理精准切入企业高管和实控人的激励需求，并借助员工持股信托（EBT）等产品实现高效展业与批量获客。</div></div>
+
+  <div class="section"><div class="section-title">课程收益</div><ol class="benefits-list"><li>1. 掌握期权、限制性股权、虚拟股等主流激励工具的结构差异、优劣特点与适用场景，在与企业高管沟通时快速建立专业形象，精准推荐匹配工具；</li>
+<li>2. 理解&quot;定人—定量—定价—定时&quot;四大核心要素及业绩条件的设计逻辑，能为企业客户提供基础方案建议，成为客户股权激励规划的早期介入者；</li>
+<li>3. 掌握个税全流程关键节点（授予日、行权日、解禁日、出售日）的税务处理规律与财税〔2016〕101号文递延纳税政策的落地应用，精准识别客户税务安排的核心需求；</li>
+<li>4. 了解激励方案落地实施流程与常见员工沟通障碍，帮助企业客户规避执行风险，并将员工持股信托等产品有机嵌入激励链条，挖掘批量高管客群的财富管理入口。</li>
+</ol></div>
+
+  <div class="section"><div class="section-title">课程大纲</div><div class="part-title">第一部分：激励工具选择与适用场景——期权、限制性股权、虚拟股的优劣对比与选择模型</div>
+<ul class="part-items">
+  <li>期权（期权池/NSO/ISO）：授予→等待期→行权→出售四大节点的税务触发规律；现金流压力小、适合创业初期留才，但行权税负集中是核心痛点；</li>
+  <li>限制性股权/限制性股票：解锁条件设计与税务处理差异（上市/非上市公司的不同规则）；早期锁定人才效果强，但解禁日税务资金准备是高频难点；</li>
+  <li>虚拟股与分红权激励：现金激励属性强，无需涉及真实股权转让，适合现金流稳定的成熟企业；激励效果受公司分红意愿制约，留才深度不及真实股权；</li>
+  <li>持股平台（有限合伙）：GP控制权设计逻辑、自然人LP的个税适用与常见合规陷阱；关联产品：境内股权激励总览（一人公司/无投资人/有投资人不盈利/有投资人正常盈利/拟上市公司）；</li>
+  <li>工具选择决策框架：按企业阶段（初创/成长/上市）、激励对象身份与公司现金流状态的综合匹配建议；银行切入时机：在企业搭建激励平台阶段同步提供账户开立与资金托管服务。</li>
+</ul>
+<div class="part-title">第二部分：激励方案核心要素设计——定人、定量、定价、定时、业绩条件的设定原则与技巧</div>
+<ul class="part-items">
+  <li>&quot;定人&quot;：激励对象的资格认定原则（核心岗位/技术/销售骨干），如何避免&quot;大锅饭&quot;与内部矛盾；激励对象层级设计与授权审批流程；</li>
+  <li>&quot;定量&quot;：激励总量的行业参考区间（期权池通常5%~20%），个人份额的差异化分配逻辑与留存效果测算；</li>
+  <li>&quot;定价&quot;：行权价格的定价逻辑（公允价值、折扣价、409A估值报告的必要性与时机）；定价过低的税务风险与过高的激励失效风险；</li>
+  <li>&quot;定时&quot;：等待期、行权期与锁定期的组合设计；业绩条件（KPI绑定）、服务年限双重约束机制及加速行权条款的联动设计；</li>
+  <li>配套退出机制：离职/违纪的股权回购条款、竞业禁止与期权加速行权条款的联动；关联产品：股权激励（非上市公司）。</li>
+</ul>
+<div class="part-title">第三部分：个人所得税全流程税务规划——纳税时点、税率、财税〔2016〕101号文等政策的落地应用</div>
+<ul class="part-items">
+  <li>非上市公司股权激励的递延纳税政策精讲：财税〔2016〕101号文的适用条件（非货币性资产、符合条件的居民企业）、递延期限（5年内分期缴纳）、申请材料与备案流程；关联产品：递延备案（20%递延备案）；</li>
+  <li>上市公司限制性股票解禁的个税处理：解禁日税务义务的计算方式与资金准备建议；关联产品：境内股权激励计划税务合规-基础；</li>
+  <li>持股平台的个税规则：有限合伙LP按经营所得适用5%~35%累进税率的实际税负测算；关联产品：合伙企业合规申报、个人所得税合规申报；</li>
+  <li>员工持股信托（EBT）作为激励持股载体的合规优势：税务效率、控制权隔离与批量服务逻辑；关联产品：非上市公司股权激励计划实施前税务咨询；</li>
+  <li>典型案例深度复盘：某世界级原创技术高科技企业股权激励计划的完整实施与税务合规方案——从工具选择、方案设计到递延备案全流程拆解。</li>
+</ul>
+<div class="part-title">第四部分：激励方案落地实施流程与常见员工沟通问题应对</div>
+<ul class="part-items">
+  <li>落地实施标准流程：董事会/股东会决议→激励协议签署→工商变更/平台登记→税务备案→持续行权管理的全流程操作要点与常见卡点；</li>
+  <li>员工沟通高频难点：激励价值如何量化呈现（期望收益测算）、税务负担如何提前规划（递延/分期方案）、离职回购条款的异议处理；</li>
+  <li>激励方案的动态调整：融资稀释后的反稀释保护、估值大幅变动时的行权价重置机制；</li>
+  <li>关键节点主动介入策略：行权前、解禁前、IPO前三大时间窗口的银行服务切入角度；批量高管客群开发：以持股平台为入口，批量触达企业核心人才群体；</li>
+  <li>实战演练：模拟拟上市企业HR总监咨询股权激励场景，强化需求识别与产品推介能力；现场答疑：针对方案设计、个税合规（递延备案申请）、信托推介的实操问题逐一解答。</li>
+  <li>[本大纲版权归老师所有，仅供合作伙伴与本机构业务合作使用，未经书面授权及同意，任何机构及个人不得向第三方透露]</li>
+</ul>
+</div>
+
+</div>
+</body>
+</html>

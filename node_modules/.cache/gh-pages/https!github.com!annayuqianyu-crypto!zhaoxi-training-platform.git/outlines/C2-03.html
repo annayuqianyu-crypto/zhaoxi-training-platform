@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>转让定价与BEPS合规——关联交易定价，如何让各国税局都点头</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Microsoft YaHei",Arial,sans-serif;background:#F4F6F9;color:#2c2c2c;line-height:1.7}
+a{text-decoration:none}
+
+/* Top bar */
+.topbar{background:#04385F;color:#fff;padding:12px 28px;display:flex;align-items:center;
+  justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.logo{font-size:17px;font-weight:700;color:#AC9079;letter-spacing:1px}
+.back-btn{color:#bbb;font-size:13px;transition:color .2s}
+.back-btn:hover{color:#fff}
+
+/* Hero */
+.hero{background:linear-gradient(135deg,#2E7D8C 0%,#2E7D8Cdd 100%);color:#fff;padding:36px 32px 32px}
+.series-tag{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);
+  color:#fff;font-size:11px;padding:3px 12px;border-radius:12px;margin-bottom:12px;letter-spacing:.5px}
+.hero-title{font-size:24px;font-weight:700;line-height:1.4;margin-bottom:14px}
+.hero-meta{display:flex;flex-wrap:wrap;gap:12px;font-size:13px;color:rgba(255,255,255,.85)}
+.meta-chip{background:rgba(255,255,255,.15);border-radius:20px;padding:4px 14px}
+.hours-badge{background:#AC9079;color:#fff;font-size:12px;font-weight:700;
+  padding:4px 14px;border-radius:20px}
+
+/* Content */
+.content{max-width:900px;margin:28px auto;padding:0 20px 60px}
+.section{background:#fff;border-radius:12px;padding:24px 28px;margin-bottom:20px;
+  box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.section-title{font-size:13px;font-weight:700;color:#2E7D8C;letter-spacing:1px;
+  text-transform:uppercase;margin-bottom:14px;padding-bottom:10px;
+  border-bottom:2px solid #2E7D8C20;display:flex;align-items:center;gap:8px}
+.section-title::before{content:"";display:block;width:4px;height:16px;
+  background:#2E7D8C;border-radius:2px}
+.section-body{font-size:14.5px;color:#444;line-height:1.8}
+
+/* Benefits list */
+.benefits-list{list-style:none;padding:0}
+.benefits-list li{padding:8px 0 8px 22px;border-bottom:1px solid #f0f0f0;
+  position:relative;font-size:14px;color:#333;line-height:1.7}
+.benefits-list li:last-child{border-bottom:none}
+.benefits-list li::before{content:counter(benefit);counter-increment:benefit;
+  position:absolute;left:0;top:9px;background:#2E7D8C;color:#fff;
+  width:16px;height:16px;border-radius:50%;font-size:10px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;line-height:1}
+.benefits-list{counter-reset:benefit}
+
+/* Info row */
+.info-row{display:flex;gap:24px;flex-wrap:wrap}
+.info-item{flex:1;min-width:200px}
+.info-label{font-size:11px;font-weight:700;color:#999;letter-spacing:.5px;
+  text-transform:uppercase;margin-bottom:4px}
+.info-value{font-size:14px;color:#333}
+
+/* Outline */
+.part-title{font-size:15px;font-weight:700;color:#2E7D8C;margin:20px 0 10px;
+  padding:8px 14px;background:#2E7D8C10;border-left:4px solid #2E7D8C;border-radius:0 6px 6px 0}
+.part-items{list-style:none;padding:0;margin:0 0 4px 0}
+.part-items li{padding:6px 0 6px 20px;border-bottom:1px solid #f5f5f5;
+  position:relative;font-size:14px;color:#444;line-height:1.7}
+.part-items li:last-child{border-bottom:none}
+.part-items li::before{content:"▸";position:absolute;left:4px;color:#2E7D8C;font-size:12px;top:8px}
+.part-items li.sub-item{padding-left:36px;color:#666;font-size:13.5px}
+.part-items li.sub-item::before{content:"–";color:#aaa;left:20px}
+
+/* Progress indicator */
+.unit-nav{background:#fff;border-radius:12px;padding:16px 24px;margin-bottom:20px;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);display:flex;align-items:center;gap:12px}
+.unit-label{font-size:12px;color:#999}
+.unit-num{font-size:18px;font-weight:700;color:#2E7D8C}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="logo">朝曦家办</div>
+  <a href="../index.html" class="back-btn">← 返回课程目录</a>
+</div>
+
+<div class="hero">
+  <div class="series-tag">课程2 · 跨境税务与合规</div>
+  <div class="hero-title">转让定价与BEPS合规——关联交易定价，如何让各国税局都点头</div>
+  <div class="hero-meta">
+    <span class="meta-chip">单元 3</span>
+    <span class="hours-badge">2.5 课时</span>
+    <span class="meta-chip">对象：银行对公客户经理、国际业务条线；服务跨境关联交易规模较大的制造型、贸易型或平台型</span>
+    <span class="meta-chip">讲师讲授、案例分析、答疑互动</span>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class="section"><div class="section-title">课程背景</div><div class="section-body">
+随着中国企业国际化程度持续提升，集团内部的跨境关联交易规模日益庞大：向境外子公司收取的管理费、无形资产许可费、集团内部贷款利息，每一笔都在全球税务机关的重点审查范围之内。BEPS行动计划的落地让税务机关掌握了更强大的信息工具，Pillar Two全球最低税率规则正在逼近，低税率离岸架构面临前所未有的挑战。本课程以&quot;跨境关联交易合规&quot;为主线，帮助银行客户经理理解转让定价的核心逻辑，在服务跨境经营企业时精准识别关联交易的税务风险敞口，以税务健康评估为话题切入跨境结算、同期文档准备等专业服务场景。</div></div>
+
+  <div class="section"><div class="section-title">课程收益</div><ol class="benefits-list"><li>1. 掌握关联方认定标准与主要关联交易类型，能在分析客户跨境架构时主动识别潜在的转让定价风险点，展现超越&quot;存贷汇&quot;的顾问深度；</li>
+<li>2. 了解同期资料文档（主体档案、本地文档、国别报告）的准备门槛与实操要点，在客户面临税务稽查或架构整改时能提供专业预警，建立危机时刻的信任纽带；</li>
+<li>3. 理解BEPS行动计划与全球最低税率规则的最新进展，帮助持有低税率离岸架构的客户提前评估补税风险，切入架构优化咨询场景；</li>
+<li>4. 将转让定价合规风险的识别融入跨境结算与外汇管理服务，建立对公客户的差异化专业形象，实现从&quot;识别风险&quot;到&quot;切入服务&quot;的完整展业链条。</li>
+</ol></div>
+
+  <div class="section"><div class="section-title">课程大纲</div><div class="part-title">第一部分：转让定价基础与关联交易识别</div>
+<ul class="part-items">
+  <li>关联方认定标准：持股比例25%以上、实质控制关系（共同控制或独立指示）、单一客户或供应商依赖度超标的特殊情形；</li>
+  <li>主要关联交易类型：有形商品销售（集团内部供货价）、无形资产许可（商标/专利使用费）、服务费收取（管理费/技术支持费）、集团内部贷款；</li>
+  <li>独立交易原则（Arm's Length Principle）：关联方定价须参照可比非关联方的市场价格，是全球转让定价规则的核心基准；</li>
+  <li>高风险交易识别信号：频繁亏损的境内关联采购方、大额管理费流向无实质的离岸公司、内部贷款利率显著偏离市场基准利率。</li>
+</ul>
+<div class="part-title">第二部分：同期资料文档体系——主体档案、本地文档、国别报告的要求与实操</div>
+<ul class="part-items">
+  <li>触发门槛：年度关联采购或销售总额超过2亿元须准备本地文档，集团合并收入75亿元以上须向税务机关报送国别报告；</li>
+  <li>三级文档架构：主体档案（集团整体架构与全球供应链概况）→本地文档（企业层面的定价分析与可比公司基准测试）→国别报告（各国收入/利润/税负/员工分布）；</li>
+  <li>定价方法的选择与适用：可比非受控价格法、再销售价格法、成本加成法的适用场景与选取依据；选择不当将直接影响稽查抗辩能力；</li>
+  <li>文档准备的最优时机：在年度交易发生同期（而非税务稽查发生后）准备，避免被认定为&quot;事后补救&quot;，充分体现定价有据；</li>
+  <li>典型案例：某新能源汽车配件企业转让定价咨询——集团内部零部件供货定价引发税务机关特别纳税调整的完整应对路径与文档整改经验。</li>
+</ul>
+<div class="part-title">第三部分：BEPS行动计划与全球最低税率——低税率离岸架构的合规新挑战</div>
+<ul class="part-items">
+  <li>BEPS的核心逻辑：打击税基侵蚀与利润转移，15项行动计划覆盖混合错配、利息扣除限制、受控外国公司规则与信息交换等核心领域；</li>
+  <li>Pillar Two（全球最低税率15%）：适用于年合并收入7.5亿欧元以上的跨国集团，低税率辖区的实际税负不足须缴纳&quot;补足税&quot;；中国GloBE规则的实施动态；</li>
+  <li>对中国企业的直接影响：在开曼、BVI、爱尔兰等低税率地区持有利润的离岸架构面临补税压力；主要受影响行业与规模门槛的判断框架；</li>
+  <li>受控外国公司（CFC）规则：中国居民企业控制的低税率境外实体，若不做实质分配，利润可能被视同分配征税；</li>
+  <li>合规应对策略：提升离岸实体的经济实质、向协定覆盖的实质经营地迁移、重新评估集团整体有效税率，作为架构调整的决策依据。</li>
+</ul>
+<div class="part-title">第四部分：银行展业应用——跨境结算中的转让定价风险识别与服务切入</div>
+<ul class="part-items">
+  <li>识别高风险信号：频繁、大额的集团内部服务费汇款，关联贷款利息收付显著偏离市场利率，是银行客户经理在日常结算中可直接观察到的预警指标；</li>
+  <li>以&quot;关联交易合规体检&quot;为话题切入：在协助企业开立境外账户或办理大额跨境结算时，主动提示关联交易的合规记录要求；</li>
+  <li>银行流水的证明价值：规范的跨境结算记录可作为同期文档的辅助佐证，帮助客户在稽查时建立&quot;定价有据&quot;的合规基础；</li>
+  <li>现场答疑：管理费定价依据、特许权使用费税率、内部贷款利率合规区间、国别报告保密性与Pillar Two补税计算的高频实操问题解答。</li>
+  <li>[本大纲版权归老师所有，仅供合作伙伴与本机构业务合作使用，未经书面授权及同意，任何机构及个人不得向第三方透露]</li>
+</ul>
+</div>
+
+</div>
+</body>
+</html>

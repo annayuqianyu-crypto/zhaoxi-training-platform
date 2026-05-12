@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>红筹架构海外上市——架构怎么搭才能安全通行</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Microsoft YaHei",Arial,sans-serif;background:#F4F6F9;color:#2c2c2c;line-height:1.7}
+a{text-decoration:none}
+
+/* Top bar */
+.topbar{background:#04385F;color:#fff;padding:12px 28px;display:flex;align-items:center;
+  justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.logo{font-size:17px;font-weight:700;color:#AC9079;letter-spacing:1px}
+.back-btn{color:#bbb;font-size:13px;transition:color .2s}
+.back-btn:hover{color:#fff}
+
+/* Hero */
+.hero{background:linear-gradient(135deg,#04385F 0%,#04385Fdd 100%);color:#fff;padding:36px 32px 32px}
+.series-tag{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);
+  color:#fff;font-size:11px;padding:3px 12px;border-radius:12px;margin-bottom:12px;letter-spacing:.5px}
+.hero-title{font-size:24px;font-weight:700;line-height:1.4;margin-bottom:14px}
+.hero-meta{display:flex;flex-wrap:wrap;gap:12px;font-size:13px;color:rgba(255,255,255,.85)}
+.meta-chip{background:rgba(255,255,255,.15);border-radius:20px;padding:4px 14px}
+.hours-badge{background:#AC9079;color:#fff;font-size:12px;font-weight:700;
+  padding:4px 14px;border-radius:20px}
+
+/* Content */
+.content{max-width:900px;margin:28px auto;padding:0 20px 60px}
+.section{background:#fff;border-radius:12px;padding:24px 28px;margin-bottom:20px;
+  box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.section-title{font-size:13px;font-weight:700;color:#04385F;letter-spacing:1px;
+  text-transform:uppercase;margin-bottom:14px;padding-bottom:10px;
+  border-bottom:2px solid #04385F20;display:flex;align-items:center;gap:8px}
+.section-title::before{content:"";display:block;width:4px;height:16px;
+  background:#04385F;border-radius:2px}
+.section-body{font-size:14.5px;color:#444;line-height:1.8}
+
+/* Benefits list */
+.benefits-list{list-style:none;padding:0}
+.benefits-list li{padding:8px 0 8px 22px;border-bottom:1px solid #f0f0f0;
+  position:relative;font-size:14px;color:#333;line-height:1.7}
+.benefits-list li:last-child{border-bottom:none}
+.benefits-list li::before{content:counter(benefit);counter-increment:benefit;
+  position:absolute;left:0;top:9px;background:#04385F;color:#fff;
+  width:16px;height:16px;border-radius:50%;font-size:10px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;line-height:1}
+.benefits-list{counter-reset:benefit}
+
+/* Info row */
+.info-row{display:flex;gap:24px;flex-wrap:wrap}
+.info-item{flex:1;min-width:200px}
+.info-label{font-size:11px;font-weight:700;color:#999;letter-spacing:.5px;
+  text-transform:uppercase;margin-bottom:4px}
+.info-value{font-size:14px;color:#333}
+
+/* Outline */
+.part-title{font-size:15px;font-weight:700;color:#04385F;margin:20px 0 10px;
+  padding:8px 14px;background:#04385F10;border-left:4px solid #04385F;border-radius:0 6px 6px 0}
+.part-items{list-style:none;padding:0;margin:0 0 4px 0}
+.part-items li{padding:6px 0 6px 20px;border-bottom:1px solid #f5f5f5;
+  position:relative;font-size:14px;color:#444;line-height:1.7}
+.part-items li:last-child{border-bottom:none}
+.part-items li::before{content:"▸";position:absolute;left:4px;color:#04385F;font-size:12px;top:8px}
+.part-items li.sub-item{padding-left:36px;color:#666;font-size:13.5px}
+.part-items li.sub-item::before{content:"–";color:#aaa;left:20px}
+
+/* Progress indicator */
+.unit-nav{background:#fff;border-radius:12px;padding:16px 24px;margin-bottom:20px;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);display:flex;align-items:center;gap:12px}
+.unit-label{font-size:12px;color:#999}
+.unit-num{font-size:18px;font-weight:700;color:#04385F}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="logo">朝曦家办</div>
+  <a href="../index.html" class="back-btn">← 返回课程目录</a>
+</div>
+
+<div class="hero">
+  <div class="series-tag">课程1 · 企业初创与成长期</div>
+  <div class="hero-title">红筹架构海外上市——架构怎么搭才能安全通行</div>
+  <div class="hero-meta">
+    <span class="meta-chip">单元 7</span>
+    <span class="hours-badge">2.5 课时</span>
+    <span class="meta-chip">对象：银行对公客户经理、私行客户经理；服务计划在港股或美股上市企业的团队</span>
+    <span class="meta-chip">讲师讲授、案例分析、答疑互动</span>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class="section"><div class="section-title">课程背景</div><div class="section-body">
+对众多计划赴港、赴美上市的中国企业而言，搭建红筹架构是迈向资本市场的必经一步。然而，开曼-香港-境内的典型持股层级如何设计，VIE协议控制结构与直接持股路径如何抉择，ODI/37号文备案如何合规落地，Pre-IPO窗口如何布局员工激励与创始人财富规划——每一个环节都牵涉监管政策与税务成本的精准权衡。尤其值得关注的是，近期中国监管机构正加大力度对持有香港上市公司股份的离岸信托征税，离岸信托的税务隔离效果面临新的挑战，布局时机与架构选择需要重新审视。本课程帮助银行客户经理系统理解境外上市架构的核心逻辑，在最新监管环境下精准切入账户开立、外汇备案、Pre-IPO信托等高价值展业场景。</div></div>
+
+  <div class="section"><div class="section-title">课程收益</div><ol class="benefits-list"><li>1. 理解红筹架构的核心持股层级（开曼/BVI/香港控股公司）与VIE协议控制结构的适用逻辑，在服务计划境外上市的企业客户时展现专业深度，赢得决策层信任；</li>
+<li>2. 掌握境外架构搭建的合规路径——ODI备案、37号文外汇登记的适用场景与操作要点，能主动识别客户的合规盲区，发挥银行在外汇服务中的早期绑定价值；</li>
+<li>3. 了解港交所/纳斯达克对架构合规的核心要求与近年监管动态，包括境内税务机关对离岸信托穿透征税的最新执法趋势，在辅导期前主动介入架构体检；</li>
+<li>4. 掌握Pre-IPO阶段信托布局的最优时机与配套税务评估路径，将红筹架构服务场景转化为Pre-IPO信托、员工福利信托等产品的审慎、精准推介机会。</li>
+</ol></div>
+
+  <div class="section"><div class="section-title">课程大纲</div><div class="part-title">第一部分：红筹架构的核心逻辑——境外持股层级与VIE/直接持股的路径选择</div>
+<ul class="part-items">
+  <li>红筹架构的典型层级结构：开曼公司（上市主体）→BVI公司（中间层）→香港公司（运营层）→境内VIE/WFOE（经营实体）的功能分工与设计逻辑；</li>
+  <li>VIE协议控制结构深度解析：协议控制的法律机制、主要风险（协议失效、监管政策收紧）及近年典型案例警示；外资限制行业的适用判断框架；</li>
+  <li>直接持股架构的适用条件：无外资限制行业的选择逻辑，与VIE架构在控制权稳定性、税务效率、融资灵活性三个维度的对比分析；</li>
+  <li>架构选择对银行展业的影响：不同架构下创始人个人财富持有方式、资金跨境路径与信托布局需求的差异。</li>
+</ul>
+<div class="part-title">第二部分：红筹架构搭建全流程——ODI备案、37号文登记与境外实体落地</div>
+<ul class="part-items">
+  <li>ODI（境外直接投资）备案路径：商务部/发改委审批与备案的适用场景，关键材料准备与常见审批障碍分析；</li>
+  <li>37号文（境外投资外汇登记）的合规要求：境内居民个人境外投资主体设立/增资的登记义务、历史未登记的补办路径与风险处置；ODI备案与37号文登记均是银行为境外上市企业提供外汇服务、实现早期深度绑定的核心切入场景；</li>
+  <li>开曼/BVI/香港公司的实际操作要点：设立材料、银行账户开立（境外账户的银行选择策略）、经济实质法合规要求；</li>
+  <li>典型案例：某互联网算力头部企业境外上市架构搭建全过程——从架构方案确定到VIE协议签署、ODI备案与境外银行账户同步落地的完整复盘。</li>
+</ul>
+<div class="part-title">第三部分：港交所/纳斯达克上市的架构合规要求与关键审核节点</div>
+<ul class="part-items">
+  <li>港交所（主板/GEM）的架构合规标准：同股不同权（WVR）架构的适用条件，VIE架构的监管态度演变与近年上市案例的审核重点；</li>
+  <li>纳斯达克/NYSE上市的架构要求：SEC对VIE架构的信息披露要求，PCAOB审计合规与中概股监管政策最新动态（2021年以来的政策收紧影响）；</li>
+  <li>境内端合规整改：外商投资负面清单更新、数据安全法对VIE架构境内运营主体的影响，境内监管机构（CSRC）的境外上市备案新规（2023年施行）；上市辅导期前的红筹/VIE架构税务意见书是监管机构认可的合规文件，也是专业服务机构与银行介入架构服务的关键锚点；</li>
+  <li>上市时间轴规划：从架构搭建到上市申请的典型时间节点，各阶段银行介入的最优时机；</li>
+  <li>【最新动态】离岸信托穿透征税风险预警：中国监管机构近期加大力度对持有香港上市公司股份的离岸信托征税，借助CRS数据识别境内税务居民受益人——此趋势要求在架构设计阶段提前完成税务意见评估，并将信托布局节点前置至上市前，而非上市后再行安排。</li>
+</ul>
+<div class="part-title">第四部分：Pre-IPO阶段的财富规划与银行展业切入</div>
+<ul class="part-items">
+  <li>Pre-IPO信托的布局窗口与税务逻辑：上市前注入信托（股权尚未流通）与上市后离岸信托持有已上市港股的监管差异——当前执法重点集中于后者，前置布局仍是相对可行路径，但须配合专业税务意见评估；Pre-IPO离岸信托是家族财富规划中&quot;股权隔离+创始人传承&quot;的核心工具之一；</li>
+  <li>税务评估先行：推介Pre-IPO信托时，应首先明确信托架构在当前监管环境下的税务处理方式，避免因事后征税导致信托利益受损，保护客户利益也保护专业服务机构的声誉；</li>
+  <li>员工激励平台的境外安排：期权池设计、员工福利信托（EBT）在境外上市架构中的持股方式，与境内持股平台方案的合规对比；</li>
+  <li>外汇资金跨境通道：ODI资金出境、红利汇回与减持资金回流的合规路径，银行在外汇结算与账户服务中的核心价值；</li>
+  <li>实战演练：模拟计划赴港上市的互联网企业实控人初次咨询场景，演练在新征税政策背景下如何调整Pre-IPO信托推介话术——从&quot;信托是税务优化工具&quot;转向&quot;提前布局+税务评估+合规优先&quot;的顾问式表达；现场答疑：针对VIE架构合规、37号文历史补办、离岸信托税务风险的高频实操问题。</li>
+  <li>[本大纲版权归老师所有，仅供合作伙伴与本机构业务合作使用，未经书面授权及同意，任何机构及个人不得向第三方透露]</li>
+</ul>
+</div>
+
+</div>
+</body>
+</html>

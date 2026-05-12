@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>创始人控制权保护——股权可以稀释，但控制权不能，如何守住企业方向盘</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Microsoft YaHei",Arial,sans-serif;background:#F4F6F9;color:#2c2c2c;line-height:1.7}
+a{text-decoration:none}
+
+/* Top bar */
+.topbar{background:#04385F;color:#fff;padding:12px 28px;display:flex;align-items:center;
+  justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.logo{font-size:17px;font-weight:700;color:#AC9079;letter-spacing:1px}
+.back-btn{color:#bbb;font-size:13px;transition:color .2s}
+.back-btn:hover{color:#fff}
+
+/* Hero */
+.hero{background:linear-gradient(135deg,#04385F 0%,#04385Fdd 100%);color:#fff;padding:36px 32px 32px}
+.series-tag{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);
+  color:#fff;font-size:11px;padding:3px 12px;border-radius:12px;margin-bottom:12px;letter-spacing:.5px}
+.hero-title{font-size:24px;font-weight:700;line-height:1.4;margin-bottom:14px}
+.hero-meta{display:flex;flex-wrap:wrap;gap:12px;font-size:13px;color:rgba(255,255,255,.85)}
+.meta-chip{background:rgba(255,255,255,.15);border-radius:20px;padding:4px 14px}
+.hours-badge{background:#AC9079;color:#fff;font-size:12px;font-weight:700;
+  padding:4px 14px;border-radius:20px}
+
+/* Content */
+.content{max-width:900px;margin:28px auto;padding:0 20px 60px}
+.section{background:#fff;border-radius:12px;padding:24px 28px;margin-bottom:20px;
+  box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.section-title{font-size:13px;font-weight:700;color:#04385F;letter-spacing:1px;
+  text-transform:uppercase;margin-bottom:14px;padding-bottom:10px;
+  border-bottom:2px solid #04385F20;display:flex;align-items:center;gap:8px}
+.section-title::before{content:"";display:block;width:4px;height:16px;
+  background:#04385F;border-radius:2px}
+.section-body{font-size:14.5px;color:#444;line-height:1.8}
+
+/* Benefits list */
+.benefits-list{list-style:none;padding:0}
+.benefits-list li{padding:8px 0 8px 22px;border-bottom:1px solid #f0f0f0;
+  position:relative;font-size:14px;color:#333;line-height:1.7}
+.benefits-list li:last-child{border-bottom:none}
+.benefits-list li::before{content:counter(benefit);counter-increment:benefit;
+  position:absolute;left:0;top:9px;background:#04385F;color:#fff;
+  width:16px;height:16px;border-radius:50%;font-size:10px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;line-height:1}
+.benefits-list{counter-reset:benefit}
+
+/* Info row */
+.info-row{display:flex;gap:24px;flex-wrap:wrap}
+.info-item{flex:1;min-width:200px}
+.info-label{font-size:11px;font-weight:700;color:#999;letter-spacing:.5px;
+  text-transform:uppercase;margin-bottom:4px}
+.info-value{font-size:14px;color:#333}
+
+/* Outline */
+.part-title{font-size:15px;font-weight:700;color:#04385F;margin:20px 0 10px;
+  padding:8px 14px;background:#04385F10;border-left:4px solid #04385F;border-radius:0 6px 6px 0}
+.part-items{list-style:none;padding:0;margin:0 0 4px 0}
+.part-items li{padding:6px 0 6px 20px;border-bottom:1px solid #f5f5f5;
+  position:relative;font-size:14px;color:#444;line-height:1.7}
+.part-items li:last-child{border-bottom:none}
+.part-items li::before{content:"▸";position:absolute;left:4px;color:#04385F;font-size:12px;top:8px}
+.part-items li.sub-item{padding-left:36px;color:#666;font-size:13.5px}
+.part-items li.sub-item::before{content:"–";color:#aaa;left:20px}
+
+/* Progress indicator */
+.unit-nav{background:#fff;border-radius:12px;padding:16px 24px;margin-bottom:20px;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);display:flex;align-items:center;gap:12px}
+.unit-label{font-size:12px;color:#999}
+.unit-num{font-size:18px;font-weight:700;color:#04385F}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="logo">朝曦家办</div>
+  <a href="../index.html" class="back-btn">← 返回课程目录</a>
+</div>
+
+<div class="hero">
+  <div class="series-tag">课程1 · 企业初创与成长期</div>
+  <div class="hero-title">创始人控制权保护——股权可以稀释，但控制权不能，如何守住企业方向盘</div>
+  <div class="hero-meta">
+    <span class="meta-chip">单元 2</span>
+    <span class="hours-badge">2.5 课时</span>
+    <span class="meta-chip">对象：银行私行客户经理、理财经理、支行零售行长；对公与私行联动的客户经理</span>
+    <span class="meta-chip">讲师讲授、案例分析、实战演练</span>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class="section"><div class="section-title">课程背景</div><div class="section-body">
+随着企业融资进程推进，创始人股权被持续稀释几乎不可避免，但控制权旁落则可能使创始人失去企业的战略主导权。本课程聚焦正在或计划进行多轮融资的企业实控人，系统讲解控制权保护的核心工具与架构设计逻辑，帮助银行客户经理精准切入这一高频痛点，推介家族股权信托、持股平台搭建等相关产品，实现展业突破。</div></div>
+
+  <div class="section"><div class="section-title">课程收益</div><ol class="benefits-list"><li>1. 掌握股权稀释的规律与控制权保护的核心工具（AB股、一致行动协议、投票权委托等），构建服务多轮融资企业客户的专业知识框架；</li>
+<li>2. 能精准识别融资各阶段的控制权风险点，主动与客户展开控制权保护话题，从&quot;产品推介&quot;升级为&quot;专业顾问&quot;；</li>
+<li>3. 了解家族股权信托在锁定控制权、规避代持风险中的核心功能，将控制权保护需求转化为家族信托、持股平台搭建等展业机会；</li>
+<li>4. 通过典型案例研讨，掌握一线沟通话术与方案切入技巧，提升与创业客户的深度沟通能力与业务转化效率。</li>
+</ol></div>
+
+  <div class="section"><div class="section-title">课程大纲</div><div class="part-title">第一部分：融资稀释规律与控制权风险图谱</div>
+<ul class="part-items">
+  <li>股权稀释的必然性：Pre-A到IPO各轮次典型稀释比例与创始人持股走势；</li>
+  <li>控制权旁落的三大场景：董事会失控、大股东联合逼宫、创始人出局典型案例剖析；</li>
+  <li>控制权保护的核心目标：绝对控制、相对控制与安全底线三条生命线。</li>
+</ul>
+<div class="part-title">第二部分：控制权保护的核心工具详解</div>
+<ul class="part-items">
+  <li>AB股双层股权结构：适用场景、新《公司法》框架与落地要点；</li>
+  <li>一致行动协议：条款设计、风险边界与常见失效原因；</li>
+  <li>投票权委托：操作规范、法律效力与银行可介入的服务节点；</li>
+  <li>家族股权信托：以信托持有股权实现控制权稳定传承，银行核心推介产品逻辑。</li>
+</ul>
+<div class="part-title">第三部分：持股平台搭建与控制权架构设计实务</div>
+<ul class="part-items">
+  <li>有限合伙持股平台：GP/LP结构如何锁定控制权，税务效率与合规要点；</li>
+  <li>多层持股层级设计：在融资谈判中的防御功能；</li>
+  <li>典型案例：某多轮融资初创企业实控人持股结构调整全过程。</li>
+</ul>
+<div class="part-title">第四部分：银行展业应用与互动答疑</div>
+<ul class="part-items">
+  <li>展业话术：如何在客户融资场景中自然切入控制权保护与家族信托话题；</li>
+  <li>产品匹配方向：家族股权信托、持股平台搭建、大额保单；</li>
+  <li>现场答疑：针对控制权保护与信托推介的实操问题解答。</li>
+  <li>[本大纲版权归老师所有，仅供合作伙伴与本机构业务合作使用，未经书面授权及同意，任何机构及个人不得向第三方透露]</li>
+</ul>
+</div>
+
+</div>
+</body>
+</html>
