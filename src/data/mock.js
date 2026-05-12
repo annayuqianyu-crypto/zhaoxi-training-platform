@@ -76,7 +76,7 @@ export const CHANNEL_DATA = [
 
 export const STATUS_COLOR = {
   '待处理':    'badge-gray',
-  '前期沟通':  'badge-blue',
+  '课程匹配':  'badge-blue',
   '渠道已确认':'badge-blue',
   '合同签署':  'badge-blue',
   '讲师排期':  'badge-amber',

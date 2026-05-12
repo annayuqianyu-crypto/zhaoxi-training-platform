@@ -639,7 +639,7 @@ export function CourseMatch({ navigate }) {
                                         border:'1px solid #BFDBFE', background:'#EFF6FF',
                                       }}
                                     >
-                                      📄 查看完整课纲 ↗
+                                      📄 查看课纲参考 ↗
                                     </a>
                                   </div>
                                   {u.outline.split('\n').filter(l => l.trim()).map((line, li) => (

@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { WORK_ORDERS, STATUS_COLOR, COURSE_CATALOG } from '../data/mock'
 import { CONTEXT_KEY } from './CourseMatch'
 
-const FILTERS     = ['全部','待处理','前期沟通','渠道已确认','合同签署','讲师排期','通关进行中','已归档']
+const FILTERS     = ['全部','待处理','课程匹配','渠道已确认','合同签署','讲师排期','通关进行中','已归档']
 const STORAGE_KEY = 'zx_pending_orders'
 const OVERRIDE_KEY = 'zx_order_overrides'
 const TOKEN_KEY   = 'zx_github_token'
@@ -336,9 +336,12 @@ export function WorkOrders({ navigate }) {
             <div style={{ display:'flex', gap:10, marginTop:16, justifyContent:'flex-end' }}>
               <button className="btn btn-secondary" onClick={() => setSelectedOrder(null)}>关闭</button>
               {selectedOrder.status === '待处理' && (
-                <button className="btn btn-primary" onClick={() => advanceOrder(selectedOrder, '前期沟通')}>推进沟通 →</button>
+                <button className="btn btn-primary" onClick={() => {
+                  advanceOrder(selectedOrder, '课程匹配')
+                  goToCourseMatch({ ...selectedOrder, status: '课程匹配' })
+                }}>课程匹配 →</button>
               )}
-              {selectedOrder.status === '前期沟通' && (
+              {selectedOrder.status === '课程匹配' && (
                 <button className="btn btn-primary" onClick={() => goToCourseMatch(selectedOrder)}>前往课程匹配 →</button>
               )}
               {selectedOrder.status === '渠道已确认' && (
