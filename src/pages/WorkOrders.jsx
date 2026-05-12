@@ -7,14 +7,17 @@ const FILTERS     = ['全部','待处理','前期沟通','渠道已确认','合�
 const STORAGE_KEY = 'zx_pending_orders'
 const OVERRIDE_KEY = 'zx_order_overrides'
 const TOKEN_KEY   = 'zx_github_token'
-const AI_KEY      = 'zx_anthropic_key'
 const GITHUB_REPO = 'annayuqianyu-crypto/zhaoxi-training-platform'
+
+/* ─── DeepSeek API 配置（公司后台） ─── */
+const DS_API_URL   = 'https://api.deepseek.com/v1/chat/completions'
+const DS_API_KEY   = 'sk-603a729e51d54a82bf8b8de3e06530b4'
+const DS_MODEL     = 'deepseek-v4-pro'
 
 /* ─── localStorage helpers ─── */
 function loadLocal()  { try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]') } catch { return [] } }
 function saveLocal(l) { localStorage.setItem(STORAGE_KEY, JSON.stringify(l)) }
 function getToken()   { return localStorage.getItem(TOKEN_KEY) || '' }
-function getAiKey()   { return localStorage.getItem(AI_KEY) || '' }
 function loadOverrides() { try { return JSON.parse(localStorage.getItem(OVERRIDE_KEY) || '{}') } catch { return {} } }
 function saveOverride(id, updates) {
   const ov = loadOverrides()
@@ -110,24 +113,22 @@ ${catalogText}
 {"top3":[{"id":"C1-01","name":"课程名","seriesName":"所属系列全名","score":92,"reason":"2-3句匹配理由"}],"suggestions":"整体改进建议100字以内"}`
 }
 
-async function callClaudeAPI(apiKey, prompt) {
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
+async function callDeepSeekAPI(prompt) {
+  const res = await fetch(DS_API_URL, {
     method: 'POST',
     headers: {
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true',
-      'content-type': 'application/json',
+      'Authorization': `Bearer ${DS_API_KEY}`,
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'claude-3-5-haiku-20241022',
+      model: DS_MODEL,
       max_tokens: 1500,
       messages: [{ role: 'user', content: prompt }],
     }),
   })
   if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || `API Error ${res.status}`) }
   const data = await res.json()
-  const text = data.content?.[0]?.text || ''
+  const text = data.choices?.[0]?.message?.content || ''
   const match = text.match(/\{[\s\S]*\}/)
   if (!match) throw new Error('AI返回格式异常')
   return JSON.parse(match[0])
@@ -233,10 +234,6 @@ export function WorkOrders({ navigate }) {
   const [tokenInput, setTokenInput]         = useState('')
   const [tokenError, setTokenError]         = useState('')
 
-  // AI key setup
-  const [showAiKeySetup, setShowAiKeySetup] = useState(false)
-  const [aiKeyInput, setAiKeyInput]         = useState('')
-  const [aiKeyError, setAiKeyError]         = useState('')
 
   // Internal create form
   const [showForm, setShowForm]     = useState(false)
@@ -361,12 +358,10 @@ export function WorkOrders({ navigate }) {
 
   /* ─── AI analysis ─── */
   async function analyzeWithAI() {
-    const key = getAiKey()
-    if (!key) { setShowAiKeySetup(true); return }
     setAiLoading(true); setAiError('')
     try {
       const prompt = buildAIPrompt(editOrder, editForm, supplementText)
-      const result = await callClaudeAPI(key, prompt)
+      const result = await callDeepSeekAPI(prompt)
       setAiResult(result)
       saveOverride(editOrder.id, { aiResult: result, supplementText })
       // 分析完成后自动跳转到课程方案 Tab
@@ -1105,38 +1100,6 @@ export function WorkOrders({ navigate }) {
         </div>
       )}
 
-      {/* ══════════════════════════════════════
-          Anthropic AI Key setup modal — rendered LAST for highest z-index
-      ══════════════════════════════════════ */}
-      {showAiKeySetup && (
-        <div className="modal-overlay" style={{ zIndex:1100 }} onClick={() => setShowAiKeySetup(false)}>
-          <div className="modal" onClick={e => e.stopPropagation()}>
-            <h2 className="modal-title">配置 Anthropic API Key</h2>
-            <p className="modal-sub">用于 AI 需求分析与课程匹配，仅存储在本浏览器</p>
-            <div className="form-group" style={{ marginTop:16 }}>
-              <label className="form-label">Anthropic API Key</label>
-              <input className="form-input" type="password" value={aiKeyInput}
-                onChange={e => { setAiKeyInput(e.target.value); setAiKeyError('') }}
-                placeholder="sk-ant-..." style={{ fontFamily:'monospace' }} autoFocus />
-              {aiKeyError && <div style={{ color:'#EF4444', fontSize:12, marginTop:6 }}>{aiKeyError}</div>}
-            </div>
-            <div style={{ background:'var(--bg)', borderRadius:10, padding:'12px 16px', fontSize:12, color:'var(--text-3)', lineHeight:1.7, marginBottom:16 }}>
-              从 <strong>console.anthropic.com</strong> 获取 API Key<br/>
-              仅存储于本浏览器，不会上传至任何服务器
-            </div>
-            <div style={{ display:'flex', gap:10, justifyContent:'flex-end' }}>
-              <button className="btn btn-secondary" onClick={() => setShowAiKeySetup(false)}>取消</button>
-              <button className="btn btn-primary" onClick={() => {
-                const k = aiKeyInput.trim()
-                if (!k) { setAiKeyError('请输入 API Key'); return }
-                localStorage.setItem(AI_KEY, k)
-                setShowAiKeySetup(false); setAiKeyInput(''); setAiKeyError('')
-                analyzeWithAI()
-              }}>保存并开始分析</button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* ══════════════════════════════════════
           Internal create modal
