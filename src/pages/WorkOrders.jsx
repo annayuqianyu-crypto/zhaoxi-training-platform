@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react'
-import mammoth from 'mammoth'
 import { WORK_ORDERS, STATUS_COLOR, COURSE_CATALOG } from '../data/mock'
 import { CONTEXT_KEY } from './CourseMatch'
 
@@ -8,11 +7,6 @@ const STORAGE_KEY = 'zx_pending_orders'
 const OVERRIDE_KEY = 'zx_order_overrides'
 const TOKEN_KEY   = 'zx_github_token'
 const GITHUB_REPO = 'annayuqianyu-crypto/zhaoxi-training-platform'
-
-/* ─── DeepSeek API 配置（公司后台） ─── */
-const DS_API_URL   = 'https://api.deepseek.com/v1/chat/completions'
-const DS_API_KEY   = 'sk-603a729e51d54a82bf8b8de3e06530b4'
-const DS_MODEL     = 'deepseek-chat'
 
 /* ─── localStorage helpers ─── */
 function loadLocal()  { try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]') } catch { return [] } }
@@ -55,32 +49,19 @@ async function fetchGitHubOrders() {
    Main component
 ════════════════════════════════════════════════════════════ */
 export function WorkOrders({ navigate }) {
-  // List state
   const [filter, setFilter]             = useState('全部')
   const [external, setExternal]         = useState([])
   const [loading, setLoading]           = useState(true)
 
-  // Token setup
   const [showTokenSetup, setShowTokenSetup] = useState(false)
   const [tokenInput, setTokenInput]         = useState('')
   const [tokenError, setTokenError]         = useState('')
 
-
-  // Internal create form
   const [showForm, setShowForm]     = useState(false)
   const [form, setForm]             = useState({ channel:'', contact:'', people:'', duration:'2.5小时', note:'' })
   const [submitted, setSubmitted]   = useState(null)
 
-  // Detail modal
   const [selectedOrder, setSelectedOrder] = useState(null)
-
-  // Edit modal
-  const [editOrder, setEditOrder]               = useState(null)
-  const [editForm, setEditForm]                 = useState({})
-  const [supplementText, setSupplementText]     = useState('')
-  const [aiLoading, setAiLoading]               = useState(false)
-  const [aiResult, setAiResult]                 = useState(null)
-  const [aiError, setAiError]                   = useState('')
 
   /* ─── Load orders ─── */
   const loadAll = useCallback(async () => {
@@ -119,11 +100,10 @@ export function WorkOrders({ navigate }) {
     setSelectedOrder(prev => prev ? { ...prev, status: newStatus } : null)
   }
 
-  /* ─── Open edit modal ─── */
-  function openEdit(order) {
+  /* ─── Navigate to CourseMatch with full context ─── */
+  function goToCourseMatch(order) {
     const ov = loadOverrides()[order.id] || {}
-    setEditOrder(order)
-    setEditForm({
+    const baseEditForm = {
       channel:   order.channel   || '',
       contact:   order.contact   || '',
       salesName: order.salesName || '',
@@ -133,78 +113,27 @@ export function WorkOrders({ navigate }) {
       duration:  order.duration  || '2.5小时',
       date:      order.date      || '',
       note:      order.note      || '',
-    })
-    setSupplementText(ov.supplementText || '')
-    setAiResult(ov.aiResult || null)
-    setAiError('')
-    setSelectedOrder(null)
-  }
-
-  /* ─── Navigate to CourseMatch with context ─── */
-  function goToCourseMatch() {
-    const ov = loadOverrides()[editOrder.id] || {}
-    saveOverride(editOrder.id, { supplementText, aiResult })
+    }
     const ctx = {
-      orderId: editOrder.id,
-      order: editOrder,
-      editForm,
-      supplementText,
-      aiResult,
-      editCourseIds: ov.editCourseIds || [],
-      editOutline: ov.editOutline || '',
+      orderId: order.id,
+      order,
+      editForm:            ov.editForm            || baseEditForm,
+      supplementText:      ov.supplementText      || '',
+      aiResult:            ov.aiResult            || null,
+      editCourseIds:       ov.editCourseIds       || [],
+      editOutline:         ov.editOutline         || '',
       selectedInstructors: ov.selectedInstructors || [],
     }
     localStorage.setItem(CONTEXT_KEY, JSON.stringify(ctx))
-    setEditOrder(null)
+    setSelectedOrder(null)
     navigate('coursematch')
   }
 
-
-
-  /* ─── Save draft ─── */
-  function saveEdit() {
-    const updates = { ...editForm, editCourseIds, editOutline, supplementText, aiResult, selectedInstructors, status: editOrder.status }
-    saveOverride(editOrder.id, updates)
-    setExternal(prev => prev.map(o => o.id === editOrder.id ? { ...o, ...updates } : o))
-    alert('✅ 已保存')
-  }
-
-  /* ─── File upload (.docx) ─── */
-  async function handleFileUpload(e) {
-    const file = e.target.files?.[0]
-    if (!file) return
-    try {
-      const arrayBuffer = await file.arrayBuffer()
-      const result = await mammoth.extractRawText({ arrayBuffer })
-      setSupplementText(prev => (prev ? prev + '\n\n' : '') + result.value.trim())
-    } catch {
-      alert('文件读取失败，请确保是有效的 .docx 文件')
-    }
-    e.target.value = ''
-  }
-
-  /* ─── AI analysis ─── */
-  async function analyzeWithAI() {
-    setAiLoading(true); setAiError('')
-    try {
-      const prompt = buildAIPrompt(editOrder, editForm, supplementText)
-      const result = await callDeepSeekAPI(prompt)
-      setAiResult(result)
-      saveOverride(editOrder.id, { aiResult: result, supplementText })
-    } catch (e) {
-      setAiError(e.message || 'AI 分析失败，请稍后重试')
-    } finally {
-      setAiLoading(false)
-    }
-  }
-
-
-
   /* ─── Misc ─── */
-  const allOrders  = [...external, ...WORK_ORDERS]
-  const list       = filter === '全部' ? allOrders : allOrders.filter(w => w.status === filter)
+  const allOrders    = [...external, ...WORK_ORDERS]
+  const list         = filter === '全部' ? allOrders : allOrders.filter(w => w.status === filter)
   const pendingCount = external.filter(w => w.status === '待处理').length
-  const H5_URL     = `${location.origin}${location.pathname.replace(/\/[^/]*$/, '')}/apply.html`
+  const H5_URL       = `${location.origin}${location.pathname.replace(/\/[^/]*$/, '')}/apply.html`
 
   function copyLink() { navigator.clipboard.writeText(H5_URL).then(() => alert('H5链接已复制')) }
 
@@ -219,7 +148,6 @@ export function WorkOrders({ navigate }) {
     setExternal(prev => [order, ...prev])
     setSubmitted(id)
   }
-
 
   /* ════════════════════════════════════════════════════════════
      Render
@@ -334,9 +262,8 @@ export function WorkOrders({ navigate }) {
         </div>
       )}
 
-
       {/* ══════════════════════════════════════
-          Order detail modal
+          Order detail modal (read-only)
       ══════════════════════════════════════ */}
       {selectedOrder && (
         <div className="modal-overlay" onClick={() => setSelectedOrder(null)}>
@@ -412,174 +339,11 @@ export function WorkOrders({ navigate }) {
                 <button className="btn btn-primary" onClick={() => advanceOrder(selectedOrder, '前期沟通')}>推进沟通 →</button>
               )}
               {selectedOrder.status === '前期沟通' && (
-                <button className="btn btn-primary" onClick={() => openEdit(selectedOrder)}>✏️ 编辑课程方案</button>
+                <button className="btn btn-primary" onClick={() => goToCourseMatch(selectedOrder)}>前往课程匹配 →</button>
               )}
               {selectedOrder.status === '渠道已确认' && (
                 <button className="btn btn-primary" onClick={() => advanceOrder(selectedOrder, '合同签署')}>进入合同签署 →</button>
               )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ══════════════════════════════════════
-          Edit modal — 需求分析
-      ══════════════════════════════════════ */}
-      {editOrder && (
-        <div className="modal-overlay" onClick={() => setEditOrder(null)}>
-          <div className="modal" style={{ maxWidth:760, maxHeight:'94vh', overflowY:'auto', padding:0 }} onClick={e => e.stopPropagation()}>
-
-            {/* Modal header */}
-            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'20px 24px 0' }}>
-              <div>
-                <h2 className="modal-title" style={{ margin:0 }}>需求分析</h2>
-                <div style={{ fontFamily:'monospace', fontSize:12, color:'var(--accent)', marginTop:4 }}>{editOrder.id}</div>
-              </div>
-              <button className="btn btn-ghost btn-sm" onClick={() => setEditOrder(null)}>✕</button>
-            </div>
-
-
-            <div style={{ padding:'20px 24px 24px' }}>
-
-              {/* ─────────────────── 需求分析 ─────────────────── */}
-              <>
-                  {/* Basic info (read-only summary) */}
-                  <details style={{ marginBottom:16 }}>
-                    <summary style={{ fontSize:11, fontWeight:700, color:'var(--text-3)', letterSpacing:'.08em', cursor:'pointer', padding:'10px 14px', background:'var(--bg)', borderRadius:8 }}>
-                      原始问卷信息（点击展开）
-                    </summary>
-                    <div style={{ padding:'12px 14px', background:'var(--bg)', borderRadius:'0 0 8px 8px', borderTop:'1px solid var(--border)' }}>
-                      {[['渠道/机构', editOrder.channel],['联系人', editOrder.contact],
-                        ['对接销售', editOrder.salesName||'—'],['参与人员类型', editOrder.audience||'—'],
-                        ['目标受众职级', editOrder.jobLevel||'—'],['预计人数', editOrder.people ? `${editOrder.people}人` : '—'],
-                        ['培训时长', editOrder.duration||'—'],['期望日期', editOrder.date||'—'],
-                        ['特殊说明', editOrder.note||'—'],
-                      ].map(([label, value]) => (
-                        <div key={label} style={{ display:'flex', gap:8, padding:'5px 0', fontSize:12 }}>
-                          <span style={{ color:'var(--text-3)', minWidth:90, flexShrink:0 }}>{label}</span>
-                          <span style={{ color:'var(--text-1)' }}>{value}</span>
-                        </div>
-                      ))}
-                      {editOrder.painpoints?.selected?.length > 0 && (
-                        <div style={{ marginTop:8, fontSize:12 }}>
-                          <span style={{ color:'var(--text-3)' }}>痛点：</span>
-                          {editOrder.painpoints.selected.map(p => (
-                            <span key={p} style={{ display:'inline-block', background:'#FEF3C7', color:'#92400E', borderRadius:4, padding:'1px 6px', fontSize:11, margin:'2px 3px' }}>{p}</span>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </details>
-
-                  {/* Supplement text */}
-                  <div style={{ background:'var(--bg)', borderRadius:12, padding:'16px', marginBottom:16 }}>
-                    <div style={{ fontSize:11, fontWeight:700, color:'var(--text-3)', letterSpacing:'.08em', marginBottom:8 }}>
-                      补充信息 / 会议纪要
-                    </div>
-                    <textarea value={supplementText} onChange={e => setSupplementText(e.target.value)}
-                      style={{ width:'100%', height:120, padding:'10px 12px', border:'1.5px solid var(--border)',
-                        borderRadius:10, fontFamily:'inherit', fontSize:13, lineHeight:1.7,
-                        background:'#fff', color:'var(--text-1)', resize:'vertical', outline:'none' }}
-                      placeholder="粘贴会议纪要或补充说明…" />
-                    <div style={{ marginTop:8 }}>
-                      <label style={{ display:'inline-flex', alignItems:'center', gap:6, fontSize:12,
-                        color:'var(--text-2)', cursor:'pointer', padding:'6px 12px',
-                        border:'1px solid var(--border)', borderRadius:8, background:'var(--card)' }}>
-                        📎 上传 Word 文件（.docx）
-                        <input type="file" accept=".docx" style={{ display:'none' }} onChange={handleFileUpload} />
-                      </label>
-                    </div>
-                  </div>
-
-                  {/* AI analysis button */}
-                  <button className="btn btn-primary" style={{ width:'100%', justifyContent:'center', marginBottom:16 }}
-                    onClick={analyzeWithAI} disabled={aiLoading}>
-                    {aiLoading ? '⏳ AI 分析中，请稍候…' : '🤖 AI 分析需求 · 匹配 Top 3 课程'}
-                  </button>
-
-                  {aiError && (
-                    <div style={{ background:'#FEF2F2', border:'1px solid #FCA5A5', borderRadius:8, padding:'10px 14px', fontSize:12, color:'#DC2626', marginBottom:16 }}>
-                      ⚠️ {aiError}
-                    </div>
-                  )}
-
-                  {/* AI result cards */}
-                  {aiResult && (
-                    <div>
-                      <div style={{ fontSize:11, fontWeight:700, color:'var(--text-3)', letterSpacing:'.08em', marginBottom:12 }}>
-                        AI 推荐结果 · 仅供参考，请前往「课程匹配」页面选择课程
-                      </div>
-                      {aiResult.top3?.map((item, idx) => {
-                        const courseData = COURSE_CATALOG.flatMap(s => s.courses).find(c => c.id === item.id)
-                        const seriesData = COURSE_CATALOG.find(s => s.courses.some(c => c.id === item.id))
-                        const relatedSkus = SKU_LIST.filter(s => s.relatedCourseIds?.includes(item.id))
-                        return (
-                          <div key={item.id} style={{ border:'1.5px solid var(--border)', borderRadius:12,
-                            padding:'16px', marginBottom:12, background:'var(--card)' }}>
-                            <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:10 }}>
-                              <span style={{ background:'#2D6A4F', color:'#fff', borderRadius:6,
-                                padding:'2px 10px', fontSize:12, fontWeight:700 }}>推荐 #{idx+1}</span>
-                              <span style={{ background:'#F0F9F4', color:'#065F46', borderRadius:6,
-                                padding:'2px 10px', fontSize:12, fontWeight:700 }}>匹配度 {item.score}%</span>
-                            </div>
-
-                            <div style={{ fontSize:11, color:'var(--text-3)', marginBottom:2 }}>课程系列</div>
-                            <div style={{ fontSize:13, fontWeight:600, color:'#2D6A4F', marginBottom:8 }}>
-                              {seriesData ? `${seriesData.series}：${seriesData.seriesName}` : item.seriesName}
-                            </div>
-
-                            <div style={{ fontSize:11, color:'var(--text-3)', marginBottom:2 }}>课程单元</div>
-                            <div style={{ fontSize:13, fontWeight:600, marginBottom:4 }}>{item.name}</div>
-                            {courseData?.subtitle && (
-                              <div style={{ fontSize:12, color:'var(--text-2)', marginBottom:8 }}>{courseData.subtitle}</div>
-                            )}
-
-                            {courseData && (
-                              <div style={{ background:'var(--bg)', borderRadius:8, padding:'10px 12px', marginBottom:10, fontSize:12 }}>
-                                <div style={{ display:'flex', flexDirection:'column', gap:4, fontSize:12 }}>
-                                  {courseData.painpoint && (
-                                    <div style={{ display:'flex', gap:8 }}>
-                                      <span style={{ flexShrink:0, color:'var(--text-3)', fontWeight:600 }}>解决核心痛点</span>
-                                      <span style={{ color:'var(--text-1)', lineHeight:1.6 }}>{courseData.painpoint}</span>
-                                    </div>
-                                  )}
-                                  {courseData.audience && (
-                                    <div style={{ display:'flex', gap:8 }}>
-                                      <span style={{ flexShrink:0, color:'var(--text-3)', fontWeight:600 }}>核心受众</span>
-                                      <span style={{ color:'var(--text-1)', lineHeight:1.6 }}>{courseData.audience}</span>
-                                    </div>
-                                  )}
-                                </div>
-                              </div>
-                            )}
-
-
-                            <div style={{ background:'#F0F9F4', borderRadius:8, padding:'10px 12px', fontSize:12, color:'#065F46' }}>
-                              <span style={{ fontWeight:600 }}>AI 推荐理由：</span>{item.reason}
-                            </div>
-                          </div>
-                        )
-                      })}
-
-                      {aiResult.suggestions && (
-                        <div style={{ background:'#FFFBEB', border:'1px solid #FDE68A', borderRadius:10,
-                          padding:'12px 14px', fontSize:12, color:'#92400E', marginTop:4 }}>
-                          💡 <strong>改进建议：</strong>{aiResult.suggestions}
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-              {/* ─────────────────── 前往课程匹配 ─────────────────── */}
-              <div style={{ marginTop:20, paddingTop:16, borderTop:'1px solid var(--border)', display:'flex', gap:10, justifyContent:'space-between', alignItems:'center' }}>
-                <div style={{ fontSize:12, color:'var(--text-3)' }}>
-                  {aiResult ? '✅ AI 分析完成，可前往课程匹配进行选课和发送' : '可直接前往课程匹配，或先完成 AI 分析再跳转'}
-                </div>
-                <button className="btn btn-primary" onClick={goToCourseMatch} style={{ flexShrink:0 }}>
-                  前往课程匹配 →
-                </button>
-              </div>
-            </>
             </div>
           </div>
         </div>

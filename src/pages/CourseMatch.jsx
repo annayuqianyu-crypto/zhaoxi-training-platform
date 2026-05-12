@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import mammoth from 'mammoth'
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, Table, TableRow, TableCell, WidthType, BorderStyle, ShadingType } from 'docx'
 import { COURSE_CATALOG, SKU_LIST, INSTRUCTORS } from '../data/mock'
 import { COURSE_UNITS } from '../data/courseUnits'
@@ -6,6 +7,11 @@ import { SKU_FULL } from '../data/skuFull'
 
 export const CONTEXT_KEY  = 'zx_coursematch_context'
 const OVERRIDE_KEY = 'zx_order_overrides'
+
+/* ─── DeepSeek API ─── */
+const DS_API_URL = 'https://api.deepseek.com/v1/chat/completions'
+const DS_API_KEY = 'sk-603a729e51d54a82bf8b8de3e06530b4'
+const DS_MODEL   = 'deepseek-chat'
 
 const SKU_PAGE_MAP = Object.fromEntries(
   SKU_FULL.filter(s => s.pageUrl).map(s => [s.id, s.pageUrl])
@@ -129,6 +135,78 @@ async function downloadWordDoc(order, editForm, courseIds, outline) {
   URL.revokeObjectURL(url)
 }
 
+/* ─── AI helpers ─── */
+function buildAIPrompt(order, editForm, supplementText) {
+  const info = [
+    `渠道/机构：${editForm.channel || order.channel || '未知'}`,
+    `参与人员类型：${editForm.audience || order.audience || '未知'}`,
+    `目标受众职级：${editForm.jobLevel || order.jobLevel || '未知'}`,
+    `预计人数：${editForm.people || order.people || '未知'}`,
+    `培训时长：${editForm.duration || order.duration || '未知'}`,
+    order.painpoints?.selected?.length ? `客户核心痛点：${order.painpoints.selected.join('、')}` : null,
+    order.painpoints?.other ? `其他痛点说明：${order.painpoints.other}` : null,
+    (editForm.note || order.note) ? `特殊说明：${editForm.note || order.note}` : null,
+    supplementText ? `\n补充信息/会议纪要：\n${supplementText}` : null,
+  ].filter(Boolean).join('\n')
+
+  const courseList = COURSE_CATALOG.map(s =>
+    `【${s.series} ${s.seriesName}】\n` +
+    s.courses.map(c =>
+      `  ID:${c.id} | ${c.name}${c.subtitle ? ' (' + c.subtitle + ')' : ''}` +
+      (c.painpoint ? ` | 解决痛点:${c.painpoint}` : '') +
+      (c.audience  ? ` | 目标受众:${c.audience}` : '')
+    ).join('\n')
+  ).join('\n\n')
+
+  return `你是朝曦家族办公室培训咨询专家。根据以下客户需求，从课程库中精准匹配最适合的 Top 3 课程单元。
+
+## 客户需求
+${info}
+
+## 课程库（请仅从以下课程中选择，ID 必须完全一致）
+${courseList}
+
+## 返回格式（严格 JSON，不要加 markdown 代码块）
+{
+  "top3": [
+    {
+      "id": "课程ID（必须与课程库中ID完全一致）",
+      "name": "课程名称",
+      "seriesName": "所属系列名称",
+      "score": 匹配度百分比（整数60-99）,
+      "reason": "推荐理由（50字以内，结合客户需求说明）"
+    }
+  ],
+  "suggestions": "针对客户需求的补充建议（可选，100字以内）"
+}`
+}
+
+async function callDeepSeekAPI(prompt) {
+  const res = await fetch(DS_API_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${DS_API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: DS_MODEL,
+      messages: [{ role: 'user', content: prompt }],
+      temperature: 0.3,
+      max_tokens: 1200,
+    }),
+  })
+  if (!res.ok) throw new Error(`API 请求失败 (${res.status})`)
+  const data = await res.json()
+  const text = data.choices?.[0]?.message?.content || ''
+  try {
+    return JSON.parse(text)
+  } catch {
+    const match = text.match(/\{[\s\S]*\}/)
+    if (match) return JSON.parse(match[0])
+    throw new Error('AI 返回格式异常，请重试')
+  }
+}
+
 /* ════════════════════════════════════════════════════════════
    Main component
 ════════════════════════════════════════════════════════════ */
@@ -147,6 +225,12 @@ export function CourseMatch({ navigate }) {
   const [wordGenerating, setWordGenerating]             = useState(false)
   const [saved, setSaved]                               = useState(false)
 
+  /* ─── AI state ─── */
+  const [supplementText, setSupplementText] = useState('')
+  const [aiLoading, setAiLoading]           = useState(false)
+  const [aiResult, setAiResult]             = useState(null)
+  const [aiError, setAiError]               = useState('')
+
   useEffect(() => {
     const raw = localStorage.getItem(CONTEXT_KEY)
     if (!raw) return
@@ -157,6 +241,8 @@ export function CourseMatch({ navigate }) {
     setEditCourseIds(ids)
     setEditOutline(c.editOutline || (ids.length ? buildOutline(ids) : ''))
     setSelectedInstructors(c.selectedInstructors || [])
+    setSupplementText(c.supplementText || '')
+    setAiResult(c.aiResult || null)
   }, [])
 
   /* ─── No context ─── */
@@ -176,8 +262,7 @@ export function CourseMatch({ navigate }) {
     )
   }
 
-  const order = ctx.order || {}
-  const aiResult = ctx.aiResult || null
+  const order    = ctx.order || {}
   const aiTopIds = aiResult?.top3?.map(t => t.id) || []
   const matchedSKUs = getMatchedSKUs(editCourseIds)
   const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '')
@@ -202,13 +287,43 @@ export function CourseMatch({ navigate }) {
 
   /* ─── Save ─── */
   function handleSave() {
-    saveOverride(order.id, { editForm, editCourseIds, editOutline, selectedInstructors,
-      status: order.status, updatedAt: new Date().toISOString() })
-    // also update context
-    const updated = { ...ctx, editForm, editCourseIds, editOutline, selectedInstructors }
+    saveOverride(order.id, {
+      editForm, editCourseIds, editOutline, selectedInstructors,
+      supplementText, aiResult,
+      status: order.status, updatedAt: new Date().toISOString(),
+    })
+    const updated = { ...ctx, editForm, editCourseIds, editOutline, selectedInstructors, supplementText, aiResult }
     localStorage.setItem(CONTEXT_KEY, JSON.stringify(updated))
     setSaved(true)
     setTimeout(() => setSaved(false), 2500)
+  }
+
+  /* ─── AI analysis ─── */
+  async function analyzeWithAI() {
+    setAiLoading(true); setAiError('')
+    try {
+      const prompt = buildAIPrompt(order, editForm, supplementText)
+      const result = await callDeepSeekAPI(prompt)
+      setAiResult(result)
+      saveOverride(order.id, { aiResult: result, supplementText })
+    } catch (e) {
+      setAiError(e.message || 'AI 分析失败，请稍后重试')
+    } finally {
+      setAiLoading(false)
+    }
+  }
+
+  async function handleFileUpload(e) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    try {
+      const arrayBuffer = await file.arrayBuffer()
+      const result = await mammoth.extractRawText({ arrayBuffer })
+      setSupplementText(prev => (prev ? prev + '\n\n' : '') + result.value.trim())
+    } catch {
+      alert('文件读取失败，请确保是有效的 .docx 文件')
+    }
+    e.target.value = ''
   }
 
   /* ─── Links ─── */
@@ -220,7 +335,7 @@ export function CourseMatch({ navigate }) {
     })
   }
   function genInstructorLink() {
-    const link = generateInstructorLink(order, editForm, editCourseIds, editOutline, ctx.supplementText || '', selectedInstructors)
+    const link = generateInstructorLink(order, editForm, editCourseIds, editOutline, supplementText, selectedInstructors)
     setInstructorLink(link)
     navigator.clipboard.writeText(link).then(() => {
       setInstructorLinkCopied(true); setTimeout(() => setInstructorLinkCopied(false), 3000)
@@ -295,6 +410,116 @@ export function CourseMatch({ navigate }) {
         {/* ══════════════ TAB 1: 课程方案 ══════════════ */}
         {tab === 'courses' && (
           <>
+            {/* ─── AI 需求分析区 ─── */}
+            <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, padding:20, marginBottom:20 }}>
+              <div style={{ fontSize:11, fontWeight:700, color:'var(--text-3)', letterSpacing:'.08em', marginBottom:12 }}>
+                📋 补充信息 / 会议纪要
+              </div>
+              <textarea
+                value={supplementText}
+                onChange={e => setSupplementText(e.target.value)}
+                style={{
+                  width:'100%', height:110, padding:'10px 12px',
+                  border:'1.5px solid var(--border)', borderRadius:10,
+                  fontFamily:'inherit', fontSize:13, lineHeight:1.7,
+                  background:'var(--bg)', color:'var(--text-1)',
+                  resize:'vertical', outline:'none',
+                }}
+                placeholder="粘贴会议纪要或补充说明…"
+              />
+              <div style={{ display:'flex', alignItems:'center', gap:10, marginTop:10, flexWrap:'wrap' }}>
+                <label style={{
+                  display:'inline-flex', alignItems:'center', gap:6, fontSize:12,
+                  color:'var(--text-2)', cursor:'pointer', padding:'6px 12px',
+                  border:'1px solid var(--border)', borderRadius:8, background:'var(--bg)',
+                }}>
+                  📎 上传 Word 文件（.docx）
+                  <input type="file" accept=".docx" style={{ display:'none' }} onChange={handleFileUpload} />
+                </label>
+                <button
+                  className="btn btn-primary"
+                  onClick={analyzeWithAI}
+                  disabled={aiLoading}
+                  style={{ flex:1, justifyContent:'center', minWidth:200 }}
+                >
+                  {aiLoading ? '⏳ AI 分析中，请稍候…' : '🤖 AI 分析需求 · 匹配 Top 3 课程'}
+                </button>
+              </div>
+              {aiError && (
+                <div style={{ background:'#FEF2F2', border:'1px solid #FCA5A5', borderRadius:8,
+                  padding:'10px 14px', fontSize:12, color:'#DC2626', marginTop:12 }}>
+                  ⚠️ {aiError}
+                </div>
+              )}
+            </div>
+
+            {/* ─── AI result cards ─── */}
+            {aiResult && (
+              <div style={{ marginBottom:20 }}>
+                <div style={{ fontSize:11, fontWeight:700, color:'var(--text-3)', letterSpacing:'.08em', marginBottom:12 }}>
+                  AI 推荐结果 · 仅供参考，请在下方课程选择中确认
+                </div>
+                {aiResult.top3?.map((item, idx) => {
+                  const courseData = COURSE_CATALOG.flatMap(s => s.courses).find(c => c.id === item.id)
+                  const seriesData = COURSE_CATALOG.find(s => s.courses.some(c => c.id === item.id))
+                  return (
+                    <div key={item.id} style={{
+                      border:'1.5px solid var(--border)', borderRadius:12,
+                      padding:'16px', marginBottom:10, background:'var(--bg-card)',
+                    }}>
+                      <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:10 }}>
+                        <span style={{ background:'#2D6A4F', color:'#fff', borderRadius:6,
+                          padding:'2px 10px', fontSize:12, fontWeight:700 }}>推荐 #{idx+1}</span>
+                        <span style={{ background:'#F0F9F4', color:'#065F46', borderRadius:6,
+                          padding:'2px 10px', fontSize:12, fontWeight:700 }}>匹配度 {item.score}%</span>
+                      </div>
+
+                      <div style={{ fontSize:11, color:'var(--text-3)', marginBottom:2 }}>课程系列</div>
+                      <div style={{ fontSize:13, fontWeight:600, color:'#2D6A4F', marginBottom:8 }}>
+                        {seriesData ? `${seriesData.series}：${seriesData.seriesName}` : item.seriesName}
+                      </div>
+
+                      <div style={{ fontSize:11, color:'var(--text-3)', marginBottom:2 }}>课程单元</div>
+                      <div style={{ fontSize:13, fontWeight:600, marginBottom:4 }}>{item.name}</div>
+                      {courseData?.subtitle && (
+                        <div style={{ fontSize:12, color:'var(--text-2)', marginBottom:8 }}>{courseData.subtitle}</div>
+                      )}
+
+                      {courseData && (courseData.painpoint || courseData.audience) && (
+                        <div style={{ background:'var(--bg)', borderRadius:8, padding:'10px 12px', marginBottom:10 }}>
+                          <div style={{ display:'flex', flexDirection:'column', gap:4, fontSize:12 }}>
+                            {courseData.painpoint && (
+                              <div style={{ display:'flex', gap:8 }}>
+                                <span style={{ flexShrink:0, color:'var(--text-3)', fontWeight:600, minWidth:72 }}>解决核心痛点</span>
+                                <span style={{ color:'var(--text-1)', lineHeight:1.6 }}>{courseData.painpoint}</span>
+                              </div>
+                            )}
+                            {courseData.audience && (
+                              <div style={{ display:'flex', gap:8 }}>
+                                <span style={{ flexShrink:0, color:'var(--text-3)', fontWeight:600, minWidth:72 }}>核心受众</span>
+                                <span style={{ color:'var(--text-1)', lineHeight:1.6 }}>{courseData.audience}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      <div style={{ background:'#F0F9F4', borderRadius:8, padding:'10px 12px', fontSize:12, color:'#065F46' }}>
+                        <span style={{ fontWeight:600 }}>AI 推荐理由：</span>{item.reason}
+                      </div>
+                    </div>
+                  )
+                })}
+
+                {aiResult.suggestions && (
+                  <div style={{ background:'#FFFBEB', border:'1px solid #FDE68A', borderRadius:10,
+                    padding:'12px 14px', fontSize:12, color:'#92400E', marginTop:4 }}>
+                    💡 <strong>改进建议：</strong>{aiResult.suggestions}
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* AI推荐 banner */}
             {aiTopIds.length > 0 && (
               <div style={{ background:'#F0F9F4', border:'1px solid #6EE7B7', borderRadius:10,
@@ -354,10 +579,10 @@ export function CourseMatch({ navigate }) {
                   </div>
                   <div style={{ display:'flex', flexDirection:'column', gap:6 }}>
                     {group.units.map(u => {
-                      const checked   = editCourseIds.includes(u.id)
-                      const aiPick    = aiTopIds.includes(u.id)
-                      const aiRank    = aiResult?.top3?.findIndex(t => t.id === u.id)
-                      const expanded  = expandedCourses.has(u.id)
+                      const checked  = editCourseIds.includes(u.id)
+                      const aiPick   = aiTopIds.includes(u.id)
+                      const aiRank   = aiResult?.top3?.findIndex(t => t.id === u.id)
+                      const expanded = expandedCourses.has(u.id)
                       return (
                         <div key={u.id} style={{
                           border: aiPick
@@ -367,7 +592,6 @@ export function CourseMatch({ navigate }) {
                           background: checked ? '#F0FDF4' : 'var(--bg-card)',
                           overflow:'hidden',
                         }}>
-                          {/* Header */}
                           <div style={{ display:'flex', alignItems:'center', gap:10, padding:'10px 14px', cursor:'pointer' }}
                             onClick={() => toggleCourse(u.id)}>
                             <input type="checkbox" checked={checked}
@@ -399,7 +623,6 @@ export function CourseMatch({ navigate }) {
                             </button>
                           </div>
 
-                          {/* Expanded detail */}
                           {expanded && (
                             <div style={{ borderTop:'1px solid var(--border)', padding:'14px 16px',
                               background: checked ? '#F0FDF4' : 'var(--bg)', fontSize:12 }}>
