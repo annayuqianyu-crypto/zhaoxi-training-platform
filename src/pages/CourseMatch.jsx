@@ -626,7 +626,22 @@ export function CourseMatch({ navigate }) {
                               background: checked ? '#F0FDF4' : 'var(--bg)', fontSize:12 }}>
                               {u.outline && (
                                 <div style={{ marginBottom:14 }}>
-                                  <div style={{ fontWeight:700, color:'#2D6A4F', marginBottom:8, fontSize:11 }}>📋 课纲目录</div>
+                                  <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:8 }}>
+                                    <div style={{ fontWeight:700, color:'#2D6A4F', fontSize:11 }}>📋 课纲目录</div>
+                                    <a
+                                      href={`${base}/outlines/${u.id}.html`}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                      style={{
+                                        fontSize:11, fontWeight:600, color:'var(--blue)',
+                                        textDecoration:'none', display:'inline-flex', alignItems:'center', gap:4,
+                                        padding:'3px 10px', borderRadius:6,
+                                        border:'1px solid #BFDBFE', background:'#EFF6FF',
+                                      }}
+                                    >
+                                      📄 查看完整课纲 ↗
+                                    </a>
+                                  </div>
                                   {u.outline.split('\n').filter(l => l.trim()).map((line, li) => (
                                     <div key={li} style={{
                                       padding:'5px 10px', marginBottom:4,
