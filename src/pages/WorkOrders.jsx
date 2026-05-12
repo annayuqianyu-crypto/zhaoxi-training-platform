@@ -780,7 +780,6 @@ export function WorkOrders({ navigate }) {
 
                             {courseData && (
                               <div style={{ background:'var(--bg)', borderRadius:8, padding:'10px 12px', marginBottom:10, fontSize:12 }}>
-                                <div style={{ fontWeight:600, marginBottom:6, color:'var(--text-2)' }}>课纲目录</div>
                                 <div style={{ display:'flex', flexDirection:'column', gap:4, fontSize:12 }}>
                                   {courseData.painpoint && (
                                     <div style={{ display:'flex', gap:8 }}>
@@ -798,36 +797,6 @@ export function WorkOrders({ navigate }) {
                               </div>
                             )}
 
-                            {relatedSkus.length > 0 && (
-                              <div style={{ marginBottom:10 }}>
-                                <div style={{ fontSize:11, color:'var(--text-3)', marginBottom:6 }}>参考 SKU</div>
-                                <div style={{ display:'flex', flexDirection:'column', gap:4 }}>
-                                  {relatedSkus.map(s => {
-                                    const pageUrl = SKU_PAGE_MAP[s.id] || s.pageUrl
-                                    const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '')
-                                    const href = pageUrl ? base + pageUrl : null
-                                    return (
-                                      <div key={s.id} style={{
-                                        display:'flex', alignItems:'center', gap:8,
-                                        padding:'5px 10px', borderRadius:6, fontSize:12,
-                                        background:'var(--bg)', border:'1px solid var(--border)',
-                                      }}>
-                                        {href
-                                          ? <a href={href} target="_blank" rel="noreferrer"
-                                              style={{ fontFamily:'monospace', fontSize:11, fontWeight:700,
-                                                color:'var(--accent)', textDecoration:'none', flexShrink:0 }}>
-                                              {s.id} ↗
-                                            </a>
-                                          : <span style={{ fontFamily:'monospace', fontSize:11, fontWeight:700,
-                                              color:'var(--text-2)', flexShrink:0 }}>{s.id}</span>
-                                        }
-                                        <span style={{ color:'var(--text-1)', flex:1 }}>{s.name}</span>
-                                      </div>
-                                    )
-                                  })}
-                                </div>
-                              </div>
-                            )}
 
                             <div style={{ background:'#F0F9F4', borderRadius:8, padding:'10px 12px', fontSize:12, color:'#065F46' }}>
                               <span style={{ fontWeight:600 }}>AI 推荐理由：</span>{item.reason}
