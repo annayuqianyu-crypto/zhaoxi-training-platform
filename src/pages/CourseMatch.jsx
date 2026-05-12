@@ -166,19 +166,12 @@ ${info}
 ## 课程库（请仅从以下课程中选择，ID 必须完全一致）
 ${courseList}
 
-## 返回格式（严格 JSON，不要加 markdown 代码块）
-{
-  "top3": [
-    {
-      "id": "课程ID（必须与课程库中ID完全一致）",
-      "name": "课程名称",
-      "seriesName": "所属系列名称",
-      "score": 匹配度百分比（整数60-99）,
-      "reason": "推荐理由（50字以内，结合客户需求说明）"
-    }
-  ],
-  "suggestions": "针对客户需求的补充建议（可选，100字以内）"
-}`
+## 输出要求
+只返回合法 JSON，不要加 markdown 代码块，不要有任何注释或额外文字。
+score 字段必须是纯整数（60-99），不能附加任何汉字或标点。
+
+## 返回格式示例
+{"top3":[{"id":"COURSE_ID","name":"课程名称","seriesName":"系列名称","score":85,"reason":"推荐理由不超过50字"},{"id":"COURSE_ID2","name":"课程名称2","seriesName":"系列名称2","score":78,"reason":"推荐理由"},{"id":"COURSE_ID3","name":"课程名称3","seriesName":"系列名称3","score":72,"reason":"推荐理由"}],"suggestions":"补充建议不超过100字"}`
 }
 
 async function callDeepSeekAPI(prompt) {
@@ -197,12 +190,17 @@ async function callDeepSeekAPI(prompt) {
   })
   if (!res.ok) throw new Error(`API 请求失败 (${res.status})`)
   const data = await res.json()
-  const text = data.choices?.[0]?.message?.content || ''
+  let text = (data.choices?.[0]?.message?.content || '').trim()
+  // Strip markdown code fences if present
+  text = text.replace(/^```[\w]*\n?/, '').replace(/\n?```$/, '').trim()
   try {
     return JSON.parse(text)
   } catch {
+    // Extract the outermost {...} block as a fallback
     const match = text.match(/\{[\s\S]*\}/)
-    if (match) return JSON.parse(match[0])
+    if (match) {
+      try { return JSON.parse(match[0]) } catch { /* fall through */ }
+    }
     throw new Error('AI 返回格式异常，请重试')
   }
 }
