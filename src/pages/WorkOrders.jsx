@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import mammoth from 'mammoth'
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, Table, TableRow, TableCell, WidthType, BorderStyle, ShadingType } from 'docx'
 import { WORK_ORDERS, STATUS_COLOR, COURSE_CATALOG, SKU_LIST, INSTRUCTORS } from '../data/mock'
+import { COURSE_UNITS } from '../data/courseUnits'
 
 const FILTERS     = ['全部','待处理','前期沟通','渠道已确认','合同签署','讲师排期','通关进行中','已归档']
 const STORAGE_KEY = 'zx_pending_orders'
@@ -32,16 +33,14 @@ function applyOverrides(orders) {
 /* ─── Course / SKU helpers ─── */
 function buildOutline(courseIds) {
   const lines = []
-  for (const s of COURSE_CATALOG) {
-    const picks = s.courses.filter(c => courseIds.includes(c.id))
-    if (!picks.length) continue
-    lines.push(`【${s.series}：${s.seriesName}】`)
-    for (const c of picks) {
-      lines.push(`▌ ${c.name}${c.subtitle ? ' — ' + c.subtitle : ''}`)
-      lines.push(`  解决核心痛点：${c.painpoint}`)
-      lines.push(`  核心受众：${c.audience}`)
-      lines.push('')
+  const units = COURSE_UNITS.filter(u => courseIds.includes(u.id))
+  for (const u of units) {
+    lines.push(`【${u.series}】`)
+    lines.push(`▌ ${u.unit}：${u.course}`)
+    if (u.outline) {
+      u.outline.split('\n').filter(l => l.trim()).forEach(l => lines.push(`  ${l}`))
     }
+    lines.push('')
   }
   return lines.join('\n').trim()
 }
@@ -52,10 +51,9 @@ function getMatchedSKUs(courseIds) {
 }
 
 function generateConfirmLink(order, editForm, courseIds, outline) {
-  const selectedCourses = COURSE_CATALOG.flatMap(s =>
-    s.courses.filter(c => courseIds.includes(c.id))
-      .map(c => ({ id: c.id, name: c.name, series: s.series + '：' + s.seriesName }))
-  )
+  const selectedCourses = COURSE_UNITS
+    .filter(u => courseIds.includes(u.id))
+    .map(u => ({ id: u.id, name: u.course, series: u.series }))
   const proposal = {
     id: order.id, channel: editForm.channel || order.channel,
     contact: editForm.contact || order.contact, salesName: editForm.salesName || order.salesName,
@@ -69,10 +67,9 @@ function generateConfirmLink(order, editForm, courseIds, outline) {
 }
 
 function generateInstructorLink(order, editForm, courseIds, outline, supplementText, selectedInstructors) {
-  const selectedCourses = COURSE_CATALOG.flatMap(s =>
-    s.courses.filter(c => courseIds.includes(c.id))
-      .map(c => ({ id: c.id, name: c.name, series: s.series + '：' + s.seriesName }))
-  )
+  const selectedCourses = COURSE_UNITS
+    .filter(u => courseIds.includes(u.id))
+    .map(u => ({ id: u.id, name: u.course, series: u.series }))
   const matchedSKUs = getMatchedSKUs(courseIds).map(s => ({ id: s.id, name: s.name, match: s.match, pageUrl: s.pageUrl }))
   const instructorNames = INSTRUCTORS.filter(i => selectedInstructors.includes(i.id)).map(i => i.name)
   const ref = {
@@ -259,6 +256,7 @@ export function WorkOrders({ navigate }) {
   const [instructorLink, setInstructorLink]     = useState('')
   const [instructorLinkCopied, setInstructorLinkCopied] = useState(false)
   const [wordGenerating, setWordGenerating]     = useState(false)
+  const [expandedCourses, setExpandedCourses]   = useState(new Set())
 
   /* ─── Load orders ─── */
   const loadAll = useCallback(async () => {
@@ -864,54 +862,176 @@ export function WorkOrders({ navigate }) {
                       </div>
                     </div>
 
-                    {/* Course selector */}
-                    <div style={{ background:'var(--bg)', borderRadius:12, padding:'16px', marginBottom:16 }}>
-                      <div style={{ fontSize:11, fontWeight:700, color:'var(--text-3)', letterSpacing:'.08em', marginBottom:4 }}>
-                        课程选择 <span style={{ fontWeight:400, marginLeft:8 }}>已选 {editCourseIds.length} 门</span>
-                        {aiTopIds.length > 0 && <span style={{ marginLeft:8, fontSize:10, color:'#2D6A4F', background:'#D1FAE5', padding:'1px 6px', borderRadius:4 }}>🤖 绿框 = AI 推荐</span>}
-                      </div>
-                      <div style={{ fontSize:12, color:'var(--text-3)', marginBottom:12 }}>勾选后 SKU 表格自动匹配更新</div>
-                      {COURSE_CATALOG.map(series => (
-                        <div key={series.series} style={{ marginBottom:12 }}>
-                          <div style={{ fontSize:11, fontWeight:700, color:'#2D6A4F', marginBottom:6, padding:'4px 0', borderBottom:'1px solid var(--border)' }}>
-                            {series.series}：{series.seriesName}
+                    {/* Course selector — rich cards */}
+                    {(() => {
+                      // Group COURSE_UNITS by series
+                      const groups = []
+                      for (const u of COURSE_UNITS) {
+                        let g = groups.find(g => g.series === u.series)
+                        if (!g) { g = { series: u.series, units: [] }; groups.push(g) }
+                        g.units.push(u)
+                      }
+                      function toggleExpand(id) {
+                        setExpandedCourses(prev => {
+                          const next = new Set(prev)
+                          next.has(id) ? next.delete(id) : next.add(id)
+                          return next
+                        })
+                      }
+                      return (
+                        <div style={{ marginBottom:16 }}>
+                          <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:12 }}>
+                            <div style={{ fontSize:11, fontWeight:700, color:'var(--text-3)', letterSpacing:'.08em' }}>
+                              课程选择
+                            </div>
+                            <span style={{ fontSize:12, color:'#2D6A4F', fontWeight:600 }}>已选 {editCourseIds.length} / 44 门</span>
+                            {aiTopIds.length > 0 && <span style={{ fontSize:10, color:'#2D6A4F', background:'#D1FAE5', padding:'2px 8px', borderRadius:4 }}>🤖 绿框 = AI 推荐</span>}
+                            <span style={{ fontSize:11, color:'var(--text-3)', marginLeft:'auto' }}>点击「展开」查看课纲 · SKU逻辑 · 关联产品</span>
                           </div>
-                          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:4 }}>
-                            {series.courses.map(c => {
-                              const checked  = editCourseIds.includes(c.id)
-                              const aiPick   = aiTopIds.includes(c.id)
-                              const aiRank   = aiResult?.top3?.findIndex(t => t.id === c.id)
-                              return (
-                                <label key={c.id} style={{
-                                  position:'relative', display:'flex', alignItems:'flex-start',
-                                  gap:8, padding:'8px 10px',
-                                  border: aiPick
-                                    ? `2px solid ${checked ? '#2D6A4F' : '#6EE7B7'}`
-                                    : `1.5px solid ${checked ? '#2D6A4F' : 'var(--border)'}`,
-                                  borderRadius:8, cursor:'pointer',
-                                  background: checked ? '#F0F9F4' : aiPick ? '#F0FDF4' : 'var(--card)',
-                                  fontSize:12, lineHeight:1.4
-                                }}>
-                                  {aiPick && (
-                                    <span style={{ position:'absolute', top:-8, right:6,
-                                      background:'#2D6A4F', color:'#fff', fontSize:9, fontWeight:700,
-                                      padding:'1px 5px', borderRadius:4, whiteSpace:'nowrap' }}>
-                                      🤖 推荐#{aiRank + 1}
-                                    </span>
-                                  )}
-                                  <input type="checkbox" checked={checked} onChange={() => toggleCourse(c.id)}
-                                    style={{ marginTop:2, accentColor:'#2D6A4F', flexShrink:0 }} />
-                                  <span style={{ paddingTop: aiPick ? 4 : 0 }}>
-                                    {c.name}
-                                    {c.subtitle && <span style={{ color:'var(--text-3)' }}> — {c.subtitle}</span>}
-                                  </span>
-                                </label>
-                              )
-                            })}
-                          </div>
+
+                          {groups.map(group => (
+                            <div key={group.series} style={{ marginBottom:16 }}>
+                              {/* Series header */}
+                              <div style={{
+                                fontSize:11, fontWeight:800, color:'#2D6A4F',
+                                padding:'6px 10px', background:'#F0FDF4',
+                                border:'1px solid #6EE7B7', borderRadius:8,
+                                marginBottom:6, letterSpacing:'.04em'
+                              }}>
+                                {group.series}
+                              </div>
+
+                              {/* Course unit cards */}
+                              <div style={{ display:'flex', flexDirection:'column', gap:6 }}>
+                                {group.units.map(u => {
+                                  const checked  = editCourseIds.includes(u.id)
+                                  const aiPick   = aiTopIds.includes(u.id)
+                                  const aiRank   = aiResult?.top3?.findIndex(t => t.id === u.id)
+                                  const expanded = expandedCourses.has(u.id)
+
+                                  return (
+                                    <div key={u.id} style={{
+                                      border: aiPick
+                                        ? `2px solid ${checked ? '#2D6A4F' : '#6EE7B7'}`
+                                        : `1.5px solid ${checked ? '#2D6A4F' : 'var(--border)'}`,
+                                      borderRadius:10,
+                                      background: checked ? '#F0FDF4' : 'var(--surface)',
+                                      overflow:'hidden',
+                                      transition:'border-color .15s',
+                                    }}>
+                                      {/* Card header row */}
+                                      <div style={{
+                                        display:'flex', alignItems:'center', gap:10,
+                                        padding:'10px 14px', cursor:'pointer',
+                                      }} onClick={() => toggleCourse(u.id)}>
+                                        <input type="checkbox" checked={checked}
+                                          onChange={() => toggleCourse(u.id)}
+                                          onClick={e => e.stopPropagation()}
+                                          style={{ accentColor:'#2D6A4F', flexShrink:0, width:15, height:15 }} />
+                                        <span style={{
+                                          fontSize:10, fontWeight:700, color:'var(--text-3)',
+                                          background:'var(--bg)', padding:'2px 6px',
+                                          borderRadius:4, flexShrink:0, minWidth:40, textAlign:'center'
+                                        }}>{u.unit.replace('单元 ','U')}</span>
+                                        <span style={{
+                                          flex:1, fontSize:13, fontWeight: checked ? 700 : 600,
+                                          color: checked ? '#065F46' : 'var(--text-1)', lineHeight:1.4
+                                        }}>{u.course}</span>
+                                        {aiPick && (
+                                          <span style={{
+                                            fontSize:10, fontWeight:700, background:'#2D6A4F',
+                                            color:'#fff', padding:'2px 8px', borderRadius:6, flexShrink:0
+                                          }}>🤖 推荐#{aiRank + 1}</span>
+                                        )}
+                                        <span style={{ fontSize:11, color:'var(--text-3)', flexShrink:0 }}>
+                                          {u.skus.length} SKU
+                                        </span>
+                                        <button
+                                          onClick={e => { e.stopPropagation(); toggleExpand(u.id) }}
+                                          style={{
+                                            background:'none', border:'1px solid var(--border)',
+                                            borderRadius:6, padding:'3px 8px', fontSize:11,
+                                            color:'var(--text-2)', cursor:'pointer', flexShrink:0
+                                          }}>
+                                          {expanded ? '收起 ▲' : '展开 ▾'}
+                                        </button>
+                                      </div>
+
+                                      {/* Expanded detail */}
+                                      {expanded && (
+                                        <div style={{
+                                          borderTop:'1px solid var(--border)',
+                                          padding:'14px 16px',
+                                          background: checked ? '#F0FDF4' : 'var(--bg)',
+                                          fontSize:12,
+                                        }}>
+                                          {/* Outline */}
+                                          {u.outline && (
+                                            <div style={{ marginBottom:14 }}>
+                                              <div style={{ fontWeight:700, color:'#2D6A4F', marginBottom:8, fontSize:11 }}>
+                                                📋 课纲目录（四部分）
+                                              </div>
+                                              {u.outline.split('\n').filter(l => l.trim()).map((line, li) => (
+                                                <div key={li} style={{
+                                                  padding:'5px 10px', marginBottom:4,
+                                                  background:'var(--surface)', borderRadius:6,
+                                                  color:'var(--text-1)', lineHeight:1.5,
+                                                  borderLeft: line.startsWith('第') ? '3px solid #2D6A4F' : 'none',
+                                                  paddingLeft: line.startsWith('第') ? 10 : 10,
+                                                }}>{line}</div>
+                                              ))}
+                                            </div>
+                                          )}
+
+                                          {/* SKU Logic */}
+                                          {u.skuLogic && (
+                                            <div style={{ marginBottom:14 }}>
+                                              <div style={{ fontWeight:700, color:'#1D4ED8', marginBottom:8, fontSize:11 }}>
+                                                💡 SKU 推荐逻辑
+                                              </div>
+                                              <div style={{
+                                                background:'#EFF6FF', border:'1px solid #BFDBFE',
+                                                borderRadius:8, padding:'10px 12px',
+                                                color:'#1E3A5F', lineHeight:1.7
+                                              }}>{u.skuLogic}</div>
+                                            </div>
+                                          )}
+
+                                          {/* SKU list */}
+                                          {u.skus.length > 0 && (
+                                            <div>
+                                              <div style={{ fontWeight:700, color:'#92400E', marginBottom:8, fontSize:11 }}>
+                                                🔖 关联 SKU（{u.skus.length} 个）
+                                              </div>
+                                              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:4 }}>
+                                                {u.skus.map(s => (
+                                                  <div key={s.id} style={{
+                                                    display:'flex', gap:8, alignItems:'flex-start',
+                                                    background:'var(--surface)', border:'1px solid var(--border)',
+                                                    borderRadius:6, padding:'6px 10px',
+                                                  }}>
+                                                    <span style={{
+                                                      fontFamily:'monospace', fontSize:10, fontWeight:700,
+                                                      color: s.id.startsWith('Tax') ? '#7C3AED' : s.id.startsWith('Legal') ? '#1D4ED8' : '#C2410C',
+                                                      flexShrink:0, paddingTop:1
+                                                    }}>{s.id}</span>
+                                                    <span style={{ fontSize:11, color:'var(--text-1)', lineHeight:1.4 }}>{s.name}</span>
+                                                  </div>
+                                                ))}
+                                              </div>
+                                            </div>
+                                          )}
+                                        </div>
+                                      )}
+                                    </div>
+                                  )
+                                })}
+                              </div>
+                            </div>
+                          ))}
                         </div>
-                      ))}
-                    </div>
+                      )
+                    })()}
 
                     {/* Full SKU matching table */}
                     {editCourseIds.length > 0 && (
