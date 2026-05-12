@@ -3,6 +3,12 @@ import mammoth from 'mammoth'
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, Table, TableRow, TableCell, WidthType, BorderStyle, ShadingType } from 'docx'
 import { WORK_ORDERS, STATUS_COLOR, COURSE_CATALOG, SKU_LIST, INSTRUCTORS } from '../data/mock'
 import { COURSE_UNITS } from '../data/courseUnits'
+import { SKU_FULL } from '../data/skuFull'
+
+// Build a map from SKU id → pageUrl for fast lookup
+const SKU_PAGE_MAP = Object.fromEntries(
+  SKU_FULL.filter(s => s.pageUrl).map(s => [s.id, s.pageUrl])
+)
 
 const FILTERS     = ['全部','待处理','前期沟通','渠道已确认','合同签署','讲师排期','通关进行中','已归档']
 const STORAGE_KEY = 'zx_pending_orders'
@@ -775,8 +781,19 @@ export function WorkOrders({ navigate }) {
                             {courseData && (
                               <div style={{ background:'var(--bg)', borderRadius:8, padding:'10px 12px', marginBottom:10, fontSize:12 }}>
                                 <div style={{ fontWeight:600, marginBottom:6, color:'var(--text-2)' }}>课纲目录</div>
-                                <div style={{ fontFamily:'monospace', fontSize:11, lineHeight:1.7, color:'var(--text-1)', whiteSpace:'pre-wrap' }}>
-                                  {`▌ ${courseData.name}${courseData.subtitle ? ' — ' + courseData.subtitle : ''}\n  解决核心痛点：${courseData.painpoint}\n  核心受众：${courseData.audience}`}
+                                <div style={{ display:'flex', flexDirection:'column', gap:4, fontSize:12 }}>
+                                  {courseData.painpoint && (
+                                    <div style={{ display:'flex', gap:8 }}>
+                                      <span style={{ flexShrink:0, color:'var(--text-3)', fontWeight:600 }}>解决核心痛点</span>
+                                      <span style={{ color:'var(--text-1)', lineHeight:1.6 }}>{courseData.painpoint}</span>
+                                    </div>
+                                  )}
+                                  {courseData.audience && (
+                                    <div style={{ display:'flex', gap:8 }}>
+                                      <span style={{ flexShrink:0, color:'var(--text-3)', fontWeight:600 }}>核心受众</span>
+                                      <span style={{ color:'var(--text-1)', lineHeight:1.6 }}>{courseData.audience}</span>
+                                    </div>
+                                  )}
                                 </div>
                               </div>
                             )}
@@ -784,20 +801,30 @@ export function WorkOrders({ navigate }) {
                             {relatedSkus.length > 0 && (
                               <div style={{ marginBottom:10 }}>
                                 <div style={{ fontSize:11, color:'var(--text-3)', marginBottom:6 }}>参考 SKU</div>
-                                <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
-                                  {relatedSkus.map(s => (
-                                    <span key={s.id} style={{ display:'inline-flex', alignItems:'center', gap:4,
-                                      padding:'3px 8px', borderRadius:6, fontSize:11,
-                                      background: s.match==='exact'?'#D1FAE5':s.match==='fuzzy'?'#FEF3C7':'#EFF6FF',
-                                      color: s.match==='exact'?'#065F46':s.match==='fuzzy'?'#92400E':'#1D4ED8',
-                                      border:'1px solid currentColor' }}>
-                                      {s.pageUrl
-                                        ? <a href={s.pageUrl} target="_blank" rel="noreferrer"
-                                            style={{ color:'inherit', textDecoration:'none', fontWeight:600 }}>{s.id}</a>
-                                        : <span style={{ fontWeight:600 }}>{s.id}</span>}
-                                      <span style={{ opacity:.7 }}>· {s.match==='exact'?'精确':s.match==='fuzzy'?'模糊':'参考'}</span>
-                                    </span>
-                                  ))}
+                                <div style={{ display:'flex', flexDirection:'column', gap:4 }}>
+                                  {relatedSkus.map(s => {
+                                    const pageUrl = SKU_PAGE_MAP[s.id] || s.pageUrl
+                                    const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '')
+                                    const href = pageUrl ? base + pageUrl : null
+                                    return (
+                                      <div key={s.id} style={{
+                                        display:'flex', alignItems:'center', gap:8,
+                                        padding:'5px 10px', borderRadius:6, fontSize:12,
+                                        background:'var(--bg)', border:'1px solid var(--border)',
+                                      }}>
+                                        {href
+                                          ? <a href={href} target="_blank" rel="noreferrer"
+                                              style={{ fontFamily:'monospace', fontSize:11, fontWeight:700,
+                                                color:'var(--accent)', textDecoration:'none', flexShrink:0 }}>
+                                              {s.id} ↗
+                                            </a>
+                                          : <span style={{ fontFamily:'monospace', fontSize:11, fontWeight:700,
+                                              color:'var(--text-2)', flexShrink:0 }}>{s.id}</span>
+                                        }
+                                        <span style={{ color:'var(--text-1)', flex:1 }}>{s.name}</span>
+                                      </div>
+                                    )
+                                  })}
                                 </div>
                               </div>
                             )}
@@ -1004,20 +1031,33 @@ export function WorkOrders({ navigate }) {
                                                 🔖 关联 SKU（{u.skus.length} 个）
                                               </div>
                                               <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:4 }}>
-                                                {u.skus.map(s => (
-                                                  <div key={s.id} style={{
-                                                    display:'flex', gap:8, alignItems:'flex-start',
-                                                    background:'var(--surface)', border:'1px solid var(--border)',
-                                                    borderRadius:6, padding:'6px 10px',
-                                                  }}>
-                                                    <span style={{
-                                                      fontFamily:'monospace', fontSize:10, fontWeight:700,
-                                                      color: s.id.startsWith('Tax') ? '#7C3AED' : s.id.startsWith('Legal') ? '#1D4ED8' : '#C2410C',
-                                                      flexShrink:0, paddingTop:1
-                                                    }}>{s.id}</span>
-                                                    <span style={{ fontSize:11, color:'var(--text-1)', lineHeight:1.4 }}>{s.name}</span>
-                                                  </div>
-                                                ))}
+                                                {u.skus.map(s => {
+                                                  const pageUrl = SKU_PAGE_MAP[s.id]
+                                                  const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '')
+                                                  const href = pageUrl ? base + pageUrl : null
+                                                  const idColor = s.id.startsWith('Tax') || s.id.startsWith('TAX') ? '#7C3AED'
+                                                    : s.id.startsWith('Legal') ? '#1D4ED8' : '#C2410C'
+                                                  return (
+                                                    <div key={s.id} style={{
+                                                      display:'flex', gap:8, alignItems:'flex-start',
+                                                      background:'var(--surface)', border:'1px solid var(--border)',
+                                                      borderRadius:6, padding:'6px 10px',
+                                                    }}>
+                                                      {href
+                                                        ? <a href={href} target="_blank" rel="noreferrer"
+                                                            style={{ fontFamily:'monospace', fontSize:10, fontWeight:700,
+                                                              color: idColor, textDecoration:'none', flexShrink:0, paddingTop:1 }}>
+                                                            {s.id} ↗
+                                                          </a>
+                                                        : <span style={{
+                                                            fontFamily:'monospace', fontSize:10, fontWeight:700,
+                                                            color: idColor, flexShrink:0, paddingTop:1
+                                                          }}>{s.id}</span>
+                                                      }
+                                                      <span style={{ fontSize:11, color:'var(--text-1)', lineHeight:1.4 }}>{s.name}</span>
+                                                    </div>
+                                                  )
+                                                })}
                                               </div>
                                             </div>
                                           )}
