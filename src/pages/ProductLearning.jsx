@@ -195,44 +195,75 @@ function SkuCard({ sku, expanded, onToggle, base }) {
       overflow:'hidden',
     }}>
       {/* Card header row — always visible */}
-      <div
-        onClick={onToggle}
-        style={{
-          display:'flex', alignItems:'center', gap:10,
-          padding:'10px 14px', cursor:'pointer',
-          borderBottom: expanded ? '1px solid var(--border)' : 'none',
-        }}
-      >
-        <span style={{ fontSize:11, color:'var(--text-3)', flexShrink:0 }}>{expanded ? '▾' : '▸'}</span>
+      <div style={{
+        display:'flex', alignItems:'center', gap:10,
+        padding:'9px 12px',
+        borderBottom: expanded ? '1px solid var(--border)' : 'none',
+      }}>
+        {/* ID badge */}
         <span style={{
           fontFamily:'monospace', fontSize:10, fontWeight:700,
           color:'var(--text-2)', background:'var(--bg)',
           border:'1px solid var(--border)',
           padding:'2px 6px', borderRadius:4, flexShrink:0,
         }}>{sku.id}</span>
-        <span style={{ flex:1, fontSize:13, fontWeight:600, color:'var(--text-1)' }}>
+
+        {/* Name */}
+        <span style={{ flex:1, fontSize:13, fontWeight:600, color:'var(--text-1)', lineHeight:1.4 }}>
           {sku.name}
         </span>
+
+        {/* English name — hidden on narrow */}
         {sku.engName && (
-          <span style={{ fontSize:11, color:'var(--text-3)', flexShrink:0, maxWidth:200, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
+          <span style={{
+            fontSize:11, color:'var(--text-3)', flexShrink:0,
+            maxWidth:180, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap',
+          }}>
             {sku.engName}
           </span>
         )}
-        {href && (
+
+        {/* 知识卡片 button — toggle expand */}
+        <button
+          onClick={onToggle}
+          style={{
+            flexShrink:0, display:'inline-flex', alignItems:'center', gap:4,
+            padding:'5px 12px', borderRadius:6, cursor:'pointer',
+            border:'1px solid var(--border)',
+            background: expanded ? 'var(--bg)' : 'var(--bg-card)',
+            color: expanded ? 'var(--text-1)' : 'var(--text-2)',
+            fontSize:12, fontWeight:600,
+          }}
+        >
+          {expanded ? '▾ 知识卡片' : '▸ 知识卡片'}
+        </button>
+
+        {/* 产品资料 button — open HTML page */}
+        {href ? (
           <a
             href={href}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={e => e.stopPropagation()}
             style={{
               flexShrink:0, display:'inline-flex', alignItems:'center', gap:4,
-              padding:'4px 10px', borderRadius:5,
+              padding:'5px 12px', borderRadius:6,
               background:'var(--accent)', color:'#fff',
-              fontSize:11, fontWeight:600, textDecoration:'none',
+              fontSize:12, fontWeight:600, textDecoration:'none',
+              border:'1px solid transparent',
             }}
+            onMouseEnter={e => e.currentTarget.style.opacity='.85'}
+            onMouseLeave={e => e.currentTarget.style.opacity='1'}
           >
-            知识卡片 ↗
+            产品资料 ↗
           </a>
+        ) : (
+          <span style={{
+            flexShrink:0, padding:'5px 12px', borderRadius:6,
+            border:'1px solid var(--border)', color:'var(--text-3)',
+            fontSize:12, fontWeight:600, cursor:'not-allowed',
+          }}>
+            产品资料
+          </span>
         )}
       </div>
 
@@ -245,7 +276,7 @@ function SkuCard({ sku, expanded, onToggle, base }) {
             return (
               <div key={key} style={{ display:'flex', gap:12, alignItems:'flex-start' }}>
                 <span style={{
-                  flexShrink:0, width:160, fontSize:11, fontWeight:700,
+                  flexShrink:0, width:148, fontSize:11, fontWeight:700,
                   color:'var(--text-3)', paddingTop:1, lineHeight:1.5,
                 }}>
                   {label}
@@ -256,9 +287,6 @@ function SkuCard({ sku, expanded, onToggle, base }) {
               </div>
             )
           })}
-          {!href && (
-            <div style={{ fontSize:11, color:'var(--text-3)', marginTop:4 }}>暂无知识卡片页面</div>
-          )}
         </div>
       )}
     </div>
