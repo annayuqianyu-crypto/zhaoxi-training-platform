@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>有限合伙平台减持——合伙架构下，减持的规则理解与税务考量</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Microsoft YaHei",Arial,sans-serif;background:#F4F6F9;color:#2c2c2c;line-height:1.7}
+a{text-decoration:none}
+
+/* Top bar */
+.topbar{background:#04385F;color:#fff;padding:12px 28px;display:flex;align-items:center;
+  justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.logo{font-size:17px;font-weight:700;color:#AC9079;letter-spacing:1px}
+.back-btn{color:#bbb;font-size:13px;transition:color .2s}
+.back-btn:hover{color:#fff}
+
+/* Hero */
+.hero{background:linear-gradient(135deg,#4A7B4F 0%,#4A7B4Fdd 100%);color:#fff;padding:36px 32px 32px}
+.series-tag{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);
+  color:#fff;font-size:11px;padding:3px 12px;border-radius:12px;margin-bottom:12px;letter-spacing:.5px}
+.hero-title{font-size:24px;font-weight:700;line-height:1.4;margin-bottom:14px}
+.hero-meta{display:flex;flex-wrap:wrap;gap:12px;font-size:13px;color:rgba(255,255,255,.85)}
+.meta-chip{background:rgba(255,255,255,.15);border-radius:20px;padding:4px 14px}
+.hours-badge{background:#AC9079;color:#fff;font-size:12px;font-weight:700;
+  padding:4px 14px;border-radius:20px}
+
+/* Content */
+.content{max-width:900px;margin:28px auto;padding:0 20px 60px}
+.section{background:#fff;border-radius:12px;padding:24px 28px;margin-bottom:20px;
+  box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.section-title{font-size:13px;font-weight:700;color:#4A7B4F;letter-spacing:1px;
+  text-transform:uppercase;margin-bottom:14px;padding-bottom:10px;
+  border-bottom:2px solid #4A7B4F20;display:flex;align-items:center;gap:8px}
+.section-title::before{content:"";display:block;width:4px;height:16px;
+  background:#4A7B4F;border-radius:2px}
+.section-body{font-size:14.5px;color:#444;line-height:1.8}
+
+/* Benefits list */
+.benefits-list{list-style:none;padding:0}
+.benefits-list li{padding:8px 0 8px 22px;border-bottom:1px solid #f0f0f0;
+  position:relative;font-size:14px;color:#333;line-height:1.7}
+.benefits-list li:last-child{border-bottom:none}
+.benefits-list li::before{content:counter(benefit);counter-increment:benefit;
+  position:absolute;left:0;top:9px;background:#4A7B4F;color:#fff;
+  width:16px;height:16px;border-radius:50%;font-size:10px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;line-height:1}
+.benefits-list{counter-reset:benefit}
+
+/* Info row */
+.info-row{display:flex;gap:24px;flex-wrap:wrap}
+.info-item{flex:1;min-width:200px}
+.info-label{font-size:11px;font-weight:700;color:#999;letter-spacing:.5px;
+  text-transform:uppercase;margin-bottom:4px}
+.info-value{font-size:14px;color:#333}
+
+/* Outline */
+.part-title{font-size:15px;font-weight:700;color:#4A7B4F;margin:20px 0 10px;
+  padding:8px 14px;background:#4A7B4F10;border-left:4px solid #4A7B4F;border-radius:0 6px 6px 0}
+.part-items{list-style:none;padding:0;margin:0 0 4px 0}
+.part-items li{padding:6px 0 6px 20px;border-bottom:1px solid #f5f5f5;
+  position:relative;font-size:14px;color:#444;line-height:1.7}
+.part-items li:last-child{border-bottom:none}
+.part-items li::before{content:"▸";position:absolute;left:4px;color:#4A7B4F;font-size:12px;top:8px}
+.part-items li.sub-item{padding-left:36px;color:#666;font-size:13.5px}
+.part-items li.sub-item::before{content:"–";color:#aaa;left:20px}
+
+/* Progress indicator */
+.unit-nav{background:#fff;border-radius:12px;padding:16px 24px;margin-bottom:20px;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);display:flex;align-items:center;gap:12px}
+.unit-label{font-size:12px;color:#999}
+.unit-num{font-size:18px;font-weight:700;color:#4A7B4F}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="logo">朝曦家办</div>
+  <a href="../index.html" class="back-btn">← 返回课程目录</a>
+</div>
+
+<div class="hero">
+  <div class="series-tag">课程3 · 股票减持</div>
+  <div class="hero-title">有限合伙平台减持——合伙架构下，减持的规则理解与税务考量</div>
+  <div class="hero-meta">
+    <span class="meta-chip">单元 1</span>
+    <span class="hours-badge">2.5 课时</span>
+    <span class="meta-chip">对象：通过有限合伙平台持股的上市公司股东；银行私行客户经理、对公客户经理</span>
+    <span class="meta-chip">讲师讲授、案例分析、答疑互动</span>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class="section"><div class="section-title">课程背景</div><div class="section-body">对于通过有限合伙平台持股的上市公司股东而言，减持不只是一笔市场交易，更是一场涉及税务申报、地方政策适用与合规风险管控的系统性工程。合伙企业的&quot;穿透征税&quot;原则、GP与LP的税率分歧、地方核定征收政策的收紧信号，以及近年税务机关对合伙平台历史申报的清查风潮，使得每一位持有合伙份额的股东都面临不可回避的税务合规审视。本课程以&quot;合伙平台减持全链条&quot;为主线，系统讲解有限合伙平台的税务规则与减持合规要点，帮助银行客户经理在大客户减持窗口前精准介入，切入税务合规服务与减持后综合财富管理的完整服务场景。</div></div>
+
+  <div class="section"><div class="section-title">课程收益</div><ol class="benefits-list"><li>1. 掌握有限合伙穿透征税的核心逻辑及GP、LP在不同身份下的税率差异，能在客户沟通中快速识别合伙持股架构的潜在税务风险，建立专业信任；</li>
+<li>2. 了解减持计税基础的认定规则与合伙层面申报机制，识别客户合伙平台历史申报中常见的合规缺陷，帮助客户在减持前完成必要的自查与整改；</li>
+<li>3. 掌握地方核定征收政策的适用条件与近年收紧趋势，能在客户咨询时给出风险预警并协助评估政策依赖型安排的稳定性；</li>
+<li>4. 运用合伙平台减持的税务话题精准切入大股东客户，将税务服务转化为减持后财富管理的承接机会，推动私行与对公的协同展业。</li>
+</ol></div>
+
+  <div class="section"><div class="section-title">课程大纲</div><div class="part-title">第一部分：有限合伙平台的税制基础——穿透征税逻辑与合伙人的税务身份差异</div>
+<ul class="part-items">
+  <li>本部分帮助学员建立有限合伙税制的整体认知框架，理解不同合伙人身份下的税率逻辑。</li>
+  <li>有限合伙&quot;穿透征税&quot;原则：合伙不是独立纳税主体，合伙人按份额分享收益并各自纳税——这决定了减持税务处理的全部逻辑；</li>
+  <li>GP与LP的税务身份差异：GP（执行事务合伙人）通常按经营所得（5%~35%累进税率）缴税，LP自然人按股权转让所得（20%）缴税——地区政策差异直接影响综合税负；</li>
+  <li>企业合伙人（法人LP）的税务处理：企业取得合伙分配所得并入企业应税所得，按企业所得税率（通常25%）缴纳，不能享受自然人LP的20%低税率；</li>
+  <li>合伙协议中的涉税条款：收益分配比例、税务决策机制对各合伙人实际税负的影响——合伙协议设计不当可能带来税务争议；</li>
+  <li>创投类有限合伙的特殊政策：符合条件的创投企业可选择单一核算法（按股权投资项目20%税率）或整体核算法，选择须结合合伙人结构与持股成本仔细测算。</li>
+</ul>
+<div class="part-title">第二部分：合伙平台减持的核心税务议题——计税基础、申报主体与地方优惠政策</div>
+<ul class="part-items">
+  <li>本部分聚焦减持环节的关键税务技术问题，帮助学员识别客户的核心风险点。</li>
+  <li>减持计税基础的确定：LP持有合伙份额的取得成本（出资额/受让价款）与减持所得的计算逻辑；历次增资对份额价值变动的影响；</li>
+  <li>历史出资凭证的重要性：出资时的验资报告、银行转账记录是日后税务机关核定成本的核心证明材料，保存不完整将导致税基无法得到认可；</li>
+  <li>合伙平台的申报路径：合伙自行汇集申报与合伙人自行向主管税务机关申报的两条路径，以及实践中常见的申报混乱与漏报风险；</li>
+  <li>地方核定征收政策：部分地区（如天津东疆、各类自贸区洼地）历史上对LP自然人按20%固定税率核定征收的政策背景，以及2023年以来多地清查整顿的政策信号；</li>
+  <li>合规风险识别：&quot;税率洼地&quot;政策收紧后的追溯征税风险——合伙协议注册地与实际业务的实质性关联是核查重点。</li>
+</ul>
+<div class="part-title">第三部分：政策收紧下的合规整改路径——历史申报自查与减持前税务规划</div>
+<ul class="part-items">
+  <li>本部分帮助学员掌握减持前合规整改的核心步骤，并识别银行在客户整改过程中的服务切入点。</li>
+  <li>历史申报自查的三大核心内容：合伙人个税申报完整性核查、计税成本认定凭证的完备性评估、地方优惠政策适用合法性的书面论证是否充分；</li>
+  <li>主动披露与被动稽查的选择：税务机关稽查介入前主动补申报可免除部分罚款，稽查后的税款、滞纳金与罚款的累积规模测算；</li>
+  <li>减持前的规划窗口：减持时点与税务年度的关系——跨年减持在税务申报节奏上的优化空间；合伙份额转让 vs 标的公司股票直接减持的税务路径对比；</li>
+  <li>合伙平台架构优化的合规边界：在减持前调整GP/LP结构、修订合伙协议相关条款需注意不得被认定为&quot;以减少税负为唯一目的&quot;的避税安排；</li>
+  <li>典型案例复盘：某文化行业创业板上市公司有限合伙持股平台减持——从合伙人税务身份梳理、地方政策适用合规性核查，到减持方案设计与税务申报的完整服务路径。</li>
+</ul>
+<div class="part-title">第四部分：合伙减持客户的展业切入——税务服务联动与减持后财富管理承接</div>
+<ul class="part-items">
+  <li>本部分帮助学员将合伙减持税务服务转化为持续的高价值客户关系。</li>
+  <li>合伙减持前的主动切入话题：主动为持有合伙份额的大客户提供&quot;减持税负测算报告&quot;，用数字说明合规申报与风险申报之间的差距，建立不可替代的专业价值；</li>
+  <li>减持后资金的财富管理承接：减持所得进入个人账户是切入私行服务的黄金窗口——短期流动性管理（货币基金/结构性存款）与中长期财富规划（信托/保单/境外配置）的联动方案；</li>
+  <li>大宗减持的综合服务规划：上市公司大股东通常在减持窗口期内有亿级以上现金流入，是私行综合服务转化的最高价值节点，银行应在减持计划公告后第一时间联系客户；</li>
+  <li>现场答疑与实战演练：模拟&quot;某合伙平台持股大股东减持前咨询&quot;场景，练习快速诊断3大税务风险并切入综合服务方案的全流程对话。</li>
+  <li>[本大纲版权归老师所有，仅供合作伙伴与本机构业务合作使用，未经书面授权及同意，任何机构及个人不得向第三方透露]</li>
+</ul>
+</div>
+
+</div>
+</body>
+</html>

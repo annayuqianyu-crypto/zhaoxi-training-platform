@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CRS与受控外国企业规则——离岸架构是否经得起“透明时代”的考验</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Microsoft YaHei",Arial,sans-serif;background:#F4F6F9;color:#2c2c2c;line-height:1.7}
+a{text-decoration:none}
+
+/* Top bar */
+.topbar{background:#04385F;color:#fff;padding:12px 28px;display:flex;align-items:center;
+  justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.logo{font-size:17px;font-weight:700;color:#AC9079;letter-spacing:1px}
+.back-btn{color:#bbb;font-size:13px;transition:color .2s}
+.back-btn:hover{color:#fff}
+
+/* Hero */
+.hero{background:linear-gradient(135deg,#2E7D8C 0%,#2E7D8Cdd 100%);color:#fff;padding:36px 32px 32px}
+.series-tag{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);
+  color:#fff;font-size:11px;padding:3px 12px;border-radius:12px;margin-bottom:12px;letter-spacing:.5px}
+.hero-title{font-size:24px;font-weight:700;line-height:1.4;margin-bottom:14px}
+.hero-meta{display:flex;flex-wrap:wrap;gap:12px;font-size:13px;color:rgba(255,255,255,.85)}
+.meta-chip{background:rgba(255,255,255,.15);border-radius:20px;padding:4px 14px}
+.hours-badge{background:#AC9079;color:#fff;font-size:12px;font-weight:700;
+  padding:4px 14px;border-radius:20px}
+
+/* Content */
+.content{max-width:900px;margin:28px auto;padding:0 20px 60px}
+.section{background:#fff;border-radius:12px;padding:24px 28px;margin-bottom:20px;
+  box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.section-title{font-size:13px;font-weight:700;color:#2E7D8C;letter-spacing:1px;
+  text-transform:uppercase;margin-bottom:14px;padding-bottom:10px;
+  border-bottom:2px solid #2E7D8C20;display:flex;align-items:center;gap:8px}
+.section-title::before{content:"";display:block;width:4px;height:16px;
+  background:#2E7D8C;border-radius:2px}
+.section-body{font-size:14.5px;color:#444;line-height:1.8}
+
+/* Benefits list */
+.benefits-list{list-style:none;padding:0}
+.benefits-list li{padding:8px 0 8px 22px;border-bottom:1px solid #f0f0f0;
+  position:relative;font-size:14px;color:#333;line-height:1.7}
+.benefits-list li:last-child{border-bottom:none}
+.benefits-list li::before{content:counter(benefit);counter-increment:benefit;
+  position:absolute;left:0;top:9px;background:#2E7D8C;color:#fff;
+  width:16px;height:16px;border-radius:50%;font-size:10px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;line-height:1}
+.benefits-list{counter-reset:benefit}
+
+/* Info row */
+.info-row{display:flex;gap:24px;flex-wrap:wrap}
+.info-item{flex:1;min-width:200px}
+.info-label{font-size:11px;font-weight:700;color:#999;letter-spacing:.5px;
+  text-transform:uppercase;margin-bottom:4px}
+.info-value{font-size:14px;color:#333}
+
+/* Outline */
+.part-title{font-size:15px;font-weight:700;color:#2E7D8C;margin:20px 0 10px;
+  padding:8px 14px;background:#2E7D8C10;border-left:4px solid #2E7D8C;border-radius:0 6px 6px 0}
+.part-items{list-style:none;padding:0;margin:0 0 4px 0}
+.part-items li{padding:6px 0 6px 20px;border-bottom:1px solid #f5f5f5;
+  position:relative;font-size:14px;color:#444;line-height:1.7}
+.part-items li:last-child{border-bottom:none}
+.part-items li::before{content:"▸";position:absolute;left:4px;color:#2E7D8C;font-size:12px;top:8px}
+.part-items li.sub-item{padding-left:36px;color:#666;font-size:13.5px}
+.part-items li.sub-item::before{content:"–";color:#aaa;left:20px}
+
+/* Progress indicator */
+.unit-nav{background:#fff;border-radius:12px;padding:16px 24px;margin-bottom:20px;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);display:flex;align-items:center;gap:12px}
+.unit-label{font-size:12px;color:#999}
+.unit-num{font-size:18px;font-weight:700;color:#2E7D8C}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="logo">朝曦家办</div>
+  <a href="../index.html" class="back-btn">← 返回课程目录</a>
+</div>
+
+<div class="hero">
+  <div class="series-tag">课程2 · 跨境税务与合规</div>
+  <div class="hero-title">CRS与受控外国企业规则——离岸架构是否经得起“透明时代”的考验</div>
+  <div class="hero-meta">
+    <span class="meta-chip">单元 7</span>
+    <span class="hours-badge">2.5 课时</span>
+    <span class="meta-chip">对象：在低税地设有离岸公司的企业主；外派出境员工较多的跨国企业；银行私行客户经理及对公</span>
+    <span class="meta-chip">讲师讲授、案例分析、答疑互动</span>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class="section"><div class="section-title">课程背景</div><div class="section-body">随着金融账户涉税信息自动交换（CRS）的全球落地与中国受控外国企业（CFC）规则的逐步强化，企业主与高净值人士在低税地持有离岸公司、海外账户的时代已经结束——全球税务透明化已是不可逆的趋势。然而，许多企业主对CRS信息交换的真实覆盖范围、CFC规则的触发条件及应对路径仍存在严重误判，既有&quot;鸵鸟心态&quot;下的合规风险积累，也有因过度紧张而进行不必要架构拆解的资源浪费。外派出境员工的CRS身份判定同样是跨境企业主常忽视的税务管理盲区。本课程系统梳理CRS与CFC规则的运作机制与典型触发场景，结合真实服务案例帮助银行学员精准识别客户痛点，切入离岸合规咨询与境外财富管理服务场景。</div></div>
+
+  <div class="section"><div class="section-title">课程收益</div><ol class="benefits-list"><li>1. 掌握CRS全球金融账户信息自动交换机制的运作逻辑——哪些账户会被报送、报送什么信息、中国税务机关如何使用这些数据，帮助客户建立正确的合规预期；</li>
+<li>2. 了解中国CFC（受控外国企业）规则的认定标准与触发条件：低税地离岸公司在什么情况下会被视同中国企业分配利润，并入股东当期应纳税所得额；</li>
+<li>3. 掌握外派出境员工在CRS框架下的税务居民身份判定逻辑与涉税申报义务，帮助跨国企业客户建立外派员工的合规管理体系；</li>
+<li>4. 了解离岸架构应对透明化趋势的合规升级路径——经济实质补充、不必要架构合规清理与信息交换预案，切入银行在境外账户管理、税务咨询联动中的长期服务价值。</li>
+</ol></div>
+
+  <div class="section"><div class="section-title">课程大纲</div><div class="part-title">第一部分：CRS全球金融账户信息交换——运作机制、中国实践与典型涉税场景</div>
+<ul class="part-items">
+  <li>本部分帮助学员建立对CRS的系统认知，打破常见误解，精准定位客户的合规暴露点。</li>
+  <li>CRS的基本运作框架：金融机构（银行、保险公司、信托公司、券商）对账户持有人进行税务居民身份尽职调查，向所在国税务机关报送，再由各国政府之间自动交换；</li>
+  <li>哪些信息会被交换：账户持有人身份信息、账户余额、利息、股息、资本利得的年度总额；覆盖存款账户、托管账户、大额保单与股权投资账户；</li>
+  <li>中国参与CRS的实际覆盖：已与100+国家/地区建立信息交换关系；中国税务居民在香港、新加坡、开曼、BVI的金融账户信息已被报送至中国税务机关；</li>
+  <li>中国税务机关收到CRS数据后的使用场景：与国内申报数据比对、个人所得税综合所得稽查、CFC规则触发核查的典型案例；</li>
+  <li>常见误区澄清：离岸账户是否就意味着违规？CRS与反洗钱/外汇管制的区别——合规申报是核心，持有本身不违法。</li>
+</ul>
+<div class="part-title">第二部分：受控外国企业（CFC）规则——认定标准、税务影响与合规应对</div>
+<ul class="part-items">
+  <li>本部分聚焦CFC规则的触发逻辑与实际税务影响，帮助学员在服务持有离岸公司的客户时发挥专业价值。</li>
+  <li>CFC规则的基本逻辑：中国居民企业或个人控制的设立于低税地（税率&lt;12.5%）的外国企业，若未将利润实际分配给控制方，税务机关可视同已分配并入当期应纳税所得额；</li>
+  <li>CFC认定的三个核心要件：低税地认定（有效税率标准）、控制权判定（直接+间接持股/表决权超50%）、未分配利润的金额规模；</li>
+  <li>合理商业目的豁免：若境外低税地企业拥有真实经营活动（设置有实质意义的管理人员与办公场所，开展非消极收入业务），可申请CFC豁免；</li>
+  <li>CFC规则的税务成本量化：典型离岸架构中未分配利润被并入股东所得时的税率差异与补税规模估算；</li>
+  <li>应对策略的选择路径：提高分配比例以规避未分配利润并入、为离岸实体补充经济实质、将不必要的离岸层进行合规清理——三种策略的适用情境与执行要点。</li>
+</ul>
+<div class="part-title">第三部分：外派出境员工的CRS涉税合规——税务居民身份判定与全球收入申报管理</div>
+<ul class="part-items">
+  <li>本部分帮助跨国企业客户建立外派员工的税务合规管理体系，是典型的对公+私行协同展业场景。</li>
+  <li>税务居民身份的判定逻辑：离开中国的时间长度不等于税务居民身份改变——国内住所（户籍/家庭）仍可维持中国税务居民认定；</li>
+  <li>外派员工CRS申报义务的产生路径：外派至CRS参与地区（如新加坡、香港、英国）后，当地金融机构对其账户进行税务居民判定并向中国税务机关报送；</li>
+  <li>双重税务居民的处理：中国与外派目的国均认定个人为税务居民时，税收协定&quot;打破平局&quot;规则（主要住所、重心利益、习惯性居处）的适用逻辑；</li>
+  <li>外派员工薪酬的涉税申报：中国税务居民在境外取得的工资薪金、股权激励、租金收入在中国的申报义务与境外税收抵免机制；</li>
+  <li>企业层面的员工税务管理建议：建立外派员工税务居民状态台账、配合CRS申报的内控流程设计，以及银行可提供的境外账户合规咨询服务。</li>
+</ul>
+<div class="part-title">第四部分：离岸架构透明化时代的合规升级路径——从&quot;规避&quot;到&quot;规范&quot;的战略转型</div>
+<ul class="part-items">
+  <li>本部分帮助学员将透明化合规趋势转化为客户服务机会，实现从单次合规咨询到长期财富管理的升级。</li>
+  <li>离岸架构合规审查的核心步骤：梳理现有架构的CFC暴露、CRS申报缺口与经济实质合规状态，建立全景风险地图；</li>
+  <li>不必要离岸层的合规清理路径：BVI/开曼空壳公司的注销程序、清理过程中的税务申报义务与股权转移安排；</li>
+  <li>经济实质的合理补充：对有真实商业价值的离岸实体，如何通过聘用当地董事、建立本地决策机制与开展核心活动满足经济实质要求；</li>
+  <li>典型案例复盘：某深主板制造业上市公司受控外国企业及外派出境员工CRS涉税合规建议——从境外离岸架构CFC风险识别、外派员工税务居民身份梳理到整体合规方案落地的完整服务路径。</li>
+  <li>银行的长期服务价值：境外账户合规管理的年度回访、CRS信息交换后的税务咨询联动、高净值客户的全球资产合规配置——透明化趋势是私行深度服务的新入口。</li>
+  <li>[本大纲版权归老师所有，仅供合作伙伴与本机构业务合作使用，未经书面授权及同意，任何机构及个人不得向第三方透露]</li>
+</ul>
+</div>
+
+</div>
+</body>
+</html>

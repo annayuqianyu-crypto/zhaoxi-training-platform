@@ -1,0 +1,3112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>朝曦家办 · 产品知识库</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Microsoft YaHei",Arial,sans-serif;background:#F4F6F9;color:#333}
+.topbar{background:#04385F;color:#fff;padding:0 28px;height:56px;display:flex;align-items:center;
+  justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,.3)}
+.logo{font-size:20px;font-weight:700;letter-spacing:1.5px;color:#AC9079}
+.subtitle{font-size:12px;color:#aaa;margin-top:2px}
+.search-bar{padding:18px 28px 0;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.search-input{flex:1;min-width:200px;max-width:400px;padding:9px 16px;border-radius:20px;
+  border:2px solid #DDE4EE;font-size:14px;font-family:inherit;outline:none}
+.search-input:focus{border-color:#6E93C0}
+.tab-bar{padding:12px 28px;display:flex;gap:8px;flex-wrap:wrap}
+.tab{padding:6px 18px;border-radius:16px;border:1.5px solid #04385F;background:#fff;
+  color:#04385F;font-size:13px;cursor:pointer;font-family:inherit;transition:all .2s}
+.tab.active{background:#04385F;color:#fff}
+.tab:hover:not(.active){background:#DDE4EE}
+.stats{padding:4px 28px 12px;font-size:12px;color:#999}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+  gap:14px;padding:0 28px 80px}
+.card{background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08);
+  text-decoration:none;color:inherit;transition:transform .15s,box-shadow .15s;display:flex;flex-direction:column}
+.card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.14)}
+.card-top{padding:10px 12px;display:flex;justify-content:space-between;align-items:center}
+.sku-tag{color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px}
+.slide-tag{font-size:11px;color:#888;background:#f0f0f0;padding:2px 7px;border-radius:8px}
+.card-body{padding:12px 14px 14px;flex:1}
+.card-name{font-size:14px;font-weight:600;color:#04385F;line-height:1.4;margin-bottom:6px}
+.card-meta{font-size:11px;color:#999}
+.hidden{display:none!important}
+.no-result{padding:40px 28px;color:#999;font-size:15px;display:none}
+footer{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.95);
+  border-top:1px solid #e0e0e0;padding:8px 28px;font-size:11px;color:#aaa;text-align:center}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div>
+    <div class="logo">朝曦家办</div>
+    <div class="subtitle">产品知识库</div>
+  </div>
+  <div style="color:#ccc;font-size:12px">共 303 个产品</div>
+</div>
+<div class="search-bar">
+  <input class="search-input" type="search" id="q" placeholder="搜索产品名称、SKU编号..." oninput="doSearch()">
+</div>
+<div class="tab-bar"><button class="tab active" onclick="filterDept('全部')">全部</button><button class="tab" onclick="filterDept('法律')">法律</button><button class="tab" onclick="filterDept('税务')">税务</button><button class="tab" onclick="filterDept('资本市场')">资本市场</button></div>
+<div class="stats" id="stats">显示 303 个产品</div>
+<div class="grid" id="grid">
+  <a href="法律/不动产传承信托-有代持/index.html" class="card" data-dept="法律" data-search=" 不动产传承信托-有代持 ">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">—</span>
+      <span class="slide-tag">10页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">不动产传承信托-有代持</div>
+      <div class="card-meta">法律</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2603/index.html" class="card" data-dept="法律" data-search="legal-2603 股权融资（一人公司） 商事类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2603</span>
+      <span class="slide-tag">13页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">股权融资（一人公司）</div>
+      <div class="card-meta">法律 · 商事类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2604/index.html" class="card" data-dept="法律" data-search="legal-2604 股权融资（补充流动资金） 商事类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2604</span>
+      <span class="slide-tag">17页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">股权融资（补充流动资金）</div>
+      <div class="card-meta">法律 · 商事类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2605/index.html" class="card" data-dept="法律" data-search="legal-2605 股权融资（无投资人企业拟引入产业投资人） 商事类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2605</span>
+      <span class="slide-tag">17页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">股权融资（无投资人企业拟引入产业投资人）</div>
+      <div class="card-meta">法律 · 商事类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2606/index.html" class="card" data-dept="法律" data-search="legal-2606 股权融资（有投资人企业引入产业投资人） 商事类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2606</span>
+      <span class="slide-tag">17页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">股权融资（有投资人企业引入产业投资人）</div>
+      <div class="card-meta">法律 · 商事类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2607/index.html" class="card" data-dept="法律" data-search="legal-2607 股权融资（拟上市公司引入产业投资人） 商事类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2607</span>
+      <span class="slide-tag">17页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">股权融资（拟上市公司引入产业投资人）</div>
+      <div class="card-meta">法律 · 商事类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2608/index.html" class="card" data-dept="法律" data-search="legal-2608 股权融资（现金流不充沛） 商事类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2608</span>
+      <span class="slide-tag">17页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">股权融资（现金流不充沛）</div>
+      <div class="card-meta">法律 · 商事类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2609/index.html" class="card" data-dept="法律" data-search="legal-2609 股权融资（不考虑投资人） 商事类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2609</span>
+      <span class="slide-tag">16页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">股权融资（不考虑投资人）</div>
+      <div class="card-meta">法律 · 商事类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2610/index.html" class="card" data-dept="法律" data-search="legal-2610 拟上市公司改制合规事项（整体改制） 商事类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2610</span>
+      <span class="slide-tag">18页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">拟上市公司改制合规事项（整体改制）</div>
+      <div class="card-meta">法律 · 商事类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2611/index.html" class="card" data-dept="法律" data-search="legal-2611 拟上市公司改制合规事项（部分改制） 商事类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2611</span>
+      <span class="slide-tag">18页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">拟上市公司改制合规事项（部分改制）</div>
+      <div class="card-meta">法律 · 商事类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2612/index.html" class="card" data-dept="法律" data-search="legal-2612 拟上市公司改制合规事项（直接变更） 商事类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2612</span>
+      <span class="slide-tag">18页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">拟上市公司改制合规事项（直接变更）</div>
+      <div class="card-meta">法律 · 商事类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2613/index.html" class="card" data-dept="法律" data-search="legal-2613 拟上市公司辅导期（合规事项） 商事类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2613</span>
+      <span class="slide-tag">10页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">拟上市公司辅导期（合规事项）</div>
+      <div class="card-meta">法律 · 商事类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2614/index.html" class="card" data-dept="法律" data-search="legal-2614 股权代持及应对（无法还原到被代持人名下） 商事类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2614</span>
+      <span class="slide-tag">11页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">股权代持及应对（无法还原到被代持人名下）</div>
+      <div class="card-meta">法律 · 商事类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2615/index.html" class="card" data-dept="法律" data-search="legal-2615 股权代持及应对（可以还原到被代持人名下） 商事类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2615</span>
+      <span class="slide-tag">10页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">股权代持及应对（可以还原到被代持人名下）</div>
+      <div class="card-meta">法律 · 商事类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2616/index.html" class="card" data-dept="法律" data-search="legal-2616 境内股权激励总览（无投资人非上市公司） 商事类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2616</span>
+      <span class="slide-tag">14页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内股权激励总览（无投资人非上市公司）</div>
+      <div class="card-meta">法律 · 商事类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2617/index.html" class="card" data-dept="法律" data-search="legal-2617 境内股权激励总览（有投资人不盈利非上市公司） 商事类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2617</span>
+      <span class="slide-tag">19页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内股权激励总览（有投资人不盈利非上市公司）</div>
+      <div class="card-meta">法律 · 商事类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2618/index.html" class="card" data-dept="法律" data-search="legal-2618 境内股权激励总览（有投资人正常盈利非上市公司） 商事类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2618</span>
+      <span class="slide-tag">20页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内股权激励总览（有投资人正常盈利非上市公司）</div>
+      <div class="card-meta">法律 · 商事类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2619/index.html" class="card" data-dept="法律" data-search="legal-2619 境内股权激励总览（拟上市公司） 商事类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2619</span>
+      <span class="slide-tag">21页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内股权激励总览（拟上市公司）</div>
+      <div class="card-meta">法律 · 商事类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2620/index.html" class="card" data-dept="法律" data-search="legal-2620 境内股权激励总览（一人公司） 商事类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2620</span>
+      <span class="slide-tag">19页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内股权激励总览（一人公司）</div>
+      <div class="card-meta">法律 · 商事类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2621/index.html" class="card" data-dept="法律" data-search="legal-2621 股权激励（上市公司） 商事类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2621</span>
+      <span class="slide-tag">17页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">股权激励（上市公司）</div>
+      <div class="card-meta">法律 · 商事类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2622/index.html" class="card" data-dept="法律" data-search="legal-2622 股权激励（拟上市公司） 商事类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2622</span>
+      <span class="slide-tag">16页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">股权激励（拟上市公司）</div>
+      <div class="card-meta">法律 · 商事类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2623/index.html" class="card" data-dept="法律" data-search="legal-2623 股权激励（非上市公司） 商事类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2623</span>
+      <span class="slide-tag">15页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">股权激励（非上市公司）</div>
+      <div class="card-meta">法律 · 商事类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2626/index.html" class="card" data-dept="法律" data-search="legal-2626 权力过渡安排（独生子女接班，生前股权转让） 传承类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2626</span>
+      <span class="slide-tag">11页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">权力过渡安排（独生子女接班，生前股权转让）</div>
+      <div class="card-meta">法律 · 传承类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2627/index.html" class="card" data-dept="法律" data-search="legal-2627 权力过渡安排（独生子女接班，生前股权不转让） 传承类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2627</span>
+      <span class="slide-tag">10页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">权力过渡安排（独生子女接班，生前股权不转让）</div>
+      <div class="card-meta">法律 · 传承类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2628/index.html" class="card" data-dept="法律" data-search="legal-2628 权力过渡安排（多子女接班） 传承类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2628</span>
+      <span class="slide-tag">10页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">权力过渡安排（多子女接班）</div>
+      <div class="card-meta">法律 · 传承类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2629/index.html" class="card" data-dept="法律" data-search="legal-2629 权力过渡安排（职业经理人管理，子女持股权） 传承类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2629</span>
+      <span class="slide-tag">9页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">权力过渡安排（职业经理人管理，子女持股权）</div>
+      <div class="card-meta">法律 · 传承类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2631/index.html" class="card" data-dept="法律" data-search="legal-2631 权力过渡安排（未确定接班方式） 传承类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2631</span>
+      <span class="slide-tag">11页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">权力过渡安排（未确定接班方式）</div>
+      <div class="card-meta">法律 · 传承类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2632/index.html" class="card" data-dept="法律" data-search="legal-2632 遗嘱及遗产管理人（无代持无股权） 传承类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2632</span>
+      <span class="slide-tag">8页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">遗嘱及遗产管理人（无代持无股权）</div>
+      <div class="card-meta">法律 · 传承类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2633/index.html" class="card" data-dept="法律" data-search="legal-2633 遗嘱及遗产管理人（无代持，企业实控人，家族后代交接班） 传承类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2633</span>
+      <span class="slide-tag">11页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">遗嘱及遗产管理人（无代持，企业实控人，家族后代交接班）</div>
+      <div class="card-meta">法律 · 传承类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2635/index.html" class="card" data-dept="法律" data-search="legal-2635 遗嘱及遗产管理人（无代持，企业实控人，未确定交接班方式） 传承类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2635</span>
+      <span class="slide-tag">12页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">遗嘱及遗产管理人（无代持，企业实控人，未确定交接班方式）</div>
+      <div class="card-meta">法律 · 传承类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2636/index.html" class="card" data-dept="法律" data-search="legal-2636 遗嘱及遗产管理人（无代持，非企业实控人，家族后代交接班） 传承类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2636</span>
+      <span class="slide-tag">11页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">遗嘱及遗产管理人（无代持，非企业实控人，家族后代交接班）</div>
+      <div class="card-meta">法律 · 传承类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2637/index.html" class="card" data-dept="法律" data-search="legal-2637 遗嘱及遗产管理人（无代持，非企业实控人，职业经理人管理） 传承类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2637</span>
+      <span class="slide-tag">10页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">遗嘱及遗产管理人（无代持，非企业实控人，职业经理人管理）</div>
+      <div class="card-meta">法律 · 传承类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2638/index.html" class="card" data-dept="法律" data-search="legal-2638 遗嘱及遗产管理人（无代持，非企业实控人，未确定交接班方式） 传承类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2638</span>
+      <span class="slide-tag">10页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">遗嘱及遗产管理人（无代持，非企业实控人，未确定交接班方式）</div>
+      <div class="card-meta">法律 · 传承类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2639/index.html" class="card" data-dept="法律" data-search="legal-2639 遗嘱及遗产管理人（有代持无股权有协议，无法直接还原，与代持人亲密但不健康） 传承类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2639</span>
+      <span class="slide-tag">14页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">遗嘱及遗产管理人（有代持无股权有协议，无法直接还原，与代持人亲密但不健康）</div>
+      <div class="card-meta">法律 · 传承类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2640/index.html" class="card" data-dept="法律" data-search="legal-2640 遗嘱及遗产管理人（有代持无股权有协议，无法直接还原，与代持人不亲密且不健康） 传承类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2640</span>
+      <span class="slide-tag">14页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">遗嘱及遗产管理人（有代持无股权有协议，无法直接还原，与代持人不亲密且不健康）</div>
+      <div class="card-meta">法律 · 传承类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2641/index.html" class="card" data-dept="法律" data-search="legal-2641 遗嘱及遗产管理人（有代持无股权有协议，无法直接还原，与代持人亲密且健康） 传承类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2641</span>
+      <span class="slide-tag">14页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">遗嘱及遗产管理人（有代持无股权有协议，无法直接还原，与代持人亲密且健康）</div>
+      <div class="card-meta">法律 · 传承类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2642/index.html" class="card" data-dept="法律" data-search="legal-2642 遗嘱及遗产管理人（有代持无股权有协议，可以直接还原，与代持人亲密但不健康） 传承类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2642</span>
+      <span class="slide-tag">14页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">遗嘱及遗产管理人（有代持无股权有协议，可以直接还原，与代持人亲密但不健康）</div>
+      <div class="card-meta">法律 · 传承类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2643/index.html" class="card" data-dept="法律" data-search="legal-2643 遗嘱及遗产管理人（有代持无股权有协议，可以直接还原，与代持人不亲密且不健康） 传承类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2643</span>
+      <span class="slide-tag">14页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">遗嘱及遗产管理人（有代持无股权有协议，可以直接还原，与代持人不亲密且不健康）</div>
+      <div class="card-meta">法律 · 传承类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2644/index.html" class="card" data-dept="法律" data-search="legal-2644 遗嘱及遗产管理人（有代持无股权有协议，可以直接还原，与代持人亲密且健康） 传承类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2644</span>
+      <span class="slide-tag">14页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">遗嘱及遗产管理人（有代持无股权有协议，可以直接还原，与代持人亲密且健康）</div>
+      <div class="card-meta">法律 · 传承类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2645/index.html" class="card" data-dept="法律" data-search="legal-2645 遗嘱及遗产管理人（有代持无股权无协议，无法直接还原，与代持人亲密但不健康） 传承类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2645</span>
+      <span class="slide-tag">10页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">遗嘱及遗产管理人（有代持无股权无协议，无法直接还原，与代持人亲密但不健康）</div>
+      <div class="card-meta">法律 · 传承类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2646/index.html" class="card" data-dept="法律" data-search="legal-2646 遗嘱及遗产管理人（有代持无股权无协议，无法直接还原，与代持人不亲密且不健康） 传承类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2646</span>
+      <span class="slide-tag">10页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">遗嘱及遗产管理人（有代持无股权无协议，无法直接还原，与代持人不亲密且不健康）</div>
+      <div class="card-meta">法律 · 传承类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2647/index.html" class="card" data-dept="法律" data-search="legal-2647 遗嘱及遗产管理人（有代持无股权无协议，无法直接还原，与代持人亲密且健康） 传承类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2647</span>
+      <span class="slide-tag">15页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">遗嘱及遗产管理人（有代持无股权无协议，无法直接还原，与代持人亲密且健康）</div>
+      <div class="card-meta">法律 · 传承类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2648/index.html" class="card" data-dept="法律" data-search="legal-2648 遗嘱及遗产管理人（有代持无股权无协议，可以直接还原，与代持人亲密但不健康） 传承类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2648</span>
+      <span class="slide-tag">15页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">遗嘱及遗产管理人（有代持无股权无协议，可以直接还原，与代持人亲密但不健康）</div>
+      <div class="card-meta">法律 · 传承类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2651/index.html" class="card" data-dept="法律" data-search="legal-2651 遗嘱及遗产管理人（有代持有股权无协议，可以直接还原，与代持人亲密且健康） 传承类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2651</span>
+      <span class="slide-tag">14页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">遗嘱及遗产管理人（有代持有股权无协议，可以直接还原，与代持人亲密且健康）</div>
+      <div class="card-meta">法律 · 传承类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2652/index.html" class="card" data-dept="法律" data-search="legal-2652 遗嘱及遗产管理人（有代持有股权无协议，无法直接还原，与代持人不亲密且不健康） 传承类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2652</span>
+      <span class="slide-tag">13页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">遗嘱及遗产管理人（有代持有股权无协议，无法直接还原，与代持人不亲密且不健康）</div>
+      <div class="card-meta">法律 · 传承类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2653/index.html" class="card" data-dept="法律" data-search="legal-2653 遗嘱及遗产管理人（有代持有股权无协议，无法直接还原，与代持人亲密且健康） 传承类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2653</span>
+      <span class="slide-tag">13页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">遗嘱及遗产管理人（有代持有股权无协议，无法直接还原，与代持人亲密且健康）</div>
+      <div class="card-meta">法律 · 传承类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2654/index.html" class="card" data-dept="法律" data-search="legal-2654 遗嘱及遗产管理人（有代持，对继承人不在意） 传承类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2654</span>
+      <span class="slide-tag">20页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">遗嘱及遗产管理人（有代持，对继承人不在意）</div>
+      <div class="card-meta">法律 · 传承类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2655/index.html" class="card" data-dept="法律" data-search="legal-2655 析产协议（总览） 传承类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2655</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">析产协议（总览）</div>
+      <div class="card-meta">法律 · 传承类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2657/index.html" class="card" data-dept="法律" data-search="legal-2657 婚内财产分割 婚姻类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2657</span>
+      <span class="slide-tag">10页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">婚内财产分割</div>
+      <div class="card-meta">法律 · 婚姻类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2658/index.html" class="card" data-dept="法律" data-search="legal-2658 意定监护人 传承类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2658</span>
+      <span class="slide-tag">6页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">意定监护人</div>
+      <div class="card-meta">法律 · 传承类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2659/index.html" class="card" data-dept="法律" data-search="legal-2659 不动产传承信托（有代持，限购，有代持协议，独生子女） 传承类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2659</span>
+      <span class="slide-tag">10页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">不动产传承信托（有代持，限购，有代持协议，独生子女）</div>
+      <div class="card-meta">法律 · 传承类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2660/index.html" class="card" data-dept="法律" data-search="legal-2660 不动产传承信托（有代持，限购，无代持协议，独生子女） 传承类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2660</span>
+      <span class="slide-tag">10页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">不动产传承信托（有代持，限购，无代持协议，独生子女）</div>
+      <div class="card-meta">法律 · 传承类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2661/index.html" class="card" data-dept="法律" data-search="legal-2661 不动产传承信托（有代持，不限购，独生子女） 传承类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2661</span>
+      <span class="slide-tag">10页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">不动产传承信托（有代持，不限购，独生子女）</div>
+      <div class="card-meta">法律 · 传承类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2662/index.html" class="card" data-dept="法律" data-search="legal-2662 不动产传承信托（有代持，限购，有代持协议，多子女，已做好分配） 传承类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2662</span>
+      <span class="slide-tag">10页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">不动产传承信托（有代持，限购，有代持协议，多子女，已做好分配）</div>
+      <div class="card-meta">法律 · 传承类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2663/index.html" class="card" data-dept="法律" data-search="legal-2663 不动产传承信托（有代持，限购，有代持协议，多子女，未做好分配） 传承类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2663</span>
+      <span class="slide-tag">10页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">不动产传承信托（有代持，限购，有代持协议，多子女，未做好分配）</div>
+      <div class="card-meta">法律 · 传承类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2664/index.html" class="card" data-dept="法律" data-search="legal-2664 不动产传承信托（有代持，限购，无代持协议，多子女，已做好分配） 传承类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2664</span>
+      <span class="slide-tag">10页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">不动产传承信托（有代持，限购，无代持协议，多子女，已做好分配）</div>
+      <div class="card-meta">法律 · 传承类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2665/index.html" class="card" data-dept="法律" data-search="legal-2665 不动产传承信托（有代持，限购，无代持协议，多子女，未做好分配） 传承类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2665</span>
+      <span class="slide-tag">10页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">不动产传承信托（有代持，限购，无代持协议，多子女，未做好分配）</div>
+      <div class="card-meta">法律 · 传承类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2666/index.html" class="card" data-dept="法律" data-search="legal-2666 不动产传承信托（有代持，不限购，多子女） 传承类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2666</span>
+      <span class="slide-tag">10页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">不动产传承信托（有代持，不限购，多子女）</div>
+      <div class="card-meta">法律 · 传承类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2667/index.html" class="card" data-dept="法律" data-search="legal-2667 不动产传承信托（无代持，限购，独生子女） 传承类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2667</span>
+      <span class="slide-tag">10页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">不动产传承信托（无代持，限购，独生子女）</div>
+      <div class="card-meta">法律 · 传承类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2668/index.html" class="card" data-dept="法律" data-search="legal-2668 不动产传承信托（无代持，不限购，独生子女） 传承类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2668</span>
+      <span class="slide-tag">10页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">不动产传承信托（无代持，不限购，独生子女）</div>
+      <div class="card-meta">法律 · 传承类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2669/index.html" class="card" data-dept="法律" data-search="legal-2669 不动产传承信托（无代持，限购，多子女，已做好分配） 传承类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2669</span>
+      <span class="slide-tag">10页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">不动产传承信托（无代持，限购，多子女，已做好分配）</div>
+      <div class="card-meta">法律 · 传承类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2670/index.html" class="card" data-dept="法律" data-search="legal-2670 不动产传承信托（无代持，限购，多子女，未做好分配） 传承类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2670</span>
+      <span class="slide-tag">10页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">不动产传承信托（无代持，限购，多子女，未做好分配）</div>
+      <div class="card-meta">法律 · 传承类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2671/index.html" class="card" data-dept="法律" data-search="legal-2671 不动产传承信托（无代持，不限购，多子女） 传承类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2671</span>
+      <span class="slide-tag">10页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">不动产传承信托（无代持，不限购，多子女）</div>
+      <div class="card-meta">法律 · 传承类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2672/index.html" class="card" data-dept="法律" data-search="legal-2672 诉讼（总览） 争议解决类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2672</span>
+      <span class="slide-tag">7页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">诉讼（总览）</div>
+      <div class="card-meta">法律 · 争议解决类</div>
+    </div>
+  </a>
+  <a href="法律/Legal-2673/index.html" class="card" data-dept="法律" data-search="legal-2673 仲裁（总览） 争议解决类">
+    <div class="card-top" style="background:#AC907920;border-top:3px solid #AC9079">
+      <span class="sku-tag" style="background:#AC9079">Legal-2673</span>
+      <span class="slide-tag">7页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">仲裁（总览）</div>
+      <div class="card-meta">法律 · 争议解决类</div>
+    </div>
+  </a>
+  <a href="税务/CRS涉税风险复核/index.html" class="card" data-dept="税务" data-search=" crs涉税风险复核 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">15页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">CRS涉税风险复核</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/EB1A/index.html" class="card" data-dept="税务" data-search=" eb1a ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">EB1A</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/EB5/index.html" class="card" data-dept="税务" data-search=" eb5 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">5页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">EB5</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/FDI外商直接投资/index.html" class="card" data-dept="税务" data-search=" fdi外商直接投资 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">FDI外商直接投资</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/MCN公司细分领域/index.html" class="card" data-dept="税务" data-search=" mcn公司细分领域 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">6页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">MCN公司细分领域</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/NIW/index.html" class="card" data-dept="税务" data-search=" niw ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">NIW</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/PREIPO-VIE架构税务意见/index.html" class="card" data-dept="税务" data-search=" preipo-vie架构税务意见 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">PREIPO-VIE架构税务意见</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/PREIPO-红筹架构税务意见/index.html" class="card" data-dept="税务" data-search=" preipo-红筹架构税务意见 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">17页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">PREIPO-红筹架构税务意见</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/QFLP境外合格投资者/index.html" class="card" data-dept="税务" data-search=" qflp境外合格投资者 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">QFLP境外合格投资者</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/T1135海外金融资产披露/index.html" class="card" data-dept="税务" data-search=" t1135海外金融资产披露 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">T1135海外金融资产披露</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/一般基金架构设立/index.html" class="card" data-dept="税务" data-search=" 一般基金架构设立 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">一般基金架构设立</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/上市公司股权激励计划个人所得税合规申报/index.html" class="card" data-dept="税务" data-search=" 上市公司股权激励计划个人所得税合规申报 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">1页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">上市公司股权激励计划个人所得税合规申报</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/上市公司股权激励计划合伙企业合规申报/index.html" class="card" data-dept="税务" data-search=" 上市公司股权激励计划合伙企业合规申报 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">上市公司股权激励计划合伙企业合规申报</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/上市公司股权激励计划实施前税务咨询/index.html" class="card" data-dept="税务" data-search=" 上市公司股权激励计划实施前税务咨询 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">6页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">上市公司股权激励计划实施前税务咨询</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/上市公司股权激励计划递延备案（45%递延备案）/index.html" class="card" data-dept="税务" data-search=" 上市公司股权激励计划递延备案（45%递延备案） ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">1页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">上市公司股权激励计划递延备案（45%递延备案）</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/上海临港（专精特新双15%）/index.html" class="card" data-dept="税务" data-search=" 上海临港（专精特新双15%） ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">上海临港（专精特新双15%）</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/不动产价值评估/index.html" class="card" data-dept="税务" data-search=" 不动产价值评估 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">不动产价值评估</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/中国个人所得税综合所得年度汇算清缴（仅境内收入）/index.html" class="card" data-dept="税务" data-search=" 中国个人所得税综合所得年度汇算清缴（仅境内收入） ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">中国个人所得税综合所得年度汇算清缴（仅境内收入）</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/中国个税汇算清缴（境内+境外收入）/index.html" class="card" data-dept="税务" data-search=" 中国个税汇算清缴（境内+境外收入） ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">5页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">中国个税汇算清缴（境内+境外收入）</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/中国个税生产经营所得年度汇算清缴（仅境内收入）/index.html" class="card" data-dept="税务" data-search=" 中国个税生产经营所得年度汇算清缴（仅境内收入） ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">1页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">中国个税生产经营所得年度汇算清缴（仅境内收入）</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/份额转让-合伙场景/index.html" class="card" data-dept="税务" data-search=" 份额转让-合伙场景 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">1页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">份额转让-合伙场景</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/传统文娱明星细分领域/index.html" class="card" data-dept="税务" data-search=" 传统文娱明星细分领域 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">8页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">传统文娱明星细分领域</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/公司常年税务顾问--境内/index.html" class="card" data-dept="税务" data-search=" 公司常年税务顾问--境内 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">1页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">公司常年税务顾问--境内</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/公司常年税务顾问--境外/index.html" class="card" data-dept="税务" data-search=" 公司常年税务顾问--境外 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">1页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">公司常年税务顾问--境外</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/公司年度代帐报税/index.html" class="card" data-dept="税务" data-search=" 公司年度代帐报税 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">1页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">公司年度代帐报税</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/公司盈余管理-信托结构/index.html" class="card" data-dept="税务" data-search=" 公司盈余管理-信托结构 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">公司盈余管理-信托结构</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/公司盈余管理-公转私/index.html" class="card" data-dept="税务" data-search=" 公司盈余管理-公转私 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">8页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">公司盈余管理-公转私</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/公司盈余管理-政策性搬迁/index.html" class="card" data-dept="税务" data-search=" 公司盈余管理-政策性搬迁 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">12页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">公司盈余管理-政策性搬迁</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/关联交易往来报告表/index.html" class="card" data-dept="税务" data-search=" 关联交易往来报告表 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">关联交易往来报告表</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/加拿大-登陆税务筹划-基础合规/index.html" class="card" data-dept="税务" data-search=" 加拿大-登陆税务筹划-基础合规 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">加拿大-登陆税务筹划-基础合规</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/加拿大-登陆税务筹划-资产安排/index.html" class="card" data-dept="税务" data-search=" 加拿大-登陆税务筹划-资产安排 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">加拿大-登陆税务筹划-资产安排</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/加拿大-非税居民身份筹划/index.html" class="card" data-dept="税务" data-search=" 加拿大-非税居民身份筹划 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">加拿大-非税居民身份筹划</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/加拿大个税年度申报-收入申报/index.html" class="card" data-dept="税务" data-search=" 加拿大个税年度申报-收入申报 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">加拿大个税年度申报-收入申报</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/双软落地/index.html" class="card" data-dept="税务" data-search=" 双软落地 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">双软落地</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/可比性分析报告/index.html" class="card" data-dept="税务" data-search=" 可比性分析报告 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">可比性分析报告</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/同期资料文档/index.html" class="card" data-dept="税务" data-search=" 同期资料文档 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">5页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">同期资料文档</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/国内税收居民身份证明办理/index.html" class="card" data-dept="税务" data-search=" 国内税收居民身份证明办理 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">国内税收居民身份证明办理</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/土地增值税筹划/index.html" class="card" data-dept="税务" data-search=" 土地增值税筹划 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">6页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">土地增值税筹划</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/基金GP税务规划/index.html" class="card" data-dept="税务" data-search=" 基金gp税务规划 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">16页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">基金GP税务规划</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/基金类-创投有限合伙及有限公司/index.html" class="card" data-dept="税务" data-search=" 基金类-创投有限合伙及有限公司 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">13页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">基金类-创投有限合伙及有限公司</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境内-股权信托-股票合伙份额/index.html" class="card" data-dept="税务" data-search=" 境内-股权信托-股票合伙份额 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">9页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内-股权信托-股票合伙份额</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境内-非上市公司员工持股信托/index.html" class="card" data-dept="税务" data-search=" 境内-非上市公司员工持股信托 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内-非上市公司员工持股信托</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境内FGT的税务意见/index.html" class="card" data-dept="税务" data-search=" 境内fgt的税务意见 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内FGT的税务意见</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境内NRT的税务意见/index.html" class="card" data-dept="税务" data-search=" 境内nrt的税务意见 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内NRT的税务意见</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境内一般个人股转评估报告协调/index.html" class="card" data-dept="税务" data-search=" 境内一般个人股转评估报告协调 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内一般个人股转评估报告协调</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境内一般重组-债务重组/index.html" class="card" data-dept="税务" data-search=" 境内一般重组-债务重组 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内一般重组-债务重组</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境内一般重组-分立/index.html" class="card" data-dept="税务" data-search=" 境内一般重组-分立 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">5页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内一般重组-分立</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境内一般重组-合并/index.html" class="card" data-dept="税务" data-search=" 境内一般重组-合并 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内一般重组-合并</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境内一般重组-股权转让/index.html" class="card" data-dept="税务" data-search=" 境内一般重组-股权转让 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内一般重组-股权转让</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境内一般重组-资产转让/index.html" class="card" data-dept="税务" data-search=" 境内一般重组-资产转让 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内一般重组-资产转让</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境内不动产信托规划/index.html" class="card" data-dept="税务" data-search=" 境内不动产信托规划 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">5页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内不动产信托规划</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境内不动产持有结构涉税咨询/index.html" class="card" data-dept="税务" data-search=" 境内不动产持有结构涉税咨询 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内不动产持有结构涉税咨询</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境内不动产转让税务规划/index.html" class="card" data-dept="税务" data-search=" 境内不动产转让税务规划 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内不动产转让税务规划</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境内公司税务体检/index.html" class="card" data-dept="税务" data-search=" 境内公司税务体检 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内公司税务体检</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境内公司税务尽调/index.html" class="card" data-dept="税务" data-search=" 境内公司税务尽调 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内公司税务尽调</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境内公司税务风险应对-稽查/index.html" class="card" data-dept="税务" data-search=" 境内公司税务风险应对-稽查 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">7页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内公司税务风险应对-稽查</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境内公司税务风险应对-自查/index.html" class="card" data-dept="税务" data-search=" 境内公司税务风险应对-自查 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内公司税务风险应对-自查</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境内公司财务尽调/index.html" class="card" data-dept="税务" data-search=" 境内公司财务尽调 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内公司财务尽调</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境内特殊重组-债务重组/index.html" class="card" data-dept="税务" data-search=" 境内特殊重组-债务重组 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内特殊重组-债务重组</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境内特殊重组-公司合并/index.html" class="card" data-dept="税务" data-search=" 境内特殊重组-公司合并 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内特殊重组-公司合并</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境内特殊重组-分立/index.html" class="card" data-dept="税务" data-search=" 境内特殊重组-分立 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内特殊重组-分立</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境内特殊重组-划拨/index.html" class="card" data-dept="税务" data-search=" 境内特殊重组-划拨 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">6页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内特殊重组-划拨</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境内特殊重组-股权转让/index.html" class="card" data-dept="税务" data-search=" 境内特殊重组-股权转让 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">7页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内特殊重组-股权转让</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境内特殊重组-资产转让/index.html" class="card" data-dept="税务" data-search=" 境内特殊重组-资产转让 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">1页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内特殊重组-资产转让</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境内股权激励计划税务合规-基础/index.html" class="card" data-dept="税务" data-search=" 境内股权激励计划税务合规-基础 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">17页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内股权激励计划税务合规-基础</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境内转让定价咨询-无形资产类/index.html" class="card" data-dept="税务" data-search=" 境内转让定价咨询-无形资产类 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内转让定价咨询-无形资产类</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境内转让定价咨询-服务类/index.html" class="card" data-dept="税务" data-search=" 境内转让定价咨询-服务类 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内转让定价咨询-服务类</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境内转让定价咨询-融资利息类/index.html" class="card" data-dept="税务" data-search=" 境内转让定价咨询-融资利息类 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">1页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内转让定价咨询-融资利息类</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境内转让定价咨询-货物贸易类/index.html" class="card" data-dept="税务" data-search=" 境内转让定价咨询-货物贸易类 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">1页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内转让定价咨询-货物贸易类</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境外-减持个人税收返还/index.html" class="card" data-dept="税务" data-search=" 境外-减持个人税收返还 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">8页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境外-减持个人税收返还</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境外-股权激励外汇7号文备案/index.html" class="card" data-dept="税务" data-search=" 境外-股权激励外汇7号文备案 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境外-股权激励外汇7号文备案</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境外-股权激励计划税务咨询/index.html" class="card" data-dept="税务" data-search=" 境外-股权激励计划税务咨询 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">5页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境外-股权激励计划税务咨询</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境外-非居民企业间接股权转让-涉税分析/index.html" class="card" data-dept="税务" data-search=" 境外-非居民企业间接股权转让-涉税分析 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">6页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境外-非居民企业间接股权转让-涉税分析</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境外-非居民企业间接股权转让-税局报备（情况说明）/index.html" class="card" data-dept="税务" data-search=" 境外-非居民企业间接股权转让-税局报备（情况说明） ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">6页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境外-非居民企业间接股权转让-税局报备（情况说明）</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境外FGT的税务意见/index.html" class="card" data-dept="税务" data-search=" 境外fgt的税务意见 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">1页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境外FGT的税务意见</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境外NRT的税务意见/index.html" class="card" data-dept="税务" data-search=" 境外nrt的税务意见 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境外NRT的税务意见</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境外不动产信托规划/index.html" class="card" data-dept="税务" data-search=" 境外不动产信托规划 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境外不动产信托规划</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境外不动产持有结构涉税咨询/index.html" class="card" data-dept="税务" data-search=" 境外不动产持有结构涉税咨询 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">1页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境外不动产持有结构涉税咨询</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境外不动产转让税务规划/index.html" class="card" data-dept="税务" data-search=" 境外不动产转让税务规划 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">1页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境外不动产转让税务规划</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境外公司TRC申请/index.html" class="card" data-dept="税务" data-search=" 境外公司trc申请 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境外公司TRC申请</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境外公司年度维护-BVI/index.html" class="card" data-dept="税务" data-search=" 境外公司年度维护-bvi ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境外公司年度维护-BVI</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境外公司年度维护-CAY/index.html" class="card" data-dept="税务" data-search=" 境外公司年度维护-cay ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境外公司年度维护-CAY</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境外公司设立-BVI/index.html" class="card" data-dept="税务" data-search=" 境外公司设立-bvi ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">8页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境外公司设立-BVI</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境外公司设立-CAY/index.html" class="card" data-dept="税务" data-search=" 境外公司设立-cay ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境外公司设立-CAY</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境外公司设立-HK/index.html" class="card" data-dept="税务" data-search=" 境外公司设立-hk ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">9页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境外公司设立-HK</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境外公司设立-SG/index.html" class="card" data-dept="税务" data-search=" 境外公司设立-sg ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境外公司设立-SG</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境外公司设立-USA/index.html" class="card" data-dept="税务" data-search=" 境外公司设立-usa ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境外公司设立-USA</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/境外架构设立-可行性分析/index.html" class="card" data-dept="税务" data-search=" 境外架构设立-可行性分析 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境外架构设立-可行性分析</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/家庭资产纳税义务合规复核/index.html" class="card" data-dept="税务" data-search=" 家庭资产纳税义务合规复核 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">家庭资产纳税义务合规复核</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/对外付汇-一般对外付汇涉税处理及路径/index.html" class="card" data-dept="税务" data-search=" 对外付汇-一般对外付汇涉税处理及路径 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">对外付汇-一般对外付汇涉税处理及路径</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/对外付汇-中新协定待遇/index.html" class="card" data-dept="税务" data-search=" 对外付汇-中新协定待遇 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">对外付汇-中新协定待遇</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/对外付汇-内地与香港税收安排/index.html" class="card" data-dept="税务" data-search=" 对外付汇-内地与香港税收安排 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">5页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">对外付汇-内地与香港税收安排</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/对外付汇-境外非居民股东减持上市公司股票涉税处理/index.html" class="card" data-dept="税务" data-search=" 对外付汇-境外非居民股东减持上市公司股票涉税处理 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">对外付汇-境外非居民股东减持上市公司股票涉税处理</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/对外股权投资-37号文备案/index.html" class="card" data-dept="税务" data-search=" 对外股权投资-37号文备案 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">对外股权投资-37号文备案</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/对外股权投资-ODI/index.html" class="card" data-dept="税务" data-search=" 对外股权投资-odi ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">14页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">对外股权投资-ODI</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/房地产类企业主架构一般场景/index.html" class="card" data-dept="税务" data-search=" 房地产类企业主架构一般场景 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">13页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">房地产类企业主架构一般场景</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/房地产类企业主股转涉及的土地增值税规划/index.html" class="card" data-dept="税务" data-search=" 房地产类企业主股转涉及的土地增值税规划 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">房地产类企业主股转涉及的土地增值税规划</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/拟上市公司-审核上市阶段/index.html" class="card" data-dept="税务" data-search=" 拟上市公司-审核上市阶段 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">拟上市公司-审核上市阶段</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/拟上市公司-改制阶段/index.html" class="card" data-dept="税务" data-search=" 拟上市公司-改制阶段 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">6页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">拟上市公司-改制阶段</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/拟上市公司-辅导备案阶段/index.html" class="card" data-dept="税务" data-search=" 拟上市公司-辅导备案阶段 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">拟上市公司-辅导备案阶段</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/新加坡DP办理及续签/index.html" class="card" data-dept="税务" data-search=" 新加坡dp办理及续签 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">1页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">新加坡DP办理及续签</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/新加坡EP办理及续签/index.html" class="card" data-dept="税务" data-search=" 新加坡ep办理及续签 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">5页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">新加坡EP办理及续签</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/新加坡LTVP办理及续签/index.html" class="card" data-dept="税务" data-search=" 新加坡ltvp办理及续签 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">新加坡LTVP办理及续签</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/新加坡PR办理及续签/index.html" class="card" data-dept="税务" data-search=" 新加坡pr办理及续签 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">新加坡PR办理及续签</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/新加坡公司账户/index.html" class="card" data-dept="税务" data-search=" 新加坡公司账户 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">1页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">新加坡公司账户</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/新加坡来源于海外收入不汇回不交税/index.html" class="card" data-dept="税务" data-search=" 新加坡来源于海外收入不汇回不交税 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">6页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">新加坡来源于海外收入不汇回不交税</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/新加坡身份规划-基础/index.html" class="card" data-dept="税务" data-search=" 新加坡身份规划-基础 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">新加坡身份规划-基础</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/新加坡身份规划-家办EP/index.html" class="card" data-dept="税务" data-search=" 新加坡身份规划-家办ep ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">5页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">新加坡身份规划-家办EP</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/新加坡身份规划-自雇EP/index.html" class="card" data-dept="税务" data-search=" 新加坡身份规划-自雇ep ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">8页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">新加坡身份规划-自雇EP</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/新加坡身份解决方案-GIP/index.html" class="card" data-dept="税务" data-search=" 新加坡身份解决方案-gip ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">14页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">新加坡身份解决方案-GIP</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/明星网红行业税务合规基础/index.html" class="card" data-dept="税务" data-search=" 明星网红行业税务合规基础 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">明星网红行业税务合规基础</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/有限公司减持基本税制/index.html" class="card" data-dept="税务" data-search=" 有限公司减持基本税制 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">5页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">有限公司减持基本税制</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/有限公司创投备案-海南/index.html" class="card" data-dept="税务" data-search=" 有限公司创投备案-海南 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">7页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">有限公司创投备案-海南</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/格林纳达护照申请/index.html" class="card" data-dept="税务" data-search=" 格林纳达护照申请 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">1页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">格林纳达护照申请</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/涉外税收居民身份证明办理/index.html" class="card" data-dept="税务" data-search=" 涉外税收居民身份证明办理 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">涉外税收居民身份证明办理</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/珠海横琴及海南（双15%）/index.html" class="card" data-dept="税务" data-search=" 珠海横琴及海南（双15%） ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">珠海横琴及海南（双15%）</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/瓦努阿图/index.html" class="card" data-dept="税务" data-search=" 瓦努阿图 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">6页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">瓦努阿图</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/私域流量细分领域/index.html" class="card" data-dept="税务" data-search=" 私域流量细分领域 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">私域流量细分领域</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/经济实质法案-BVI/index.html" class="card" data-dept="税务" data-search=" 经济实质法案-bvi ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">经济实质法案-BVI</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/经济实质法案-CAY/index.html" class="card" data-dept="税务" data-search=" 经济实质法案-cay ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">经济实质法案-CAY</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/网红直播细分领域/index.html" class="card" data-dept="税务" data-search=" 网红直播细分领域 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">5页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">网红直播细分领域</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/美加涉税风险复核/index.html" class="card" data-dept="税务" data-search=" 美加涉税风险复核 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">9页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">美加涉税风险复核</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/美国-登陆前美国个税咨询/index.html" class="card" data-dept="税务" data-search=" 美国-登陆前美国个税咨询 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">美国-登陆前美国个税咨询</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/美国-登陆前资产安排咨询/index.html" class="card" data-dept="税务" data-search=" 美国-登陆前资产安排咨询 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">7页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">美国-登陆前资产安排咨询</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/美国-美国国务院DS表格提交支持/index.html" class="card" data-dept="税务" data-search=" 美国-美国国务院ds表格提交支持 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">1页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">美国-美国国务院DS表格提交支持</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/美国-美国弃籍前咨询/index.html" class="card" data-dept="税务" data-search=" 美国-美国弃籍前咨询 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">美国-美国弃籍前咨询</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/美国-美国移民局I407表格提交支持/index.html" class="card" data-dept="税务" data-search=" 美国-美国移民局i407表格提交支持 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">美国-美国移民局I407表格提交支持</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/美国-美国税务局Form8854支持/index.html" class="card" data-dept="税务" data-search=" 美国-美国税务局form8854支持 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">美国-美国税务局Form8854支持</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/美国-赠与税申报Form709/index.html" class="card" data-dept="税务" data-search=" 美国-赠与税申报form709 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">美国-赠与税申报Form709</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/美国-赠与税非税的税务意见/index.html" class="card" data-dept="税务" data-search=" 美国-赠与税非税的税务意见 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">1页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">美国-赠与税非税的税务意见</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/美国个税Checkthebox-8832表-打勾规则/index.html" class="card" data-dept="税务" data-search=" 美国个税checkthebox-8832表-打勾规则 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">1页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">美国个税Checkthebox-8832表-打勾规则</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/美国个税Streamline（简易型合规申报补救程序）/index.html" class="card" data-dept="税务" data-search=" 美国个税streamline（简易型合规申报补救程序） ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">美国个税Streamline（简易型合规申报补救程序）</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/美国个税年度申报-1040NR/index.html" class="card" data-dept="税务" data-search=" 美国个税年度申报-1040nr ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">美国个税年度申报-1040NR</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/美国个税年度申报-1040R/index.html" class="card" data-dept="税务" data-search=" 美国个税年度申报-1040r ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">5页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">美国个税年度申报-1040R</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/美国个税年度申报-5471/index.html" class="card" data-dept="税务" data-search=" 美国个税年度申报-5471 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">美国个税年度申报-5471</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/美国个税年度申报-8865/index.html" class="card" data-dept="税务" data-search=" 美国个税年度申报-8865 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">1页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">美国个税年度申报-8865</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/美国个税年度申报-8938/index.html" class="card" data-dept="税务" data-search=" 美国个税年度申报-8938 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">1页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">美国个税年度申报-8938</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/美国个税年度申报-FINCEN114/index.html" class="card" data-dept="税务" data-search=" 美国个税年度申报-fincen114 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">美国个税年度申报-FINCEN114</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/美国个税非税身份的规划/index.html" class="card" data-dept="税务" data-search=" 美国个税非税身份的规划 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">美国个税非税身份的规划</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/美国公司账户/index.html" class="card" data-dept="税务" data-search=" 美国公司账户 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">美国公司账户</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/美国税务律师PLR（Privateletterruling）/index.html" class="card" data-dept="税务" data-search=" 美国税务律师plr（privateletterruling） ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">美国税务律师PLR（Privateletterruling）</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/股权价值评估/index.html" class="card" data-dept="税务" data-search=" 股权价值评估 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">股权价值评估</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/财产份额价值评估/index.html" class="card" data-dept="税务" data-search=" 财产份额价值评估 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">5页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">财产份额价值评估</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/跨境一般重组-居转非/index.html" class="card" data-dept="税务" data-search=" 跨境一般重组-居转非 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">跨境一般重组-居转非</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/跨境一般重组-标准非转非/index.html" class="card" data-dept="税务" data-search=" 跨境一般重组-标准非转非 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">跨境一般重组-标准非转非</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/跨境一般重组-非转居/index.html" class="card" data-dept="税务" data-search=" 跨境一般重组-非转居 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">跨境一般重组-非转居</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/跨境特殊重组-分立非转非/index.html" class="card" data-dept="税务" data-search=" 跨境特殊重组-分立非转非 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">跨境特殊重组-分立非转非</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/跨境特殊重组-合并非转非/index.html" class="card" data-dept="税务" data-search=" 跨境特殊重组-合并非转非 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">跨境特殊重组-合并非转非</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/跨境特殊重组-居转非/index.html" class="card" data-dept="税务" data-search=" 跨境特殊重组-居转非 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">跨境特殊重组-居转非</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/跨境特殊重组-标准非转非/index.html" class="card" data-dept="税务" data-search=" 跨境特殊重组-标准非转非 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">跨境特殊重组-标准非转非</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/跨境特殊重组-非转居/index.html" class="card" data-dept="税务" data-search=" 跨境特殊重组-非转居 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">跨境特殊重组-非转居</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/跨境电商0110或1210模式/index.html" class="card" data-dept="税务" data-search=" 跨境电商0110或1210模式 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">跨境电商0110或1210模式</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/跨境电商1039模式/index.html" class="card" data-dept="税务" data-search=" 跨境电商1039模式 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">跨境电商1039模式</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/跨境电商9610模式/index.html" class="card" data-dept="税务" data-search=" 跨境电商9610模式 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">6页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">跨境电商9610模式</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/跨境电商基础合规/index.html" class="card" data-dept="税务" data-search=" 跨境电商基础合规 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">6页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">跨境电商基础合规</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/跨境转让定价咨询-无形资产类/index.html" class="card" data-dept="税务" data-search=" 跨境转让定价咨询-无形资产类 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">1页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">跨境转让定价咨询-无形资产类</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/跨境转让定价咨询-服务类/index.html" class="card" data-dept="税务" data-search=" 跨境转让定价咨询-服务类 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">跨境转让定价咨询-服务类</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/跨境转让定价咨询-融资利息类/index.html" class="card" data-dept="税务" data-search=" 跨境转让定价咨询-融资利息类 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">1页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">跨境转让定价咨询-融资利息类</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/跨境转让定价咨询-货物贸易类/index.html" class="card" data-dept="税务" data-search=" 跨境转让定价咨询-货物贸易类 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">跨境转让定价咨询-货物贸易类</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/非上市公司股权激励计划个人所得税合规申报/index.html" class="card" data-dept="税务" data-search=" 非上市公司股权激励计划个人所得税合规申报 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">非上市公司股权激励计划个人所得税合规申报</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/非上市公司股权激励计划合伙企业合规申报/index.html" class="card" data-dept="税务" data-search=" 非上市公司股权激励计划合伙企业合规申报 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">7页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">非上市公司股权激励计划合伙企业合规申报</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/非上市公司股权激励计划实施前税务咨询/index.html" class="card" data-dept="税务" data-search=" 非上市公司股权激励计划实施前税务咨询 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">11页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">非上市公司股权激励计划实施前税务咨询</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/非上市公司股权激励计划递延备案（20%递延备案）/index.html" class="card" data-dept="税务" data-search=" 非上市公司股权激励计划递延备案（20%递延备案） ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">8页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">非上市公司股权激励计划递延备案（20%递延备案）</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/非货增与创投思路对比/index.html" class="card" data-dept="税务" data-search=" 非货增与创投思路对比 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">非货增与创投思路对比</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/非货币性增资-合伙场景/index.html" class="card" data-dept="税务" data-search=" 非货币性增资-合伙场景 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">7页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">非货币性增资-合伙场景</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/非货币性增资-有限公司场景/index.html" class="card" data-dept="税务" data-search=" 非货币性增资-有限公司场景 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">非货币性增资-有限公司场景</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/预约定价安排APA/index.html" class="card" data-dept="税务" data-search=" 预约定价安排apa ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">8页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">预约定价安排APA</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/香港-个人身份规划-优才/index.html" class="card" data-dept="税务" data-search=" 香港-个人身份规划-优才 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">香港-个人身份规划-优才</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/香港-个人身份规划-基础/index.html" class="card" data-dept="税务" data-search=" 香港-个人身份规划-基础 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">香港-个人身份规划-基础</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/香港-个人身份规划-投资移民/index.html" class="card" data-dept="税务" data-search=" 香港-个人身份规划-投资移民 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">6页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">香港-个人身份规划-投资移民</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/香港-个人身份规划-高才/index.html" class="card" data-dept="税务" data-search=" 香港-个人身份规划-高才 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">11页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">香港-个人身份规划-高才</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/香港FSIE离岸豁免/index.html" class="card" data-dept="税务" data-search=" 香港fsie离岸豁免 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">香港FSIE离岸豁免</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/香港公司账户/index.html" class="card" data-dept="税务" data-search=" 香港公司账户 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">1页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">香港公司账户</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/香港来源于海外收入利得税豁免/index.html" class="card" data-dept="税务" data-search=" 香港来源于海外收入利得税豁免 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">9页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">香港来源于海外收入利得税豁免</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/香港薪俸税合规申报/index.html" class="card" data-dept="税务" data-search=" 香港薪俸税合规申报 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">香港薪俸税合规申报</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="税务/验资报告/index.html" class="card" data-dept="税务" data-search=" 验资报告 ">
+    <div class="card-top" style="background:#6E93C020;border-top:3px solid #6E93C0">
+      <span class="sku-tag" style="background:#6E93C0">—</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">验资报告</div>
+      <div class="card-meta">税务</div>
+    </div>
+  </a>
+  <a href="资本市场/券商-两融融资买入（大宗绕标）/index.html" class="card" data-dept="资本市场" data-search=" 券商-两融融资买入（大宗绕标） ">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">—</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">券商-两融融资买入（大宗绕标）</div>
+      <div class="card-meta">资本市场</div>
+    </div>
+  </a>
+  <a href="资本市场/境内-不动产收益权抵押权信托/index.html" class="card" data-dept="资本市场" data-search=" 境内-不动产收益权抵押权信托 ">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">—</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内-不动产收益权抵押权信托</div>
+      <div class="card-meta">资本市场</div>
+    </div>
+  </a>
+  <a href="资本市场/境内-保险金信托/index.html" class="card" data-dept="资本市场" data-search=" 境内-保险金信托 ">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">—</span>
+      <span class="slide-tag">7页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内-保险金信托</div>
+      <div class="card-meta">资本市场</div>
+    </div>
+  </a>
+  <a href="资本市场/境内-股权信托（新设标的公司2个月以内）/index.html" class="card" data-dept="资本市场" data-search=" 境内-股权信托（新设标的公司2个月以内） ">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">—</span>
+      <span class="slide-tag">10页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内-股权信托（新设标的公司2个月以内）</div>
+      <div class="card-meta">资本市场</div>
+    </div>
+  </a>
+  <a href="资本市场/CM-2341/index.html" class="card" data-dept="资本市场" data-search="cm-2341 境内-家族信托金融产品投资 信托类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM-2341</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内-家族信托金融产品投资</div>
+      <div class="card-meta">资本市场 · 信托类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM-2355/index.html" class="card" data-dept="资本市场" data-search="cm-2355 境内大额保单-终身寿 保险类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM-2355</span>
+      <span class="slide-tag">6页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内大额保单-终身寿</div>
+      <div class="card-meta">资本市场 · 保险类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM-2358/index.html" class="card" data-dept="资本市场" data-search="cm-2358 境内高端医疗-团险 保险类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM-2358</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内高端医疗-团险</div>
+      <div class="card-meta">资本市场 · 保险类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM-2359/index.html" class="card" data-dept="资本市场" data-search="cm-2359 离岸大额保单-whole life终身寿 保险类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM-2359</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">离岸大额保单-Whole Life终身寿</div>
+      <div class="card-meta">资本市场 · 保险类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM-2360/index.html" class="card" data-dept="资本市场" data-search="cm-2360 离岸大额保单-传统ul 保险类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM-2360</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">离岸大额保单-传统UL</div>
+      <div class="card-meta">资本市场 · 保险类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM-2361/index.html" class="card" data-dept="资本市场" data-search="cm-2361 离岸大额保单-iul 保险类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM-2361</span>
+      <span class="slide-tag">5页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">离岸大额保单-IUL</div>
+      <div class="card-meta">资本市场 · 保险类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM-2365/index.html" class="card" data-dept="资本市场" data-search="cm-2365 美国大额保单-年金 保险类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM-2365</span>
+      <span class="slide-tag">6页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">美国大额保单-年金</div>
+      <div class="card-meta">资本市场 · 保险类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM-2367/index.html" class="card" data-dept="资本市场" data-search="cm-2367 qflp 跨境架构类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM-2367</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">QFLP</div>
+      <div class="card-meta">资本市场 · 跨境架构类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM-2368/index.html" class="card" data-dept="资本市场" data-search="cm-2368 notes+qflp 跨境架构类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM-2368</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">NOTES+QFLP</div>
+      <div class="card-meta">资本市场 · 跨境架构类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM-2380/index.html" class="card" data-dept="资本市场" data-search="cm-2380 券商-流通股股质 股票融资类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM-2380</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">券商-流通股股质</div>
+      <div class="card-meta">资本市场 · 股票融资类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM-2381/index.html" class="card" data-dept="资本市场" data-search="cm-2381 券商-限售股股质 股票融资类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM-2381</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">券商-限售股股质</div>
+      <div class="card-meta">资本市场 · 股票融资类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM-2383/index.html" class="card" data-dept="资本市场" data-search="cm-2383 银行-限售股股质 股票融资类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM-2383</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">银行-限售股股质</div>
+      <div class="card-meta">资本市场 · 股票融资类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM-2389/index.html" class="card" data-dept="资本市场" data-search="cm-2389 股票-竞价代卖 资产管理类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM-2389</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">股票-竞价代卖</div>
+      <div class="card-meta">资本市场 · 资产管理类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2330/index.html" class="card" data-dept="资本市场" data-search="cm2330 境内-股权信托（已有标的公司） 信托类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2330</span>
+      <span class="slide-tag">10页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内-股权信托（已有标的公司）</div>
+      <div class="card-meta">资本市场 · 信托类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2331/index.html" class="card" data-dept="资本市场" data-search="cm2331 境内-股权信托（拟设标的公司） 信托类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2331</span>
+      <span class="slide-tag">10页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内-股权信托（拟设标的公司）</div>
+      <div class="card-meta">资本市场 · 信托类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2332/index.html" class="card" data-dept="资本市场" data-search="cm2332 境内-家族信托委贷 信托类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2332</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内-家族信托委贷</div>
+      <div class="card-meta">资本市场 · 信托类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2333/index.html" class="card" data-dept="资本市场" data-search="cm2333 境内-上市公司股票信托（一致行动） 信托类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2333</span>
+      <span class="slide-tag">5页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内-上市公司股票信托（一致行动）</div>
+      <div class="card-meta">资本市场 · 信托类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2334/index.html" class="card" data-dept="资本市场" data-search="cm2334 境内-双层合伙外部借款投资信托 信托类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2334</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内-双层合伙外部借款投资信托</div>
+      <div class="card-meta">资本市场 · 信托类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2335/index.html" class="card" data-dept="资本市场" data-search="cm2335 境内-上市公司股票员工持股信托 信托类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2335</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内-上市公司股票员工持股信托</div>
+      <div class="card-meta">资本市场 · 信托类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2336/index.html" class="card" data-dept="资本市场" data-search="cm2336 境内-拟上市公司员工持股信托 信托类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2336</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内-拟上市公司员工持股信托</div>
+      <div class="card-meta">资本市场 · 信托类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2337/index.html" class="card" data-dept="资本市场" data-search="cm2337 境内-非上市公司员工持股信托 信托类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2337</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内-非上市公司员工持股信托</div>
+      <div class="card-meta">资本市场 · 信托类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2338/index.html" class="card" data-dept="资本市场" data-search="cm2338 境内-股权信托-境内preipo信托 信托类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2338</span>
+      <span class="slide-tag">12页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内-股权信托-境内PREIPO信托</div>
+      <div class="card-meta">资本市场 · 信托类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2339/index.html" class="card" data-dept="资本市场" data-search="cm2339 境内-不动产信托 信托类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2339</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内-不动产信托</div>
+      <div class="card-meta">资本市场 · 信托类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2342/index.html" class="card" data-dept="资本市场" data-search="cm2342 境内-慈善信托+基金会 信托类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2342</span>
+      <span class="slide-tag">6页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内-慈善信托+基金会</div>
+      <div class="card-meta">资本市场 · 信托类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2343/index.html" class="card" data-dept="资本市场" data-search="cm2343 境内-fgt 信托类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2343</span>
+      <span class="slide-tag">5页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内-FGT</div>
+      <div class="card-meta">资本市场 · 信托类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2344/index.html" class="card" data-dept="资本市场" data-search="cm2344 境内-nrt信托 信托类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2344</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内-NRT信托</div>
+      <div class="card-meta">资本市场 · 信托类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2345/index.html" class="card" data-dept="资本市场" data-search="cm2345 境内-股权信托-股票合伙份额 信托类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2345</span>
+      <span class="slide-tag">11页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内-股权信托-股票合伙份额</div>
+      <div class="card-meta">资本市场 · 信托类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2346/index.html" class="card" data-dept="资本市场" data-search="cm2346 离岸信托-非上市资产 信托类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2346</span>
+      <span class="slide-tag">11页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">离岸信托-非上市资产</div>
+      <div class="card-meta">资本市场 · 信托类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2347/index.html" class="card" data-dept="资本市场" data-search="cm2347 离岸信托-pre-ipo trust 信托类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2347</span>
+      <span class="slide-tag">14页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">离岸信托-Pre-IPO Trust</div>
+      <div class="card-meta">资本市场 · 信托类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2348/index.html" class="card" data-dept="资本市场" data-search="cm2348 离岸信托-ebt 信托类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2348</span>
+      <span class="slide-tag">8页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">离岸信托-EBT</div>
+      <div class="card-meta">资本市场 · 信托类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2349/index.html" class="card" data-dept="资本市场" data-search="cm2349 离岸信托-fgt 信托类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2349</span>
+      <span class="slide-tag">5页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">离岸信托-FGT</div>
+      <div class="card-meta">资本市场 · 信托类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2350/index.html" class="card" data-dept="资本市场" data-search="cm2350 离岸信托-nrt 信托类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2350</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">离岸信托-NRT</div>
+      <div class="card-meta">资本市场 · 信托类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2351/index.html" class="card" data-dept="资本市场" data-search="cm2351 美国信托-ilit信托 信托类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2351</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">美国信托-ILIT信托</div>
+      <div class="card-meta">资本市场 · 信托类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2352/index.html" class="card" data-dept="资本市场" data-search="cm2352 美国信托-standby信托 信托类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2352</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">美国信托-Standby信托</div>
+      <div class="card-meta">资本市场 · 信托类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2353/index.html" class="card" data-dept="资本市场" data-search="cm2353 美国信托-idgt 信托类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2353</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">美国信托-IDGT</div>
+      <div class="card-meta">资本市场 · 信托类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2354/index.html" class="card" data-dept="资本市场" data-search="cm2354 美国信托-grat 信托类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2354</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">美国信托-GRAT</div>
+      <div class="card-meta">资本市场 · 信托类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2356/index.html" class="card" data-dept="资本市场" data-search="cm2356 境内大额保单-年金 保险类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2356</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内大额保单-年金</div>
+      <div class="card-meta">资本市场 · 保险类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2357/index.html" class="card" data-dept="资本市场" data-search="cm2357 境内高端医疗-个险 保险类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2357</span>
+      <span class="slide-tag">6页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">境内高端医疗-个险</div>
+      <div class="card-meta">资本市场 · 保险类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2362/index.html" class="card" data-dept="资本市场" data-search="cm2362 离岸大额保单-储蓄 保险类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2362</span>
+      <span class="slide-tag">9页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">离岸大额保单-储蓄</div>
+      <div class="card-meta">资本市场 · 保险类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2363/index.html" class="card" data-dept="资本市场" data-search="cm2363 离岸大额保单-重疾 保险类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2363</span>
+      <span class="slide-tag">9页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">离岸大额保单-重疾</div>
+      <div class="card-meta">资本市场 · 保险类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2364/index.html" class="card" data-dept="资本市场" data-search="cm2364 美国大额保单-iul 保险类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2364</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">美国大额保单-IUL</div>
+      <div class="card-meta">资本市场 · 保险类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2366/index.html" class="card" data-dept="资本市场" data-search="cm2366 离岸保单结构-ppli 保险类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2366</span>
+      <span class="slide-tag">15页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">离岸保单结构-PPLI</div>
+      <div class="card-meta">资本市场 · 保险类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2369/index.html" class="card" data-dept="资本市场" data-search="cm2369 qfii 跨境架构类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2369</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">QFII</div>
+      <div class="card-meta">资本市场 · 跨境架构类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2370/index.html" class="card" data-dept="资本市场" data-search="cm2370 notes+qfii 跨境架构类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2370</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">NOTES+QFII</div>
+      <div class="card-meta">资本市场 · 跨境架构类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2371/index.html" class="card" data-dept="资本市场" data-search="cm2371 券商-两融融资买入（竞价） 股票融资类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2371</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">券商-两融融资买入（竞价）</div>
+      <div class="card-meta">资本市场 · 股票融资类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2373/index.html" class="card" data-dept="资本市场" data-search="cm2373 券商-衍生品 股票融资类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2373</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">券商-衍生品</div>
+      <div class="card-meta">资本市场 · 股票融资类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2374/index.html" class="card" data-dept="资本市场" data-search="cm2374 夹层-类结构化信托 股票融资类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2374</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">夹层-类结构化信托</div>
+      <div class="card-meta">资本市场 · 股票融资类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2375/index.html" class="card" data-dept="资本市场" data-search="cm2375 夹层-结构化合伙 股票融资类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2375</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">夹层-结构化合伙</div>
+      <div class="card-meta">资本市场 · 股票融资类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2378/index.html" class="card" data-dept="资本市场" data-search="cm2378 夹层-a+b信托收益互换 股票融资类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2378</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">夹层-A+B信托收益互换</div>
+      <div class="card-meta">资本市场 · 股票融资类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2379/index.html" class="card" data-dept="资本市场" data-search="cm2379 保险资管-结构化配资 股票融资类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2379</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">保险资管-结构化配资</div>
+      <div class="card-meta">资本市场 · 股票融资类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2382/index.html" class="card" data-dept="资本市场" data-search="cm2382 银行-流通股股质 股票融资类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2382</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">银行-流通股股质</div>
+      <div class="card-meta">资本市场 · 股票融资类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2384/index.html" class="card" data-dept="资本市场" data-search="cm2384 银行-并购贷 股票融资类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2384</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">银行-并购贷</div>
+      <div class="card-meta">资本市场 · 股票融资类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2386/index.html" class="card" data-dept="资本市场" data-search="cm2386 股票收益权信托 股票融资类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2386</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">股票收益权信托</div>
+      <div class="card-meta">资本市场 · 股票融资类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2390/index.html" class="card" data-dept="资本市场" data-search="cm2390 股票-锁定大宗买断 资产管理类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2390</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">股票-锁定大宗买断</div>
+      <div class="card-meta">资本市场 · 资产管理类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2391/index.html" class="card" data-dept="资本市场" data-search="cm2391 股票-锁定大宗后端分成 资产管理类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2391</span>
+      <span class="slide-tag">3页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">股票-锁定大宗后端分成</div>
+      <div class="card-meta">资本市场 · 资产管理类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2392/index.html" class="card" data-dept="资本市场" data-search="cm2392 股票-非锁大宗（境内） 资产管理类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2392</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">股票-非锁大宗（境内）</div>
+      <div class="card-meta">资本市场 · 资产管理类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2393/index.html" class="card" data-dept="资本市场" data-search="cm2393 股票-协转买断 资产管理类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2393</span>
+      <span class="slide-tag">2页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">股票-协转买断</div>
+      <div class="card-meta">资本市场 · 资产管理类</div>
+    </div>
+  </a>
+  <a href="资本市场/CM2394/index.html" class="card" data-dept="资本市场" data-search="cm2394 股票-协转买断+后端 资产管理类">
+    <div class="card-top" style="background:#4A7B4F20;border-top:3px solid #4A7B4F">
+      <span class="sku-tag" style="background:#4A7B4F">CM2394</span>
+      <span class="slide-tag">4页</span>
+    </div>
+    <div class="card-body">
+      <div class="card-name">股票-协转买断+后端</div>
+      <div class="card-meta">资本市场 · 资产管理类</div>
+    </div>
+  </a></div>
+<div class="no-result" id="no-result">没有找到匹配的产品</div>
+<footer>朝曦家办 · 内部培训资料 · 2026-05-12</footer>
+<script>
+var curDept='全部';
+function filterDept(d){
+  curDept=d;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.textContent===d));
+  doSearch();
+}
+function doSearch(){
+  var q=document.getElementById('q').value.toLowerCase().trim();
+  var cards=document.querySelectorAll('.card');
+  var vis=0;
+  cards.forEach(function(c){
+    var dept=c.dataset.dept;
+    var search=c.dataset.search;
+    var deptOk=(curDept==='全部'||dept===curDept);
+    var searchOk=(!q||search.includes(q)||dept.includes(q));
+    var show=deptOk&&searchOk;
+    c.classList.toggle('hidden',!show);
+    if(show)vis++;
+  });
+  document.getElementById('stats').textContent='显示 '+vis+' 个产品';
+  document.getElementById('no-result').style.display=vis===0?'block':'none';
+}
+</script>
+</body>
+</html>
