@@ -143,35 +143,31 @@ function buildAIPrompt(order, editForm, supplementText) {
     `目标受众职级：${editForm.jobLevel || order.jobLevel || '未知'}`,
     `预计人数：${editForm.people || order.people || '未知'}`,
     `培训时长：${editForm.duration || order.duration || '未知'}`,
-    order.painpoints?.selected?.length ? `客户核心痛点：${order.painpoints.selected.join('、')}` : null,
+    editForm.background ? `客户背景/痛点：${editForm.background}` : null,
+    order.painpoints?.selected?.length ? `客户核心痛点标签：${order.painpoints.selected.join('、')}` : null,
     order.painpoints?.other ? `其他痛点说明：${order.painpoints.other}` : null,
     (editForm.note || order.note) ? `特殊说明：${editForm.note || order.note}` : null,
-    supplementText ? `\n补充信息/会议纪要：\n${supplementText}` : null,
+    supplementText ? `补充信息/会议纪要：${supplementText}` : null,
   ].filter(Boolean).join('\n')
 
+  // Compact course list: only ID, name, target audience — omit long subtitles/painpoints to keep prompt short
   const courseList = COURSE_CATALOG.map(s =>
-    `【${s.series} ${s.seriesName}】\n` +
+    `[${s.series}] ${s.seriesName}\n` +
     s.courses.map(c =>
-      `  ID:${c.id} | ${c.name}${c.subtitle ? ' (' + c.subtitle + ')' : ''}` +
-      (c.painpoint ? ` | 解决痛点:${c.painpoint}` : '') +
-      (c.audience  ? ` | 目标受众:${c.audience}` : '')
+      `  ${c.id} ${c.name}${c.audience ? `（${c.audience}）` : ''}`
     ).join('\n')
-  ).join('\n\n')
+  ).join('\n')
 
-  return `你是朝曦家族办公室培训咨询专家。根据以下客户需求，从课程库中精准匹配最适合的 Top 3 课程单元。
+  return `你是朝曦家族办公室培训咨询专家。根据客户需求，从课程库中选出最合适的 Top 3 课程。
 
-## 客户需求
+客户需求：
 ${info}
 
-## 课程库（请仅从以下课程中选择，ID 必须完全一致）
+课程库（ID 必须与下表完全一致）：
 ${courseList}
 
-## 输出要求
-只返回合法 JSON，不要加 markdown 代码块，不要有任何注释或额外文字。
-score 字段必须是纯整数（60-99），不能附加任何汉字或标点。
-
-## 返回格式示例
-{"top3":[{"id":"COURSE_ID","name":"课程名称","seriesName":"系列名称","score":85,"reason":"推荐理由不超过50字"},{"id":"COURSE_ID2","name":"课程名称2","seriesName":"系列名称2","score":78,"reason":"推荐理由"},{"id":"COURSE_ID3","name":"课程名称3","seriesName":"系列名称3","score":72,"reason":"推荐理由"}],"suggestions":"补充建议不超过100字"}`
+返回合法 JSON 对象，格式如下，score 为整数（60-99）：
+{"top3":[{"id":"C1-01","name":"企业全生命周期股权设计","seriesName":"课程一","score":85,"reason":"推荐理由"},{"id":"C2-01","name":"课程名","seriesName":"课程二","score":78,"reason":"推荐理由"},{"id":"C5-01","name":"课程名","seriesName":"课程五","score":72,"reason":"推荐理由"}],"suggestions":"补充建议"}`
 }
 
 async function callDeepSeekAPI(prompt) {
@@ -185,10 +181,14 @@ async function callDeepSeekAPI(prompt) {
       model: DS_MODEL,
       messages: [{ role: 'user', content: prompt }],
       temperature: 0.3,
-      max_tokens: 1200,
+      max_tokens: 800,
+      response_format: { type: 'json_object' },
     }),
   })
-  if (!res.ok) throw new Error(`API 请求失败 (${res.status})`)
+  if (!res.ok) {
+    const errText = await res.text().catch(() => '')
+    throw new Error(`API 请求失败 (${res.status})${errText ? '：' + errText.slice(0, 100) : ''}`)
+  }
   const data = await res.json()
   let text = (data.choices?.[0]?.message?.content || '').trim()
   // Strip markdown code fences if present
@@ -201,7 +201,7 @@ async function callDeepSeekAPI(prompt) {
     if (match) {
       try { return JSON.parse(match[0]) } catch { /* fall through */ }
     }
-    throw new Error('AI 返回格式异常，请重试')
+    throw new Error(`AI 返回格式异常，请重试（原始：${text.slice(0, 80)}）`)
   }
 }
 
