@@ -18,8 +18,8 @@ export function LoginPage({ onLogin }) {
     <div className="login-page">
       <div className="login-card">
         <div className="login-logo">曦</div>
-        <h1>朝曦培训管理中台</h1>
-        <p className="login-sub">Training Management Platform · v1.3</p>
+        <h1>朝曦家办-知识工坊</h1>
+        <p className="login-sub">Knowledge Hub · 朝曦家办专属平台</p>
         {err && <div className="alert alert-danger" style={{marginBottom:16}}><span>⚠</span>{err}</div>}
         <form onSubmit={submit}>
           <div className="form-group">

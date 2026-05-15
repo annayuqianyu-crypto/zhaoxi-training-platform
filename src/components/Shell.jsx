@@ -36,8 +36,8 @@ export function Shell({ user, onLogout }) {
       <aside className="sidebar">
         <div className="sidebar-logo">
           <div className="logo-mark">曦</div>
-          <h2>朝曦培训管理中台</h2>
-          <p>Training Platform · v1.3</p>
+          <h2>朝曦家办-知识工坊</h2>
+          <p>Knowledge Hub · v1.3</p>
         </div>
 
         <div className="nav-section">
