@@ -1,10 +1,8 @@
 import { useState } from 'react'
-import { Dashboard }     from '../pages/Dashboard'
-import { WorkOrders }    from '../pages/WorkOrders'
-import { CourseMatch }   from '../pages/CourseMatch'
-import { Schedule }      from '../pages/Schedule'
-import { Qualification } from '../pages/Qualification'
-import { Channels }      from '../pages/Channels'
+import { Dashboard }   from '../pages/Dashboard'
+import { WorkOrders }  from '../pages/WorkOrders'
+import { CourseMatch } from '../pages/CourseMatch'
+import { Schedule }    from '../pages/Schedule'
 
 /* ─── Navigation structure ───
    type: 'group'  → module section header (not clickable)
@@ -13,21 +11,17 @@ import { Channels }      from '../pages/Channels'
 const NAV = [
   // ── 外部培训 ──────────────────────────────
   { type: 'group', label: '外部培训' },
-  { type: 'item', id: 'dashboard',     label: '仪表盘',        num: '—',  icon: '◈' },
-  { type: 'item', id: 'workorders',    label: '需求收集',      num: '01', icon: '◎', tag: 'M1' },
-  { type: 'item', id: 'coursematch',   label: '课程匹配',      num: '02', icon: '◈', tag: 'M2' },
-  { type: 'item', id: 'schedule',      label: '讲师排期',      num: '04', icon: '◷', tag: 'M4' },
-  { type: 'item', id: 'qualification', label: '通关 & 素材库', num: '05', icon: '◆', tag: 'M5/6' },
-  { type: 'item', id: 'channels',      label: '渠道分析',      num: '10', icon: '◑', tag: 'M10' },
+  { type: 'item', id: 'dashboard',   label: '仪表盘',   num: '—',  icon: '◈' },
+  { type: 'item', id: 'workorders',  label: '需求收集', num: '01', icon: '◎', tag: 'M1' },
+  { type: 'item', id: 'coursematch', label: '课程匹配', num: '02', icon: '◈', tag: 'M2' },
+  { type: 'item', id: 'schedule',    label: '讲师排期', num: '04', icon: '◷', tag: 'M4' },
 ]
 
 const PAGE_MAP = {
-  dashboard:     Dashboard,
-  workorders:    WorkOrders,
-  coursematch:   CourseMatch,
-  schedule:      Schedule,
-  qualification: Qualification,
-  channels:      Channels,
+  dashboard:   Dashboard,
+  workorders:  WorkOrders,
+  coursematch: CourseMatch,
+  schedule:    Schedule,
 }
 
 export function Shell({ user, onLogout }) {
