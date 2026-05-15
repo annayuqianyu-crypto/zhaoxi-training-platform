@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 
 const SERIES = [
   {
@@ -114,11 +114,26 @@ const SERIES = [
 ]
 
 export function TrainingSystem() {
-  const [expanded, setExpanded] = useState(null)
-
-  const toggle = (id) => setExpanded(prev => prev === id ? null : id)
+  const [current, setCurrent] = useState(0)
+  const sliderRef = useRef(null)
 
   const totalUnits = SERIES.reduce((s, c) => s + c.units.length, 0)
+
+  function goTo(idx) {
+    const clamped = Math.max(0, Math.min(SERIES.length - 1, idx))
+    setCurrent(clamped)
+    const container = sliderRef.current
+    if (container) {
+      container.scrollTo({ left: clamped * container.offsetWidth, behavior: 'smooth' })
+    }
+  }
+
+  function handleScroll() {
+    const container = sliderRef.current
+    if (!container) return
+    const idx = Math.round(container.scrollLeft / container.offsetWidth)
+    setCurrent(idx)
+  }
 
   return (
     <div style={{ padding: '32px 36px', maxWidth: 1100, margin: '0 auto' }}>
@@ -181,112 +196,155 @@ export function TrainingSystem() {
         </div>
       </div>
 
-      {/* ── Series Grid ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 18 }}>
-        {SERIES.map((s) => {
-          const isOpen = expanded === s.id
-          return (
-            <div key={s.id} style={{
-              background: '#fff',
-              border: `1.5px solid ${isOpen ? s.color : '#E4E4E7'}`,
-              borderRadius: 14,
-              overflow: 'hidden',
-              transition: 'border-color .2s, box-shadow .2s',
-              boxShadow: isOpen ? `0 4px 24px ${s.color}22` : '0 1px 4px #0000000a',
-            }}>
-              {/* Card Header */}
-              <div
-                onClick={() => toggle(s.id)}
-                style={{
-                  padding: '22px 24px',
-                  cursor: 'pointer',
-                  background: isOpen ? s.bg : '#fff',
-                  transition: 'background .2s',
-                  userSelect: 'none',
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                      <span style={{
-                        fontSize: 10, fontWeight: 700, letterSpacing: '.1em',
-                        color: s.color, background: s.bg,
-                        border: `1px solid ${s.border}`,
-                        padding: '2px 8px', borderRadius: 20,
-                      }}>{s.tag}</span>
-                      <span style={{ fontSize: 11, color: '#A1A1AA' }}>
-                        {s.units.length} 个单元
-                      </span>
-                    </div>
-                    <div style={{ fontSize: 13, color: '#52525B', marginBottom: 4 }}>{s.phase}</div>
-                    <div style={{ fontSize: 16, fontWeight: 700, color: '#18181B', lineHeight: 1.4 }}>
-                      {s.title}
-                    </div>
-                  </div>
-                  <div style={{
-                    width: 28, height: 28, borderRadius: '50%',
-                    background: isOpen ? s.color : '#F4F4F5',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    flexShrink: 0, marginLeft: 12,
-                    transition: 'background .2s',
-                  }}>
-                    <span style={{
-                      fontSize: 14, color: isOpen ? '#fff' : '#71717A',
-                      transform: isOpen ? 'rotate(180deg)' : 'none',
-                      display: 'inline-block', transition: 'transform .2s',
-                    }}>▾</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Units List */}
-              {isOpen && (
-                <div style={{ borderTop: `1px solid ${s.border}` }}>
-                  {s.units.map((u, i) => (
-                    <div key={i} style={{
-                      padding: '14px 24px',
-                      borderBottom: i < s.units.length - 1 ? `1px solid ${s.border}55` : 'none',
-                      background: i % 2 === 0 ? '#fff' : s.bg + '66',
-                    }}>
-                      <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
-                        <span style={{
-                          fontSize: 10, fontWeight: 700, color: s.color,
-                          background: s.bg, border: `1px solid ${s.border}`,
-                          borderRadius: 4, padding: '1px 6px',
-                          flexShrink: 0, marginTop: 1,
-                        }}>{String(i + 1).padStart(2, '0')}</span>
-                        <div style={{ flex: 1 }}>
-                          <div style={{ fontSize: 13, fontWeight: 600, color: '#18181B', marginBottom: 4 }}>
-                            {u.name}
-                          </div>
-                          <div style={{ fontSize: 11, color: '#71717A', lineHeight: 1.6 }}>
-                            <span style={{ color: '#A1A1AA' }}>核心痛点：</span>{u.pain}
-                          </div>
-                          <div style={{ fontSize: 11, color: '#71717A', marginTop: 2, lineHeight: 1.6 }}>
-                            <span style={{ color: '#A1A1AA' }}>核心客群：</span>{u.client}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )
-        })}
+      {/* ── Slider Navigation Bar ── */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+        {/* Dot indicators */}
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          {SERIES.map((s, i) => (
+            <button key={i} onClick={() => goTo(i)} style={{
+              width: current === i ? 28 : 8,
+              height: 8, borderRadius: 4, border: 'none', cursor: 'pointer',
+              background: current === i ? SERIES[current].color : '#D4D4D8',
+              transition: 'all .25s',
+              padding: 0,
+            }} />
+          ))}
+        </div>
+        {/* Arrow buttons */}
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button onClick={() => goTo(current - 1)} disabled={current === 0} style={{
+            width: 36, height: 36, borderRadius: '50%', border: '1.5px solid #E4E4E7',
+            background: current === 0 ? '#F4F4F5' : '#fff',
+            cursor: current === 0 ? 'default' : 'pointer',
+            fontSize: 16, color: current === 0 ? '#D4D4D8' : '#18181B',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>‹</button>
+          <button onClick={() => goTo(current + 1)} disabled={current === SERIES.length - 1} style={{
+            width: 36, height: 36, borderRadius: '50%', border: '1.5px solid #E4E4E7',
+            background: current === SERIES.length - 1 ? '#F4F4F5' : '#fff',
+            cursor: current === SERIES.length - 1 ? 'default' : 'pointer',
+            fontSize: 16, color: current === SERIES.length - 1 ? '#D4D4D8' : '#18181B',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>›</button>
+        </div>
       </div>
 
-      {/* ── Footer Note ── */}
-      <div style={{
-        marginTop: 28, padding: '16px 24px',
-        background: '#F7F4EF', borderRadius: 10,
-        display: 'flex', alignItems: 'center', gap: 10,
-      }}>
-        <span style={{ fontSize: 16 }}>💡</span>
-        <p style={{ fontSize: 12, color: '#71717A', margin: 0, lineHeight: 1.7 }}>
-          以上课程均可根据客户需求定制组合，单次或系列授课灵活安排。
-          如需了解具体课程大纲、讲师背景或安排试听，欢迎联系朝曦课程顾问。
-        </p>
+      {/* ── Slider Container ── */}
+      <div
+        ref={sliderRef}
+        onScroll={handleScroll}
+        style={{
+          display: 'flex',
+          overflowX: 'auto',
+          scrollSnapType: 'x mandatory',
+          scrollBehavior: 'smooth',
+          gap: 0,
+          borderRadius: 16,
+          msOverflowStyle: 'none',
+          scrollbarWidth: 'none',
+        }}
+      >
+        {SERIES.map((s, si) => (
+          <div key={s.id} style={{
+            minWidth: '100%',
+            scrollSnapAlign: 'start',
+            background: '#fff',
+            border: `2px solid ${s.border}`,
+            borderRadius: 16,
+            overflow: 'hidden',
+            boxShadow: `0 4px 32px ${s.color}18`,
+          }}>
+            {/* Card Header */}
+            <div style={{
+              background: `linear-gradient(135deg, ${s.color}10 0%, ${s.bg} 100%)`,
+              borderBottom: `1.5px solid ${s.border}`,
+              padding: '28px 32px 24px',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                <div>
+                  <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 12 }}>
+                    <span style={{
+                      fontSize: 11, fontWeight: 800, letterSpacing: '.12em',
+                      color: s.color, background: '#fff',
+                      border: `1.5px solid ${s.border}`,
+                      padding: '3px 12px', borderRadius: 20,
+                    }}>{s.tag}</span>
+                    <span style={{ fontSize: 12, color: '#A1A1AA' }}>{s.units.length} 个课程单元</span>
+                  </div>
+                  <div style={{ fontSize: 13, color: '#71717A', marginBottom: 6 }}>{s.phase}</div>
+                  <h2 style={{ fontSize: 20, fontWeight: 800, color: '#18181B', margin: 0, lineHeight: 1.4 }}>
+                    {s.title}
+                  </h2>
+                </div>
+                <div style={{
+                  fontSize: 11, color: '#A1A1AA',
+                  background: '#fff', border: `1px solid ${s.border}`,
+                  borderRadius: 8, padding: '4px 10px',
+                  flexShrink: 0, marginLeft: 16, marginTop: 4,
+                }}>
+                  {si + 1} / {SERIES.length}
+                </div>
+              </div>
+            </div>
+
+            {/* Units List — scrollable */}
+            <div style={{ overflowY: 'auto', maxHeight: 480 }}>
+              {s.units.map((u, i) => (
+                <div key={i} style={{
+                  padding: '16px 32px',
+                  borderBottom: i < s.units.length - 1 ? `1px solid ${s.border}66` : 'none',
+                  background: i % 2 === 0 ? '#fff' : s.bg + '55',
+                  display: 'flex', gap: 14, alignItems: 'flex-start',
+                }}>
+                  <span style={{
+                    fontSize: 11, fontWeight: 800, color: '#fff',
+                    background: s.color, borderRadius: 6,
+                    padding: '2px 8px', flexShrink: 0, marginTop: 2,
+                    minWidth: 28, textAlign: 'center',
+                  }}>{String(i + 1).padStart(2, '0')}</span>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: '#18181B', marginBottom: 5, lineHeight: 1.4 }}>
+                      {u.name}
+                    </div>
+                    <div style={{ fontSize: 12, color: '#71717A', lineHeight: 1.7 }}>
+                      <span style={{ color: '#A1A1AA', marginRight: 4 }}>核心痛点</span>{u.pain}
+                    </div>
+                    <div style={{ fontSize: 12, color: '#71717A', marginTop: 3, lineHeight: 1.7 }}>
+                      <span style={{ color: '#A1A1AA', marginRight: 4 }}>核心客群</span>{u.client}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Card Footer */}
+            <div style={{
+              padding: '14px 32px',
+              background: s.bg + '88',
+              borderTop: `1px solid ${s.border}`,
+              fontSize: 11, color: '#A1A1AA',
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+            }}>
+              <span>💡 课程可定制组合，支持单次或系列授课</span>
+              <div style={{ display: 'flex', gap: 6 }}>
+                {si > 0 && (
+                  <button onClick={() => goTo(si - 1)} style={{
+                    fontSize: 11, color: s.color, background: '#fff',
+                    border: `1px solid ${s.border}`, borderRadius: 6,
+                    padding: '4px 12px', cursor: 'pointer',
+                  }}>← 上一系列</button>
+                )}
+                {si < SERIES.length - 1 && (
+                  <button onClick={() => goTo(si + 1)} style={{
+                    fontSize: 11, color: '#fff', background: s.color,
+                    border: 'none', borderRadius: 6,
+                    padding: '4px 12px', cursor: 'pointer', fontWeight: 600,
+                  }}>下一系列 →</button>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   )

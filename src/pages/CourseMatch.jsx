@@ -243,22 +243,60 @@ export function CourseMatch({ navigate, portalMode = false }) {
     setAiResult(c.aiResult || null)
   }, [])
 
-  /* ─── No context ─── */
+  /* ─── No context: show quick-entry form ─── */
+  const [quickNote, setQuickNote] = useState('')
+  const [quickErr,  setQuickErr]  = useState(false)
+
   if (!ctx) {
+    function startQuick(e) {
+      e.preventDefault()
+      if (!quickNote.trim()) { setQuickErr(true); return }
+      const stub = {
+        order: { id: 'QUICK-' + Date.now(), channel: '—', contact: '—', painpoints: {} },
+        editForm: { background: quickNote.trim() },
+        editCourseIds: [], editOutline: '', selectedInstructors: [],
+        supplementText: '', aiResult: null,
+      }
+      localStorage.setItem(CONTEXT_KEY, JSON.stringify(stub))
+      setCtx(stub)
+      setEditForm(stub.editForm)
+      setSupplementText('')
+    }
     return (
       <>
         <div className="topbar">
           <span className="topbar-title">课程匹配</span>
           <span className="topbar-sub">· M2</span>
         </div>
-        <div className="content" style={{ textAlign:'center', paddingTop:80 }}>
-          <div style={{ fontSize:32, marginBottom:16 }}>📋</div>
-          <div style={{ fontSize:15, color:'var(--text-2)', marginBottom:20 }}>
-            {portalMode ? '请先填写客户信息以开始匹配' : '请先从「需求工单」中选择一条前期沟通工单，点击「前往课程匹配」进入本页'}
+        <div className="content" style={{ maxWidth: 560, margin: '60px auto 0' }}>
+          <div style={{ textAlign:'center', marginBottom: 32 }}>
+            <div style={{ fontSize: 36, marginBottom: 12 }}>🎯</div>
+            <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 8 }}>快速课程匹配</h2>
+            <p style={{ fontSize: 13, color: 'var(--text-3)', lineHeight: 1.7 }}>
+              简单描述您的培训需求或初步想法，我们将为您推荐合适的课程方向
+            </p>
           </div>
-          <button className="btn btn-primary" onClick={() => navigate('workorders')}>
-            {portalMode ? '← 返回填写信息' : '← 返回需求工单'}
-          </button>
+          <form onSubmit={startQuick}>
+            <div className="form-group">
+              <label className="form-label">需求简述</label>
+              <textarea
+                value={quickNote}
+                onChange={e => { setQuickNote(e.target.value); setQuickErr(false) }}
+                placeholder="例如：想了解股权架构和税务合规相关课程，客户是一家准备上市的科技公司……"
+                style={{
+                  width: '100%', height: 140, padding: '12px 14px',
+                  border: `1.5px solid ${quickErr ? 'var(--red)' : 'var(--border)'}`,
+                  borderRadius: 10, fontFamily: 'inherit', fontSize: 14,
+                  lineHeight: 1.7, background: 'var(--bg)', color: 'var(--text-1)',
+                  resize: 'vertical', outline: 'none', boxSizing: 'border-box',
+                }}
+              />
+              {quickErr && <div style={{ fontSize: 12, color: 'var(--red)', marginTop: 4 }}>请填写需求简述后再开始匹配</div>}
+            </div>
+            <button className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', marginTop: 4 }} type="submit">
+              开始课程匹配 →
+            </button>
+          </form>
         </div>
       </>
     )
