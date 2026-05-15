@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Dashboard }   from '../pages/Dashboard'
-import { WorkOrders }  from '../pages/WorkOrders'
 import { CourseMatch } from '../pages/CourseMatch'
 import { Schedule }    from '../pages/Schedule'
 
@@ -12,14 +11,12 @@ const NAV = [
   // ── 外部培训 ──────────────────────────────
   { type: 'group', label: '外部培训' },
   { type: 'item', id: 'dashboard',   label: '仪表盘',   num: '—',  icon: '◈' },
-  { type: 'item', id: 'workorders',  label: '需求收集', num: '01', icon: '◎', tag: 'M1' },
   { type: 'item', id: 'coursematch', label: '课程匹配', num: '02', icon: '◈', tag: 'M2' },
   { type: 'item', id: 'schedule',    label: '讲师排期', num: '04', icon: '◷', tag: 'M4' },
 ]
 
 const PAGE_MAP = {
   dashboard:   Dashboard,
-  workorders:  WorkOrders,
   coursematch: CourseMatch,
   schedule:    Schedule,
 }
