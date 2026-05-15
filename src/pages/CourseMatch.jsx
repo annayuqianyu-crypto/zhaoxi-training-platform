@@ -391,11 +391,7 @@ export function CourseMatch({ navigate, portalMode = false }) {
     <>
       {/* ─── Topbar ─── */}
       <div className="topbar">
-        <button className="btn btn-ghost btn-sm" onClick={() => navigate('workorders')} style={{ marginRight:4 }}>
-          {portalMode ? '← 重新匹配' : '← 返回需求工单'}
-        </button>
-        <span className="topbar-title" style={{ marginLeft:8 }}>课程匹配</span>
-        <span className="topbar-sub">· {order.id} &nbsp;·&nbsp; {order.channel}</span>
+        <span className="topbar-title">课程匹配</span>
         <div className="topbar-actions">
           {saved && <span style={{ fontSize:12, color:'var(--accent)', fontWeight:600 }}>✅ 已保存</span>}
           <button className="btn btn-secondary btn-sm" onClick={handleSave}>💾 保存草稿</button>
@@ -403,33 +399,6 @@ export function CourseMatch({ navigate, portalMode = false }) {
       </div>
 
       <div className="content">
-
-        {/* ─── Work order summary strip ─── */}
-        <div style={{
-          display:'flex', gap:24, flexWrap:'wrap', alignItems:'center',
-          padding:'12px 18px', background:'var(--bg-card)', border:'1px solid var(--border)',
-          borderRadius:12, marginBottom:20, fontSize:12,
-        }}>
-          {[
-            ['渠道', editForm.channel || order.channel],
-            ['联系人', editForm.contact || order.contact],
-            ['参与类型', editForm.audience || order.audience || '—'],
-            ['人数', (editForm.people || order.people) ? `${editForm.people || order.people}人` : '—'],
-            ['时长', editForm.duration || order.duration || '—'],
-            ['日期', editForm.date || order.date || '—'],
-          ].map(([k, v]) => (
-            <div key={k} style={{ display:'flex', gap:6 }}>
-              <span style={{ color:'var(--text-3)' }}>{k}</span>
-              <span style={{ fontWeight:600, color:'var(--text-1)' }}>{v}</span>
-            </div>
-          ))}
-          {aiResult && (
-            <span style={{ marginLeft:'auto', fontSize:11, background:'#D1FAE5', color:'#065F46',
-              padding:'3px 10px', borderRadius:6, fontWeight:600 }}>
-              🤖 AI已分析
-            </span>
-          )}
-        </div>
 
         {/* ─── Tabs ─── */}
         <div style={{ display:'flex', borderBottom:'1px solid var(--border)', marginBottom:20 }}>
@@ -565,31 +534,6 @@ export function CourseMatch({ navigate, portalMode = false }) {
                 🤖 <strong>AI 推荐了 {aiTopIds.length} 门课程</strong>，已在下方用绿色标出，可继续多选其他课程
               </div>
             )}
-
-            {/* Basic info editable */}
-            <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, padding:20, marginBottom:20 }}>
-              <div style={{ fontSize:11, fontWeight:700, color:'var(--text-3)', letterSpacing:'.08em', marginBottom:14 }}>基本信息</div>
-              <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:12 }}>
-                {[['渠道/机构','channel','text'],['联系人','contact','text'],
-                  ['对接销售','salesName','text'],['参与类型','audience','text'],
-                  ['预计人数','people','number'],['培训时长','duration','text'],
-                  ['期望日期','date','text'],['目标受众职级','jobLevel','text'],
-                ].map(([label, key, type]) => (
-                  <div key={key}>
-                    <div style={{ fontSize:11, color:'var(--text-3)', marginBottom:4 }}>{label}</div>
-                    <input className="form-input" type={type} value={editForm[key]||''}
-                      onChange={e => { setEditForm(f => ({ ...f, [key]: e.target.value })); setSaved(false) }}
-                      style={{ fontSize:13, padding:'7px 10px' }} />
-                  </div>
-                ))}
-              </div>
-              <div style={{ marginTop:12 }}>
-                <div style={{ fontSize:11, color:'var(--text-3)', marginBottom:4 }}>特殊说明</div>
-                <textarea className="form-textarea" value={editForm.note||''}
-                  onChange={e => { setEditForm(f => ({ ...f, note: e.target.value })); setSaved(false) }}
-                  style={{ fontSize:13, height:56 }} />
-              </div>
-            </div>
 
             {/* Course selector */}
             <div style={{ marginBottom:20 }}>
