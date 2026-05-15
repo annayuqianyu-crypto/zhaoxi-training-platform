@@ -1,13 +1,18 @@
 import { useState } from 'react'
-import { Dashboard }   from '../pages/Dashboard'
-import { CourseMatch } from '../pages/CourseMatch'
-import { Schedule }    from '../pages/Schedule'
+import { TrainingSystem } from '../pages/TrainingSystem'
+import { Dashboard }      from '../pages/Dashboard'
+import { CourseMatch }    from '../pages/CourseMatch'
+import { Schedule }       from '../pages/Schedule'
 
 /* ─── Navigation structure ───
    type: 'group'  → module section header (not clickable)
    type: 'item'   → normal nav item
 ─────────────────────────────── */
 const NAV = [
+  // ── 培训体系 ──────────────────────────────
+  { type: 'group', label: '培训体系' },
+  { type: 'item', id: 'trainingsystem', label: '课程体系', num: '—', icon: '◈' },
+
   // ── 外部培训 ──────────────────────────────
   { type: 'group', label: '外部培训' },
   { type: 'item', id: 'dashboard',   label: '仪表盘',   num: '—',  icon: '◈' },
@@ -16,13 +21,14 @@ const NAV = [
 ]
 
 const PAGE_MAP = {
-  dashboard:   Dashboard,
-  coursematch: CourseMatch,
-  schedule:    Schedule,
+  trainingsystem: TrainingSystem,
+  dashboard:      Dashboard,
+  coursematch:    CourseMatch,
+  schedule:       Schedule,
 }
 
 export function Shell({ user, onLogout }) {
-  const [page, setPage] = useState('dashboard')
+  const [page, setPage] = useState('trainingsystem')
   const Page = PAGE_MAP[page] || Dashboard
 
   return (
