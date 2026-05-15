@@ -13,9 +13,6 @@ const DS_API_URL = 'https://api.deepseek.com/v1/chat/completions'
 const DS_API_KEY = 'sk-603a729e51d54a82bf8b8de3e06530b4'
 const DS_MODEL   = 'deepseek-chat'
 
-const SKU_PAGE_MAP = Object.fromEntries(
-  SKU_FULL.filter(s => s.pageUrl).map(s => [s.id, s.pageUrl])
-)
 
 /* ─── helpers ─── */
 function loadOverrides() { try { return JSON.parse(localStorage.getItem(OVERRIDE_KEY) || '{}') } catch { return {} } }
@@ -710,8 +707,6 @@ export function CourseMatch({ navigate, portalMode = false }) {
                                   </div>
                                   <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:4 }}>
                                     {u.skus.map(s => {
-                                      const pageUrl = SKU_PAGE_MAP[s.id]
-                                      const href = pageUrl ? base + pageUrl : null
                                       const idColor = s.id.startsWith('Tax') || s.id.startsWith('TAX') ? '#7C3AED'
                                         : s.id.startsWith('Legal') ? '#1D4ED8' : '#C2410C'
                                       return (
@@ -720,15 +715,8 @@ export function CourseMatch({ navigate, portalMode = false }) {
                                           background:'var(--bg-card)', border:'1px solid var(--border)',
                                           borderRadius:6, padding:'6px 10px',
                                         }}>
-                                          {href
-                                            ? <a href={href} target="_blank" rel="noreferrer"
-                                                style={{ fontFamily:'monospace', fontSize:10, fontWeight:700,
-                                                  color: idColor, textDecoration:'none', flexShrink:0, paddingTop:1 }}>
-                                                {s.id} ↗
-                                              </a>
-                                            : <span style={{ fontFamily:'monospace', fontSize:10, fontWeight:700,
-                                                color: idColor, flexShrink:0, paddingTop:1 }}>{s.id}</span>
-                                          }
+                                          <span style={{ fontFamily:'monospace', fontSize:10, fontWeight:700,
+                                            color: idColor, flexShrink:0, paddingTop:1 }}>{s.id}</span>
                                           <span style={{ fontSize:11, color:'var(--text-1)', lineHeight:1.4 }}>{s.name}</span>
                                         </div>
                                       )
@@ -773,10 +761,7 @@ export function CourseMatch({ navigate, portalMode = false }) {
                           borderTop:'1px solid var(--border)', alignItems:'center'
                         }}>
                           <div style={{ padding:'0 4px', fontFamily:'monospace', fontSize:11, color:'var(--accent)', fontWeight:700 }}>
-                            {s.pageUrl
-                              ? <a href={s.pageUrl} target="_blank" rel="noreferrer"
-                                  style={{ color:'var(--blue)', textDecoration:'none' }}>{s.id} ↗</a>
-                              : s.id}
+                            {s.id}
                           </div>
                           <div style={{ padding:'0 4px', fontWeight:600, color:'var(--text-1)' }}>{s.name}</div>
                           <div style={{ padding:'0 4px', color:'var(--text-2)', fontSize:11 }}>{s.dept}</div>
