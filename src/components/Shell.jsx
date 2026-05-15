@@ -1,55 +1,33 @@
 import { useState } from 'react'
-import { Dashboard } from '../pages/Dashboard'
-import { WorkOrders } from '../pages/WorkOrders'
-import { CourseMatch } from '../pages/CourseMatch'
-import { Contracts } from '../pages/Contracts'
-import { Schedule } from '../pages/Schedule'
+import { Dashboard }     from '../pages/Dashboard'
+import { WorkOrders }    from '../pages/WorkOrders'
+import { CourseMatch }   from '../pages/CourseMatch'
+import { Schedule }      from '../pages/Schedule'
 import { Qualification } from '../pages/Qualification'
-import { Ledger } from '../pages/Ledger'
-import { Channels } from '../pages/Channels'
-import { ProductLearning } from '../pages/ProductLearning'
-import { InternalLedger } from '../pages/InternalLedger'
-import { TrainingMaterials } from '../pages/TrainingMaterials'
+import { Channels }      from '../pages/Channels'
 
 /* ─── Navigation structure ───
    type: 'group'  → module section header (not clickable)
    type: 'item'   → normal nav item
-   type: 'sub'    → indented sub-item (under a group)
 ─────────────────────────────── */
 const NAV = [
   // ── 外部培训 ──────────────────────────────
   { type: 'group', label: '外部培训' },
-  { type: 'item', id: 'dashboard',     label: '仪表盘',       num: '—',  icon: '◈' },
-  { type: 'item', id: 'workorders',    label: '需求收集',     num: '01', icon: '◎', tag: 'M1' },
-  { type: 'item', id: 'coursematch',   label: '课程匹配',     num: '02', icon: '◈', tag: 'M2' },
-  { type: 'item', id: 'contracts',     label: '合同管理',     num: '03', icon: '◻', tag: 'M3' },
-  { type: 'item', id: 'schedule',      label: '讲师排期',     num: '04', icon: '◷', tag: 'M4' },
+  { type: 'item', id: 'dashboard',     label: '仪表盘',        num: '—',  icon: '◈' },
+  { type: 'item', id: 'workorders',    label: '需求收集',      num: '01', icon: '◎', tag: 'M1' },
+  { type: 'item', id: 'coursematch',   label: '课程匹配',      num: '02', icon: '◈', tag: 'M2' },
+  { type: 'item', id: 'schedule',      label: '讲师排期',      num: '04', icon: '◷', tag: 'M4' },
   { type: 'item', id: 'qualification', label: '通关 & 素材库', num: '05', icon: '◆', tag: 'M5/6' },
-  { type: 'item', id: 'ledger',        label: '台账管理',     num: '09', icon: '◉', tag: 'M9', adminOnly: true },
-  { type: 'item', id: 'channels',      label: '渠道分析',     num: '10', icon: '◑', tag: 'M10' },
-
-  // ── 知识工坊 ──────────────────────────────
-  { type: 'group', label: '知识工坊' },
-  { type: 'item', id: 'productlearning', label: '产品学习', num: '11', icon: '◈', tag: 'M11' },
-
-  // ── 内部培训 ──────────────────────────────
-  { type: 'group', label: '内部培训' },
-  { type: 'item', id: 'internalledger',    label: '内训台账', num: '—', icon: '◉' },
-  { type: 'item', id: 'trainingmaterials', label: '培训资料', num: '—', icon: '◆' },
+  { type: 'item', id: 'channels',      label: '渠道分析',      num: '10', icon: '◑', tag: 'M10' },
 ]
 
 const PAGE_MAP = {
-  dashboard:          Dashboard,
-  workorders:         WorkOrders,
-  coursematch:        CourseMatch,
-  contracts:          Contracts,
-  schedule:           Schedule,
-  qualification:      Qualification,
-  ledger:             Ledger,
-  channels:           Channels,
-  productlearning:    ProductLearning,
-  internalledger:     InternalLedger,
-  trainingmaterials:  TrainingMaterials,
+  dashboard:     Dashboard,
+  workorders:    WorkOrders,
+  coursematch:   CourseMatch,
+  schedule:      Schedule,
+  qualification: Qualification,
+  channels:      Channels,
 }
 
 export function Shell({ user, onLogout }) {
@@ -80,9 +58,6 @@ export function Shell({ user, onLogout }) {
                 </div>
               )
             }
-
-            // Skip adminOnly items for non-admins
-            if (n.adminOnly && user.role !== 'admin') return null
 
             return (
               <div key={n.id}
