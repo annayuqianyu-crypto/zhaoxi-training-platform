@@ -7,14 +7,8 @@ export function LoginPage({ onLogin }) {
 
   function submit(e) {
     e.preventDefault()
-    if (email === 'anna.yu@zxpro.com.cn' && pass === '000000') {
-      onLogin({ email, role: 'admin', name: 'Anna Yu' })
-    } else if (pass === 'sales123') {
-      onLogin({ email, role: 'sales', name: '销售' })
-    } else if (pass === 'teacher123') {
-      onLogin({ email, role: 'teacher', name: '讲师' })
-    } else if (pass === 'bu123') {
-      onLogin({ email, role: 'bu', name: 'BU成员' })
+    if (email.endsWith('@zxpro.com.cn') && pass === 'ZXpro@2026') {
+      onLogin({ email, role: 'staff', name: email.split('@')[0] })
     } else {
       setErr('账号或密码错误，请重试')
     }
@@ -40,7 +34,7 @@ export function LoginPage({ onLogin }) {
         </form>
         <div className="divider" />
         <p style={{fontSize:11,color:'var(--text-3)',textAlign:'center',lineHeight:1.8}}>
-          管理员密码：000000 &nbsp;|&nbsp; 其他角色：sales123 / teacher123 / bu123
+          使用 @zxpro.com.cn 邮箱登录
         </p>
         <div style={{textAlign:'center',marginTop:12}}>
           <button
