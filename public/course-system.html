@@ -5,6 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
   <meta name="theme-color" content="#F7F4EF" />
   <title>朝曦家办 · 系列课程体系</title>
+
+  <!-- ── 微信/社交分享元标签 ── -->
+  <meta name="description" content="六大系列课程，覆盖企业从初创到传承的完整生命周期。股权架构、跨境税务、减持合规、家族信托……每个主题均源自真实服务案例。" />
+  <meta property="og:type"        content="website" />
+  <meta property="og:title"       content="朝曦家办 · 六大系列课程体系" />
+  <meta property="og:description" content="六大系列 · 44 个课程单元 · 覆盖企业从初创到传承的完整生命周期" />
+  <meta property="og:image"       content="https://annayuqianyu-crypto.github.io/zhaoxi-training-platform/course-cover.png" />
+  <meta property="og:image:width"  content="600" />
+  <meta property="og:image:height" content="400" />
+  <meta property="og:url"         content="https://annayuqianyu-crypto.github.io/zhaoxi-training-platform/course-system.html" />
+  <meta property="og:site_name"   content="朝曦家办知识工坊" />
+  <meta name="twitter:card"       content="summary_large_image" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&display=swap" rel="stylesheet">
   <style>
@@ -216,6 +229,96 @@
       border-top: 1px solid var(--border);
     }
 
+    /* ─── FAB share button ─── */
+    .fab {
+      position: fixed; bottom: 28px; right: 20px; z-index: 200;
+      width: 52px; height: 52px; border-radius: 50%;
+      background: var(--accent);
+      border: none; cursor: pointer;
+      box-shadow: 0 4px 18px rgba(45,106,79,.40);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      transition: transform .15s, box-shadow .15s;
+    }
+    .fab:active { transform: scale(.93); box-shadow: 0 2px 10px rgba(45,106,79,.35); }
+
+    /* ─── Share modal overlay ─── */
+    .share-overlay {
+      display: none; position: fixed; inset: 0; z-index: 300;
+      background: rgba(0,0,0,.45);
+      align-items: flex-end; justify-content: center;
+    }
+    .share-overlay.open { display: flex; }
+    .share-sheet {
+      width: 100%; max-width: 480px;
+      background: var(--bg-card); border-radius: 20px 20px 0 0;
+      padding: 20px 20px 36px;
+      animation: slideUp .25s ease;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(60px); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+    .sheet-handle {
+      width: 36px; height: 4px; border-radius: 2px;
+      background: var(--border); margin: 0 auto 20px;
+    }
+    .sheet-title { font-size: 15px; font-weight: 700; color: var(--text-1); margin-bottom: 4px; }
+    .sheet-sub   { font-size: 12px; color: var(--text-3); margin-bottom: 20px; }
+
+    /* WeChat card preview */
+    .wechat-card {
+      background: #fff; border-radius: 12px;
+      border: 1px solid #E5E5E5;
+      overflow: hidden; margin-bottom: 14px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.08);
+    }
+    .wechat-card-img {
+      width: 100%; aspect-ratio: 3/2; object-fit: cover;
+      display: block;
+      background: linear-gradient(135deg,#fff,#F0FAF4);
+    }
+    .wechat-card-body {
+      padding: 12px 14px 10px;
+    }
+    .wechat-card-title {
+      font-size: 14px; font-weight: 600; color: #1A1A1A; line-height: 1.4; margin-bottom: 8px;
+    }
+    .wechat-card-footer {
+      display: flex; align-items: center; gap: 6px;
+      padding-top: 8px; border-top: 1px solid #F0F0F0;
+    }
+    .wechat-mp-icon {
+      width: 16px; height: 16px; border-radius: 3px;
+      background: #07C160;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 9px; font-weight: 800; color: #fff; flex-shrink: 0;
+    }
+    .wechat-mp-name { font-size: 11px; color: #999; }
+    .wechat-mp-badge { font-size: 10px; color: #07C160; margin-left: auto; font-weight: 600; }
+
+    .share-hint {
+      font-size: 11px; color: var(--text-3); text-align: center;
+      line-height: 1.7; margin-bottom: 16px;
+    }
+    .share-actions { display: flex; flex-direction: column; gap: 10px; }
+    .share-btn {
+      width: 100%; padding: 13px; border-radius: 10px;
+      font-size: 13px; font-weight: 700; cursor: pointer; border: none;
+      font-family: inherit; transition: opacity .15s;
+      display: flex; align-items: center; justify-content: center; gap: 7px;
+    }
+    .share-btn:active { opacity: .8; }
+    .share-btn-primary { background: var(--accent); color: #fff; }
+    .share-btn-secondary {
+      background: var(--bg); color: var(--text-2);
+      border: 1px solid var(--border);
+    }
+    .copied-tip {
+      display: none; font-size: 11px; color: var(--accent);
+      text-align: center; font-weight: 600; margin-top: 6px;
+    }
+
     /* Desktop */
     @media (min-width: 640px) {
       .hero { padding: 60px 44px 64px; }
@@ -224,6 +327,7 @@
       .cta { margin-left: 24px; margin-right: 24px; }
       .inst-grid { grid-template-columns: repeat(4, 1fr); }
       .section-header { padding-left: 24px; padding-right: 24px; }
+      .share-sheet { border-radius: 20px; margin-bottom: 40px; }
     }
   </style>
 </head>
@@ -329,9 +433,49 @@
 </div>
 
 <!-- Footer -->
-<div class="footer">
+<div class="footer" style="padding-bottom:96px">
   朝曦家办 · 知识工坊<br>
   课程内容定期更新，以最新版本为准
+</div>
+
+<!-- ── 浮动分享按钮 ── -->
+<button class="fab" id="fab-share" title="分享给客户">📤</button>
+
+<!-- ── 分享底部弹层 ── -->
+<div class="share-overlay" id="share-overlay">
+  <div class="share-sheet" id="share-sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">分享给客户</div>
+    <div class="sheet-sub">以下是客户收到后看到的微信卡片效果</div>
+
+    <!-- 仿微信卡片预览 -->
+    <div class="wechat-card">
+      <img class="wechat-card-img" src="course-cover.png" alt="课程体系封面" />
+      <div class="wechat-card-body">
+        <div class="wechat-card-title">朝曦家办 · 六大系列课程体系</div>
+        <div class="wechat-card-footer">
+          <span class="wechat-mp-icon">曦</span>
+          <span class="wechat-mp-name">朝曦家办知识工坊</span>
+          <span class="wechat-mp-badge">H5 链接</span>
+        </div>
+      </div>
+    </div>
+
+    <p class="share-hint">
+      复制链接后，在微信聊天框直接粘贴发送<br>
+      对方点击即可查看完整课程体系
+    </p>
+
+    <div class="share-actions">
+      <button class="share-btn share-btn-primary" id="btn-copy-url">
+        <span>🔗</span> 复制链接
+      </button>
+      <button class="share-btn share-btn-secondary" id="btn-open-preview">
+        <span>👁</span> 在新窗口预览
+      </button>
+    </div>
+    <div class="copied-tip" id="copied-tip">✓ 链接已复制，去微信粘贴发送吧</div>
+  </div>
 </div>
 
 <script>
@@ -472,6 +616,50 @@ document.getElementById('series-list').addEventListener('click', e => {
   const open = ul.classList.toggle('open')
   btn.classList.toggle('open', open)
   btn.querySelector('span:first-child').textContent = open ? '收起课程单元' : '展开课程单元'
+})
+
+/* ── 分享功能 ── */
+const SHARE_URL = 'https://annayuqianyu-crypto.github.io/zhaoxi-training-platform/course-system.html'
+
+const overlay   = document.getElementById('share-overlay')
+const fab       = document.getElementById('fab-share')
+const copiedTip = document.getElementById('copied-tip')
+
+fab.addEventListener('click', () => overlay.classList.add('open'))
+overlay.addEventListener('click', e => {
+  if (!document.getElementById('share-sheet').contains(e.target)) {
+    overlay.classList.remove('open')
+  }
+})
+
+document.getElementById('btn-copy-url').addEventListener('click', () => {
+  const doCopy = () => {
+    copiedTip.style.display = 'block'
+    document.getElementById('btn-copy-url').textContent = '✓ 已复制'
+    document.getElementById('btn-copy-url').style.background = '#1B5E3B'
+    setTimeout(() => {
+      copiedTip.style.display = 'none'
+      document.getElementById('btn-copy-url').innerHTML = '<span>🔗</span> 复制链接'
+      document.getElementById('btn-copy-url').style.background = ''
+    }, 2500)
+  }
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(SHARE_URL).then(doCopy).catch(() => {
+      const el = document.createElement('input')
+      el.value = SHARE_URL; document.body.appendChild(el)
+      el.select(); document.execCommand('copy')
+      document.body.removeChild(el); doCopy()
+    })
+  } else {
+    const el = document.createElement('input')
+    el.value = SHARE_URL; document.body.appendChild(el)
+    el.select(); document.execCommand('copy')
+    document.body.removeChild(el); doCopy()
+  }
+})
+
+document.getElementById('btn-open-preview').addEventListener('click', () => {
+  window.open(SHARE_URL, '_blank')
 })
 </script>
 </body>
