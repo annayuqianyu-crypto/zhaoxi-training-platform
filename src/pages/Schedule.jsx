@@ -200,29 +200,70 @@ export function Schedule() {
         {/* ── Instructor bio card ── */}
         {currentInst && (
           <div style={{
-            display: 'flex', alignItems: 'center', gap: 16,
-            padding: '14px 20px', background: 'var(--bg-card)',
-            border: '1px solid var(--border)', borderRadius: 12, marginBottom: 16,
+            background: 'var(--bg-card)', border: '1px solid var(--border)',
+            borderRadius: 12, marginBottom: 16, overflow: 'hidden',
           }}>
-            <div style={{
-              width: 48, height: 48, borderRadius: '50%', flexShrink: 0,
-              background: INST_COLORS[currentInstIdx].color,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 20, fontWeight: 700, color: '#fff',
-            }}>{currentInst.avatar}</div>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontWeight: 700, fontSize: 15 }}>{currentInst.name}</div>
-              <div style={{ fontSize: 12, color: 'var(--text-3)', marginTop: 3 }}>
-                {currentInst.title}
-                {currentInst.city && ` · ${currentInst.city}`}
-                {currentInst.specialties?.length > 0 && ` · ${currentInst.specialties.slice(0, 3).join('、')}`}
+            {/* Top row: avatar + info + month count */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '14px 20px' }}>
+              <div style={{
+                width: 48, height: 48, borderRadius: '50%', flexShrink: 0,
+                background: INST_COLORS[currentInstIdx].color,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 20, fontWeight: 700, color: '#fff',
+              }}>{currentInst.avatar}</div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontWeight: 700, fontSize: 15 }}>{currentInst.name}</div>
+                <div style={{ fontSize: 12, color: 'var(--text-3)', marginTop: 3 }}>
+                  {currentInst.title}
+                  {currentInst.city && ` · ${currentInst.city}`}
+                  {currentInst.specialties?.length > 0 && ` · ${currentInst.specialties.slice(0, 3).join('、')}`}
+                </div>
+              </div>
+              <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                <div style={{ fontSize: 11, color: 'var(--text-3)', marginBottom: 2 }}>{year}年{month + 1}月排期数</div>
+                <div style={{ fontSize: 26, fontWeight: 800, color: INST_COLORS[currentInstIdx].color, lineHeight: 1 }}>
+                  {monthCount(tab)}
+                </div>
               </div>
             </div>
-            <div style={{ textAlign: 'right', flexShrink: 0 }}>
-              <div style={{ fontSize: 11, color: 'var(--text-3)', marginBottom: 2 }}>{year}年{month + 1}月排期数</div>
-              <div style={{ fontSize: 26, fontWeight: 800, color: INST_COLORS[currentInstIdx].color, lineHeight: 1 }}>
-                {monthCount(tab)}
-              </div>
+            {/* Bottom row: view + download buttons */}
+            <div style={{
+              display: 'flex', gap: 8, padding: '10px 20px 14px',
+              borderTop: '1px solid var(--border)',
+            }}>
+              <a
+                href={`instructors/${currentInst.id}.html`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 5,
+                  padding: '6px 16px', borderRadius: 8, fontSize: 12, fontWeight: 600,
+                  background: INST_COLORS[currentInstIdx].bg,
+                  color: INST_COLORS[currentInstIdx].color,
+                  border: `1px solid ${INST_COLORS[currentInstIdx].color}33`,
+                  textDecoration: 'none', transition: 'opacity .15s',
+                }}
+                onMouseEnter={e => e.currentTarget.style.opacity = '.8'}
+                onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+              >
+                👤 查看讲师介绍
+              </a>
+              <a
+                href={`instructors/${currentInst.id}.docx`}
+                download={`朝曦家办讲师-${currentInst.name}.docx`}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 5,
+                  padding: '6px 16px', borderRadius: 8, fontSize: 12, fontWeight: 600,
+                  background: 'var(--bg-page)',
+                  color: 'var(--text-2)',
+                  border: '1px solid var(--border)',
+                  textDecoration: 'none', transition: 'opacity .15s',
+                }}
+                onMouseEnter={e => e.currentTarget.style.opacity = '.8'}
+                onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+              >
+                ⬇ 下载介绍文档
+              </a>
             </div>
           </div>
         )}
