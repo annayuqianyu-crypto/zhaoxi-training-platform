@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useCallback } from 'react'
 
 const SERIES = [
   {
@@ -113,9 +113,36 @@ const SERIES = [
   },
 ]
 
+/* ─── Share URL ─── */
+const SHARE_PATH = 'course-system.html'
+
+function getShareUrl() {
+  const base = window.location.href.split('#')[0].replace(/\/[^/]*$/, '/')
+  return base + SHARE_PATH
+}
+
 export function TrainingSystem() {
   const [current, setCurrent] = useState(0)
   const sliderRef = useRef(null)
+  const [shareOpen, setShareOpen] = useState(false)
+  const [copied, setCopied] = useState(false)
+
+  const handleCopy = useCallback(() => {
+    navigator.clipboard.writeText(getShareUrl()).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    }).catch(() => {
+      // fallback for older browsers
+      const el = document.createElement('input')
+      el.value = getShareUrl()
+      document.body.appendChild(el)
+      el.select()
+      document.execCommand('copy')
+      document.body.removeChild(el)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    })
+  }, [])
 
   const totalUnits = SERIES.reduce((s, c) => s + c.units.length, 0)
 
@@ -136,6 +163,7 @@ export function TrainingSystem() {
   }
 
   return (
+    <>
     <div style={{ padding: '32px 36px', maxWidth: 1100, margin: '0 auto' }}>
 
       {/* ── Hero ── */}
@@ -181,17 +209,35 @@ export function TrainingSystem() {
             六大系列课程，覆盖企业从初创到传承的完整生命周期。不讲大道理，只聊真问题。
             每个主题均源自真实服务案例，陪伴企业家在关键节点找到答案。
           </p>
-          <div style={{ display: 'flex', gap: 28, marginTop: 28 }}>
-            {[
-              { num: '6', label: '核心系列' },
-              { num: totalUnits, label: '课程单元' },
-              { num: '3', label: '专业领域' },
-            ].map(({ num, label }) => (
-              <div key={label}>
-                <div style={{ fontSize: 28, fontWeight: 800, color: '#4ADE80', lineHeight: 1 }}>{num}</div>
-                <div style={{ fontSize: 11, color: '#71717A', marginTop: 4 }}>{label}</div>
-              </div>
-            ))}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16, marginTop: 28 }}>
+            <div style={{ display: 'flex', gap: 28 }}>
+              {[
+                { num: '6', label: '核心系列' },
+                { num: totalUnits, label: '课程单元' },
+                { num: '3', label: '专业领域' },
+              ].map(({ num, label }) => (
+                <div key={label}>
+                  <div style={{ fontSize: 28, fontWeight: 800, color: '#4ADE80', lineHeight: 1 }}>{num}</div>
+                  <div style={{ fontSize: 11, color: '#71717A', marginTop: 4 }}>{label}</div>
+                </div>
+              ))}
+            </div>
+            <button
+              onClick={() => setShareOpen(true)}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 7,
+                padding: '10px 20px', borderRadius: 10, cursor: 'pointer',
+                background: 'linear-gradient(135deg, #2D6A4F, #40916C)',
+                border: 'none', color: '#fff',
+                fontSize: 13, fontWeight: 700,
+                boxShadow: '0 4px 16px #2D6A4F55',
+                transition: 'opacity .15s',
+              }}
+              onMouseEnter={e => e.currentTarget.style.opacity = '.88'}
+              onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+            >
+              <span style={{ fontSize: 15 }}>📤</span> 分享给客户
+            </button>
           </div>
         </div>
       </div>
@@ -347,5 +393,101 @@ export function TrainingSystem() {
         ))}
       </div>
     </div>
+
+      {/* ════════ Share Modal ════════ */}
+      {shareOpen && (
+        <div
+          style={{
+            position: 'fixed', inset: 0, background: '#00000066',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            zIndex: 1000, padding: 20,
+          }}
+          onClick={() => setShareOpen(false)}
+        >
+          <div
+            style={{
+              background: 'var(--bg-card)', borderRadius: 20, padding: 32,
+              width: '100%', maxWidth: 440,
+              boxShadow: '0 24px 64px #00000040',
+            }}
+            onClick={e => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+              <div>
+                <div style={{ fontSize: 17, fontWeight: 700 }}>分享课程体系</div>
+                <div style={{ fontSize: 12, color: 'var(--text-3)', marginTop: 3 }}>发给客户，仅展示课程体系，不含内部信息</div>
+              </div>
+              <button
+                onClick={() => setShareOpen(false)}
+                style={{ width: 30, height: 30, borderRadius: '50%', border: 'none', background: 'var(--border)', cursor: 'pointer', fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-2)' }}
+              >×</button>
+            </div>
+
+            {/* Preview card */}
+            <div style={{
+              background: '#18181B', borderRadius: 12,
+              padding: '16px 18px', marginBottom: 20,
+              display: 'flex', alignItems: 'center', gap: 14,
+              border: '1px solid #27272A',
+            }}>
+              <div style={{
+                width: 44, height: 44, borderRadius: 10, flexShrink: 0,
+                background: 'linear-gradient(135deg, #2D6A4F, #40916C)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 20, fontWeight: 800, color: '#fff',
+              }}>曦</div>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: '#F4F4F5' }}>朝曦家办 · 系列课程体系</div>
+                <div style={{ fontSize: 11, color: '#71717A', marginTop: 3 }}>六大系列 · {totalUnits} 个课程单元 · 独立 H5 页面</div>
+              </div>
+            </div>
+
+            {/* URL row */}
+            <div style={{ fontSize: 11, color: 'var(--text-3)', marginBottom: 6, fontWeight: 600 }}>页面链接</div>
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20,
+            }}>
+              <div style={{
+                flex: 1, padding: '10px 14px',
+                background: 'var(--bg-page)', border: '1px solid var(--border)',
+                borderRadius: 8, fontSize: 12, color: 'var(--text-2)',
+                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                userSelect: 'all',
+              }}>{getShareUrl()}</div>
+              <button
+                onClick={handleCopy}
+                style={{
+                  flexShrink: 0, padding: '10px 18px', borderRadius: 8,
+                  border: 'none', cursor: 'pointer', fontSize: 12, fontWeight: 700,
+                  background: copied ? '#2D6A4F' : 'var(--accent)',
+                  color: '#fff', transition: 'background .2s', whiteSpace: 'nowrap',
+                }}
+              >{copied ? '✓ 已复制' : '复制链接'}</button>
+            </div>
+
+            {/* Open preview */}
+            <a
+              href={SHARE_PATH}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
+                padding: '12px', borderRadius: 10, textDecoration: 'none',
+                background: 'linear-gradient(135deg, #2D6A4F, #40916C)',
+                color: '#fff', fontSize: 13, fontWeight: 700,
+                boxShadow: '0 4px 14px #2D6A4F44',
+              }}
+            >
+              <span>👁️</span> 预览客户视角
+            </a>
+
+            <p style={{ fontSize: 11, color: 'var(--text-3)', textAlign: 'center', marginTop: 14, lineHeight: 1.6 }}>
+              客户打开后仅看到课程体系概况，不含合同、排期等内部模块
+            </p>
+          </div>
+        </div>
+      )}
+    </>
   )
 }

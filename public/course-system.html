@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name="theme-color" content="#18181B" />
+  <title>朝曦家办 · 系列课程体系</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, 'PingFang SC', 'Helvetica Neue', 'Noto Sans SC', sans-serif;
+      background: #0F0F11;
+      color: #F4F4F5;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ─── Nav ─── */
+    .nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(15,15,17,.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid #27272A;
+      padding: 0 20px;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 56px;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .nav-logo .mark {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(135deg, #2D6A4F, #40916C);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 800; color: #fff;
+    }
+    .nav-logo .name { font-size: 14px; font-weight: 600; color: #F4F4F5; }
+    .nav-logo .sub { font-size: 11px; color: #71717A; margin-top: 1px; }
+    .nav-badge {
+      font-size: 11px; color: #4ADE80;
+      border: 1px solid #4ADE8044;
+      background: #4ADE8011;
+      border-radius: 20px; padding: 3px 10px;
+    }
+
+    /* ─── Hero ─── */
+    .hero {
+      padding: 48px 24px 52px;
+      background: linear-gradient(160deg, #18181B 0%, #1C1C1F 50%, #18261E 100%);
+      position: relative; overflow: hidden;
+      text-align: center;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; top: -60px; right: -60px;
+      width: 280px; height: 280px; border-radius: 50%;
+      background: radial-gradient(circle, #2D6A4F22 0%, transparent 70%);
+    }
+    .hero::after {
+      content: '';
+      position: absolute; bottom: -40px; left: -40px;
+      width: 180px; height: 180px; border-radius: 50%;
+      background: radial-gradient(circle, #1D4ED811 0%, transparent 70%);
+    }
+    .hero-eyebrow {
+      font-size: 11px; letter-spacing: .18em; color: #71717A;
+      text-transform: uppercase; margin-bottom: 18px;
+    }
+    .hero h1 {
+      font-size: 30px; font-weight: 800; line-height: 1.3;
+      color: #F4F4F5; margin-bottom: 8px;
+    }
+    .hero h1 em { font-style: normal; color: #4ADE80; }
+    .hero-desc {
+      font-size: 14px; color: #A1A1AA; line-height: 1.85;
+      max-width: 400px; margin: 16px auto 0;
+    }
+    .hero-stats {
+      display: flex; justify-content: center; gap: 40px; margin-top: 32px;
+    }
+    .stat-num { font-size: 30px; font-weight: 800; color: #4ADE80; line-height: 1; }
+    .stat-label { font-size: 11px; color: #71717A; margin-top: 5px; }
+
+    /* ─── Section title ─── */
+    .section-header {
+      padding: 32px 20px 16px;
+    }
+    .section-header h2 {
+      font-size: 18px; font-weight: 700; color: #F4F4F5;
+    }
+    .section-header p { font-size: 13px; color: #71717A; margin-top: 5px; line-height: 1.6; }
+
+    /* ─── Series cards ─── */
+    .cards { padding: 0 16px 20px; display: flex; flex-direction: column; gap: 16px; }
+
+    .series-card {
+      border-radius: 16px; overflow: hidden;
+      background: #1A1A1D;
+      border: 1px solid #27272A;
+      transition: transform .2s;
+    }
+    .series-card:active { transform: scale(.99); }
+
+    .card-header {
+      padding: 22px 20px 18px;
+    }
+    .card-meta {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+    }
+    .card-tag {
+      font-size: 10px; font-weight: 800; letter-spacing: .12em;
+      padding: 3px 10px; border-radius: 20px;
+    }
+    .card-count { font-size: 11px; color: #71717A; }
+    .card-phase { font-size: 12px; color: #A1A1AA; margin-bottom: 5px; }
+    .card-title { font-size: 17px; font-weight: 700; color: #F4F4F5; line-height: 1.4; }
+
+    /* Toggle */
+    .toggle-btn {
+      width: 100%; padding: 12px 20px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: none; border: none; border-top: 1px solid #27272A;
+      color: #A1A1AA; font-size: 12px; font-weight: 600; cursor: pointer;
+      text-align: left; letter-spacing: .03em;
+    }
+    .toggle-btn .arrow {
+      font-size: 16px; transition: transform .25s;
+      color: #71717A;
+    }
+    .toggle-btn.open .arrow { transform: rotate(180deg); }
+
+    /* Units list */
+    .units-list {
+      display: none;
+      border-top: 1px solid #27272A;
+    }
+    .units-list.open { display: block; }
+
+    .unit-item {
+      padding: 14px 20px;
+      border-bottom: 1px solid #1F1F22;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .unit-item:last-child { border-bottom: none; }
+    .unit-num {
+      font-size: 10px; font-weight: 800; color: #fff;
+      border-radius: 5px; padding: 2px 7px;
+      flex-shrink: 0; margin-top: 2px; min-width: 26px; text-align: center;
+    }
+    .unit-name { font-size: 13px; font-weight: 600; color: #E4E4E7; margin-bottom: 5px; line-height: 1.4; }
+    .unit-meta { font-size: 11px; color: #71717A; line-height: 1.65; }
+    .unit-meta span { color: #52525B; margin-right: 3px; }
+
+    /* ─── Instructors teaser ─── */
+    .instructors {
+      padding: 0 16px 20px;
+    }
+    .inst-row {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .inst-card {
+      background: #1A1A1D; border: 1px solid #27272A;
+      border-radius: 12px; padding: 16px 14px;
+    }
+    .inst-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: 700; color: #fff;
+      margin-bottom: 10px;
+    }
+    .inst-name { font-size: 14px; font-weight: 700; color: #F4F4F5; margin-bottom: 3px; }
+    .inst-title { font-size: 11px; color: #71717A; line-height: 1.5; }
+    .inst-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+    .inst-tag {
+      font-size: 10px; color: #A1A1AA;
+      background: #27272A; border-radius: 4px; padding: 2px 7px;
+    }
+
+    /* ─── CTA ─── */
+    .cta {
+      margin: 0 16px 40px;
+      background: linear-gradient(135deg, #18261E, #1A1F2E);
+      border: 1px solid #2D6A4F44;
+      border-radius: 16px; padding: 28px 24px;
+      text-align: center;
+    }
+    .cta h3 { font-size: 18px; font-weight: 700; color: #F4F4F5; margin-bottom: 8px; }
+    .cta p { font-size: 13px; color: #A1A1AA; line-height: 1.7; margin-bottom: 20px; }
+    .cta-note {
+      font-size: 11px; color: #52525B; margin-top: 12px; line-height: 1.6;
+    }
+
+    /* ─── Footer ─── */
+    .footer {
+      text-align: center; padding: 24px 20px 40px;
+      font-size: 11px; color: #3F3F46; line-height: 1.8;
+      border-top: 1px solid #1A1A1D;
+    }
+
+    /* Desktop wider */
+    @media (min-width: 640px) {
+      .hero { padding: 64px 40px 68px; }
+      .hero h1 { font-size: 38px; }
+      .cards { padding: 0 24px 24px; }
+      .instructors { padding: 0 24px 24px; }
+      .cta { margin: 0 24px 48px; }
+      .inst-row { grid-template-columns: 1fr 1fr 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav class="nav">
+  <div class="nav-logo">
+    <div class="mark">曦</div>
+    <div>
+      <div class="name">朝曦家办</div>
+      <div class="sub">知识工坊</div>
+    </div>
+  </div>
+  <div class="nav-badge">系列课程体系</div>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-eyebrow">朝曦家办 · 企业家专属培训课程</div>
+  <h1>懂企业的成长<br><em>更懂企业家的心事</em></h1>
+  <p class="hero-desc">
+    六大系列课程，覆盖企业从初创到传承的完整生命周期。<br>不讲大道理，只聊真问题。
+    每个主题均源自真实服务案例。
+  </p>
+  <div class="hero-stats">
+    <div><div class="stat-num">6</div><div class="stat-label">核心系列</div></div>
+    <div><div class="stat-num">44</div><div class="stat-label">课程单元</div></div>
+    <div><div class="stat-num">3</div><div class="stat-label">专业领域</div></div>
+  </div>
+</div>
+
+<!-- Section header -->
+<div class="section-header">
+  <h2>六大系列课程</h2>
+  <p>点击每个系列查看详细课程单元</p>
+</div>
+
+<!-- Cards -->
+<div class="cards" id="series-list"></div>
+
+<!-- Instructors -->
+<div class="section-header">
+  <h2>主讲团队</h2>
+  <p>资深专家，源自真实案例，贴近实战</p>
+</div>
+<div class="instructors">
+  <div class="inst-row">
+    <div class="inst-card">
+      <div class="inst-avatar" style="background:#0369A1">刘</div>
+      <div class="inst-name">刘怀宇</div>
+      <div class="inst-title">朝曦合伙人 · 上海</div>
+      <div class="inst-tags">
+        <span class="inst-tag">家族传承</span>
+        <span class="inst-tag">资本市场</span>
+        <span class="inst-tag">跨境</span>
+      </div>
+    </div>
+    <div class="inst-card">
+      <div class="inst-avatar" style="background:#0F766E">李</div>
+      <div class="inst-name">李红岩</div>
+      <div class="inst-title">南区负责人 · 深圳</div>
+      <div class="inst-tags">
+        <span class="inst-tag">资产架构</span>
+        <span class="inst-tag">税务合规</span>
+        <span class="inst-tag">跨境</span>
+      </div>
+    </div>
+    <div class="inst-card">
+      <div class="inst-avatar" style="background:#C2410C">熊</div>
+      <div class="inst-name">熊能</div>
+      <div class="inst-title">西区负责人 · 成都</div>
+      <div class="inst-tags">
+        <span class="inst-tag">资产架构</span>
+        <span class="inst-tag">资本市场</span>
+        <span class="inst-tag">法税</span>
+      </div>
+    </div>
+    <div class="inst-card">
+      <div class="inst-avatar" style="background:#7C3AED">胡</div>
+      <div class="inst-name">胡顺亥</div>
+      <div class="inst-title">资深财富架构师 · 上海</div>
+      <div class="inst-tags">
+        <span class="inst-tag">财富传承</span>
+        <span class="inst-tag">法律合规</span>
+        <span class="inst-tag">四大背景</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta">
+  <h3>量身定制，为您的团队而来</h3>
+  <p>课程支持单次沙龙、系列培训、一对一咨询等多种形式，可根据贵行客群需求组合定制。</p>
+  <p class="cta-note">如需进一步了解课程详情或预约演示，欢迎与朝曦家办联系</p>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  朝曦家办 · 知识工坊<br>
+  课程内容定期更新，以最新版本为准
+</div>
+
+<script>
+const SERIES = [
+  {
+    tag: 'Series 01', phase: '企业初创与成长期',
+    title: '股权架构顶层设计与激励落地',
+    color: '#B45309', bg: '#B4530915', border: '#FDE68A33',
+    units: [
+      { name: '企业全生命周期股权设计', pain: '早期架构不合理，为融资、上市埋下隐患', client: '早期创业者、新兴企业家、家族接班人' },
+      { name: '创始人控制权保护', pain: '多轮融资股权稀释，控制权旁落风险', client: '正在或计划进行多轮融资的企业实控人' },
+      { name: '员工股权激励设计', pain: '骨干认知不足、激励失效、分配不公', client: '初创期、转型期或上市进程中的企业' },
+      { name: '非货币性资产出资', pain: '技术入股过程复杂，估值与税务埋下隐患', client: '拥有技术/专利的创始人' },
+      { name: '拟上市公司架构安排', pain: '历史融资架构复杂，面临高税务成本', client: '计划在境内外上市的企业家' },
+      { name: '国际税视野下的持股架构', pain: '美籍股东跨境税制应对复杂', client: '持有美籍/绿卡的创始人或大股东' },
+      { name: '红筹架构海外上市', pain: '境外上市路径模糊，架构搭建不清晰', client: '计划境外上市的创始人' },
+      { name: '股权动态调整与退出设计', pain: '婚变、离职等变动引发股权纠纷', client: '关注股权健康度的企业家' },
+      { name: '股权架构税务体检', pain: '当前架构在减持、分红时税负过高', client: '所有企业家（尤其关注税务成本者）' },
+    ],
+  },
+  {
+    tag: 'Series 02', phase: '业务扩张期',
+    title: '跨境业务架构与税务全景',
+    color: '#1D4ED8', bg: '#1D4ED815', border: '#BFDBFE33',
+    units: [
+      { name: '跨境电商全链条税务合规', pain: '跨境业务"关税汇"风险与利润侵蚀', client: '跨境电商卖家、制造业出海企业主' },
+      { name: '境外投资架构设计', pain: '架构不合理致退出税负高、资金回流难', client: '计划海外投资/并购的企业家' },
+      { name: '转让定价与BEPS合规', pain: '关联交易定价面临各国税局调查与双重征税', client: '在海外有关联公司的企业主' },
+      { name: '中美贸易战税务应对', pain: '关税增加冲击利润，供应链重塑迫在眉睫', client: '受中美贸易战影响的进出口企业' },
+      { name: '境内外信托架构与风险隔离', pain: '企业债务、婚姻风险传导至个人财富', client: '关注债务/婚姻风险隔离的企业家' },
+      { name: '跨境并购税务合规', pain: '交易结构复杂，隐含巨额税务负担', client: '进行海外收购分拆的企业家' },
+      { name: 'CRS与受控外国企业规则', pain: '离岸架构在"透明时代"面临穿透风险', client: '在免税地设有公司的企业主' },
+    ],
+  },
+  {
+    tag: 'Series 03', phase: '资本成熟期',
+    title: '股东减持与税务合规',
+    color: '#065F46', bg: '#065F4615', border: '#A7F3D033',
+    units: [
+      { name: '有限合伙平台减持', pain: '合伙架构减持税务复杂，追税风险高', client: '通过合伙平台持股的上市公司股东' },
+      { name: '有限公司平台减持', pain: '公司制持股面临"双重征税"困境', client: '通过公司平台持股的上市公司股东' },
+      { name: '减持税务合规与稽查风险预防', pain: '减持后担忧税务机关稽查补税罚款', client: '即将或已完成减持的上市公司股东' },
+      { name: '上市公司减持及再投资', pain: '减持后资金闲置，缺乏再投资规划', client: 'A股上市公司实控人、大股东、董秘' },
+      { name: '减持方式选择与实操', pain: '多种减持工具面前难以选择最优路径', client: '对减持效率和市场影响有要求的股东' },
+      { name: '外籍股东跨境减持', pain: '外籍股东减持面临复杂外汇、税务与法律问题', client: '外籍股东或通过境外平台持股者' },
+    ],
+  },
+  {
+    tag: 'Series 04', phase: '财富资本化',
+    title: '境外上市与跨境资本路径创新',
+    color: '#6D28D9', bg: '#6D28D915', border: '#DDD6FE33',
+    units: [
+      { name: '境外上市架构设计', pain: '境外上市顶层架构模糊，员工激励平台难选择', client: '计划赴港/赴美上市的企业家' },
+      { name: '境内外投融资架构', pain: '架构僵化，无法灵活应对多投资场景', client: '计划进行跨境投资的企业家' },
+      { name: '中美投融资架构', pain: '中美监管与税制差异让投融资束手束脚', client: '进行跨境融资的创业者、投资者' },
+      { name: '新加坡/香港地区投资架构', pain: '对新港法律税务环境不熟，架构搭建盲目', client: '计划投资东南亚的企业家' },
+      { name: '新加坡/香港地区家族办公室', pain: '家族财富缺乏专业化管理，资产分散低效', client: '超高净值家族、大额资产变现的股东' },
+      { name: '多司法辖区税务合规', pain: '资产遍布多国，管理混乱、成本不清晰', client: '资产遍布多国的超高净值家族' },
+    ],
+  },
+  {
+    tag: 'Series 05', phase: '家族永续期',
+    title: '跨境/境内家族信托、税务与治理',
+    color: '#0E7490', bg: '#0E749015', border: '#A5F3FC33',
+    units: [
+      { name: '涉税数据，内外兼修', pain: '金税四期严监管下，税务处理风险极高', client: '希望提高税务合规质量的企业家' },
+      { name: '穿越CRS"暴风眼"', pain: '海外账户面临CRS信息交换后的补税风险', client: '在海外拥有金融账户的高净值客户' },
+      { name: '中加、中美财富人士规划', pain: '家庭成员持多国身份，合规风险高', client: '美籍公民、绿卡持有者、加拿大税务居民' },
+      { name: '跨境家族信托', pain: '不知如何设立信托、注入资产并发挥隔离作用', client: '关注资产保护与世代传承的企业家' },
+      { name: '家庭内部风险管理', pain: '婚变、债务、继承纠纷导致财富严重缩水', client: '女性企业家、全职太太、高净值家庭子女' },
+      { name: '身份规划税务考量', pain: '单一身份在全球化生活中带来不便与额外税负', client: '家庭成员涉多国身份的企业家' },
+      { name: '弃籍税规划', pain: '放弃美国身份前，弃籍税计算与规划复杂', client: '计划放弃美籍/绿卡的高净值人士' },
+      { name: '企业经营财税合规', pain: '日常经营中隐藏的财税风险点不自知', client: '所有企业主' },
+      { name: '国际税务争议与家族治理', pain: '多国税局调查无力应对，家族治理机制缺失', client: '面临税务稽查的家族、大家族' },
+      { name: '二代接班技能提升', pain: '二代缺乏系统训练，两代人理念冲突', client: '面对交班压力的二代及希望培养二代的一代' },
+      { name: '高净值人士涉税误区', pain: '经营与财富管理中存在涉税认知误区', client: '所有企业主及高净值人群' },
+      { name: '智慧税务，有法可依', pain: '2026增值税法对公司的影响与应对', client: '所有企业主' },
+    ],
+  },
+  {
+    tag: 'Series 06', phase: '企业家投资思维',
+    title: '从产业经营到资产配置的范式转换',
+    color: '#B91C1C', bg: '#B91C1C15', border: '#FECDD333',
+    units: [
+      { name: '认知重塑：企业家为何需要投资思维', pain: '过度依赖主业，忽视配置，周期波动下财富缩水', client: '主业稳定但缺乏投资系统认知的企业家' },
+      { name: '理论学习：资产价格的运行逻辑与风格周期', pain: '忽视市场周期与风格轮动，努力却亏钱', client: '有投资经验但回报不理想的企业家' },
+      { name: '框架搭建：家族财富"进攻—防守"配置体系', pain: '资产过度集中于股权，流动性不足，风险暴露高', client: '资产规模较大但配置单一的企业家' },
+      { name: '心法修炼：投资行为偏差与预防', pain: '过度自信、追涨杀跌等行为偏差导致盲目亏损', client: '希望建立投资系统与理念传承的企业家' },
+    ],
+  },
+]
+
+const list = document.getElementById('series-list')
+
+SERIES.forEach((s, si) => {
+  const card = document.createElement('div')
+  card.className = 'series-card'
+  card.style.borderColor = s.border
+
+  card.innerHTML = `
+    <div class="card-header" style="background: linear-gradient(135deg, ${s.bg} 0%, transparent 100%);">
+      <div class="card-meta">
+        <span class="card-tag" style="color:${s.color}; background:${s.bg}; border: 1px solid ${s.border};">${s.tag}</span>
+        <span class="card-count">${s.units.length} 个课程单元</span>
+      </div>
+      <div class="card-phase">${s.phase}</div>
+      <div class="card-title">${s.title}</div>
+    </div>
+    <button class="toggle-btn" data-si="${si}">
+      <span>展开课程单元</span>
+      <span class="arrow">▾</span>
+    </button>
+    <div class="units-list" id="units-${si}">
+      ${s.units.map((u, i) => `
+        <div class="unit-item">
+          <span class="unit-num" style="background:${s.color}">${String(i+1).padStart(2,'0')}</span>
+          <div>
+            <div class="unit-name">${u.name}</div>
+            <div class="unit-meta">
+              <span>核心痛点</span>${u.pain}<br>
+              <span>核心客群</span>${u.client}
+            </div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `
+  list.appendChild(card)
+})
+
+// Toggle expand/collapse
+document.getElementById('series-list').addEventListener('click', e => {
+  const btn = e.target.closest('.toggle-btn')
+  if (!btn) return
+  const si = btn.dataset.si
+  const ul = document.getElementById(`units-${si}`)
+  const open = ul.classList.toggle('open')
+  btn.classList.toggle('open', open)
+  btn.querySelector('span:first-child').textContent = open ? '收起课程单元' : '展开课程单元'
+})
+</script>
+</body>
+</html>
