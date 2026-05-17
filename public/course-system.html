@@ -3,15 +3,30 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <meta name="theme-color" content="#18181B" />
+  <meta name="theme-color" content="#F7F4EF" />
   <title>朝曦家办 · 系列课程体系</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg:       #F7F4EF;
+      --bg-card:  #FFFFFF;
+      --text-1:   #1A1A2E;
+      --text-2:   #52525B;
+      --text-3:   #A1A1AA;
+      --border:   #E4DDD3;
+      --accent:   #2D6A4F;
+      --accent-lt:#D8F3DC;
+      --shadow:   0 1px 4px rgba(0,0,0,.07);
+      --shadow-md:0 4px 20px rgba(0,0,0,.09);
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     html { scroll-behavior: smooth; }
     body {
       font-family: -apple-system, 'PingFang SC', 'Helvetica Neue', 'Noto Sans SC', sans-serif;
-      background: #0F0F11;
-      color: #F4F4F5;
+      background: var(--bg);
+      color: var(--text-1);
       min-height: 100vh;
       overflow-x: hidden;
     }
@@ -19,195 +34,196 @@
     /* ─── Nav ─── */
     .nav {
       position: sticky; top: 0; z-index: 100;
-      background: rgba(15,15,17,.92);
+      background: rgba(247,244,239,.94);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid #27272A;
+      border-bottom: 1px solid var(--border);
       padding: 0 20px;
       display: flex; align-items: center; justify-content: space-between;
       height: 56px;
     }
-    .nav-logo {
-      display: flex; align-items: center; gap: 10px;
-    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; }
     .nav-logo .mark {
       width: 32px; height: 32px; border-radius: 8px;
-      background: linear-gradient(135deg, #2D6A4F, #40916C);
+      background: var(--accent);
       display: flex; align-items: center; justify-content: center;
       font-size: 16px; font-weight: 800; color: #fff;
+      font-family: 'Noto Serif SC', serif;
     }
-    .nav-logo .name { font-size: 14px; font-weight: 600; color: #F4F4F5; }
-    .nav-logo .sub { font-size: 11px; color: #71717A; margin-top: 1px; }
+    .nav-logo .name { font-size: 14px; font-weight: 600; color: var(--text-1); }
+    .nav-logo .sub  { font-size: 11px; color: var(--text-3); margin-top: 1px; }
     .nav-badge {
-      font-size: 11px; color: #4ADE80;
-      border: 1px solid #4ADE8044;
-      background: #4ADE8011;
-      border-radius: 20px; padding: 3px 10px;
+      font-size: 11px; font-weight: 600; color: var(--accent);
+      border: 1px solid #B7E4C7;
+      background: var(--accent-lt);
+      border-radius: 20px; padding: 3px 12px;
     }
 
     /* ─── Hero ─── */
     .hero {
       padding: 48px 24px 52px;
-      background: linear-gradient(160deg, #18181B 0%, #1C1C1F 50%, #18261E 100%);
+      background: linear-gradient(160deg, #FFFFFF 0%, #F0FAF4 60%, #F7F4EF 100%);
+      border-bottom: 1px solid var(--border);
       position: relative; overflow: hidden;
-      text-align: center;
     }
     .hero::before {
       content: '';
-      position: absolute; top: -60px; right: -60px;
-      width: 280px; height: 280px; border-radius: 50%;
-      background: radial-gradient(circle, #2D6A4F22 0%, transparent 70%);
-    }
-    .hero::after {
-      content: '';
-      position: absolute; bottom: -40px; left: -40px;
-      width: 180px; height: 180px; border-radius: 50%;
-      background: radial-gradient(circle, #1D4ED811 0%, transparent 70%);
+      position: absolute; top: -60px; right: -40px;
+      width: 260px; height: 260px; border-radius: 50%;
+      background: radial-gradient(circle, #D8F3DC66 0%, transparent 70%);
+      pointer-events: none;
     }
     .hero-eyebrow {
-      font-size: 11px; letter-spacing: .18em; color: #71717A;
-      text-transform: uppercase; margin-bottom: 18px;
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 11px; font-weight: 700; letter-spacing: .14em;
+      color: var(--accent); text-transform: uppercase; margin-bottom: 18px;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: inline-block; width: 20px; height: 2px;
+      background: var(--accent); border-radius: 2px;
     }
     .hero h1 {
-      font-size: 30px; font-weight: 800; line-height: 1.3;
-      color: #F4F4F5; margin-bottom: 8px;
+      font-size: 28px; font-weight: 700; line-height: 1.35;
+      color: var(--text-1); margin-bottom: 6px;
+      font-family: 'Noto Serif SC', serif;
     }
-    .hero h1 em { font-style: normal; color: #4ADE80; }
+    .hero h1 em { font-style: normal; color: var(--accent); }
     .hero-desc {
-      font-size: 14px; color: #A1A1AA; line-height: 1.85;
-      max-width: 400px; margin: 16px auto 0;
+      font-size: 14px; color: var(--text-2); line-height: 1.85;
+      max-width: 480px; margin: 14px 0 0;
     }
     .hero-stats {
-      display: flex; justify-content: center; gap: 40px; margin-top: 32px;
+      display: flex; gap: 32px; margin-top: 30px;
     }
-    .stat-num { font-size: 30px; font-weight: 800; color: #4ADE80; line-height: 1; }
-    .stat-label { font-size: 11px; color: #71717A; margin-top: 5px; }
+    .stat-num  { font-size: 28px; font-weight: 800; color: var(--accent); line-height: 1; font-family: 'Noto Serif SC', serif; }
+    .stat-label{ font-size: 11px; color: var(--text-3); margin-top: 5px; }
 
-    /* ─── Section title ─── */
-    .section-header {
-      padding: 32px 20px 16px;
-    }
+    /* ─── Section header ─── */
+    .section-header { padding: 28px 20px 14px; }
     .section-header h2 {
-      font-size: 18px; font-weight: 700; color: #F4F4F5;
+      font-size: 17px; font-weight: 700; color: var(--text-1);
+      font-family: 'Noto Serif SC', serif;
     }
-    .section-header p { font-size: 13px; color: #71717A; margin-top: 5px; line-height: 1.6; }
+    .section-header p { font-size: 13px; color: var(--text-3); margin-top: 4px; }
 
     /* ─── Series cards ─── */
-    .cards { padding: 0 16px 20px; display: flex; flex-direction: column; gap: 16px; }
+    .cards { padding: 0 16px 8px; display: flex; flex-direction: column; gap: 12px; }
 
     .series-card {
-      border-radius: 16px; overflow: hidden;
-      background: #1A1A1D;
-      border: 1px solid #27272A;
-      transition: transform .2s;
+      border-radius: 14px; overflow: hidden;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      transition: box-shadow .2s, transform .2s;
     }
-    .series-card:active { transform: scale(.99); }
+    .series-card:hover { box-shadow: var(--shadow-md); }
 
-    .card-header {
-      padding: 22px 20px 18px;
-    }
-    .card-meta {
-      display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
-    }
+    .card-header { padding: 20px 20px 16px; }
+    .card-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
     .card-tag {
-      font-size: 10px; font-weight: 800; letter-spacing: .12em;
+      font-size: 10px; font-weight: 800; letter-spacing: .1em;
       padding: 3px 10px; border-radius: 20px;
+      border: 1px solid; /* color set inline */
     }
-    .card-count { font-size: 11px; color: #71717A; }
-    .card-phase { font-size: 12px; color: #A1A1AA; margin-bottom: 5px; }
-    .card-title { font-size: 17px; font-weight: 700; color: #F4F4F5; line-height: 1.4; }
+    .card-count { font-size: 11px; color: var(--text-3); }
+    .card-phase { font-size: 12px; color: var(--text-3); margin-bottom: 4px; }
+    .card-title { font-size: 16px; font-weight: 700; color: var(--text-1); line-height: 1.4; font-family: 'Noto Serif SC', serif; }
 
     /* Toggle */
     .toggle-btn {
-      width: 100%; padding: 12px 20px;
+      width: 100%; padding: 11px 20px;
       display: flex; align-items: center; justify-content: space-between;
-      background: none; border: none; border-top: 1px solid #27272A;
-      color: #A1A1AA; font-size: 12px; font-weight: 600; cursor: pointer;
-      text-align: left; letter-spacing: .03em;
+      background: none; border: none; border-top: 1px solid var(--border);
+      color: var(--text-2); font-size: 12px; font-weight: 600; cursor: pointer;
+      text-align: left; font-family: inherit;
+      transition: background .15s;
     }
-    .toggle-btn .arrow {
-      font-size: 16px; transition: transform .25s;
-      color: #71717A;
-    }
+    .toggle-btn:hover { background: var(--bg); }
+    .toggle-btn .arrow { font-size: 14px; transition: transform .25s; color: var(--text-3); }
     .toggle-btn.open .arrow { transform: rotate(180deg); }
 
     /* Units list */
-    .units-list {
-      display: none;
-      border-top: 1px solid #27272A;
-    }
+    .units-list { display: none; border-top: 1px solid var(--border); }
     .units-list.open { display: block; }
 
     .unit-item {
-      padding: 14px 20px;
-      border-bottom: 1px solid #1F1F22;
+      padding: 13px 20px;
+      border-bottom: 1px solid #F4F1EC;
       display: flex; gap: 12px; align-items: flex-start;
+      background: var(--bg-card);
+      transition: background .12s;
     }
+    .unit-item:hover { background: #FAFAF8; }
     .unit-item:last-child { border-bottom: none; }
     .unit-num {
       font-size: 10px; font-weight: 800; color: #fff;
       border-radius: 5px; padding: 2px 7px;
-      flex-shrink: 0; margin-top: 2px; min-width: 26px; text-align: center;
+      flex-shrink: 0; margin-top: 2px;
+      min-width: 26px; text-align: center;
     }
-    .unit-name { font-size: 13px; font-weight: 600; color: #E4E4E7; margin-bottom: 5px; line-height: 1.4; }
-    .unit-meta { font-size: 11px; color: #71717A; line-height: 1.65; }
-    .unit-meta span { color: #52525B; margin-right: 3px; }
+    .unit-name  { font-size: 13px; font-weight: 600; color: var(--text-1); margin-bottom: 5px; line-height: 1.45; }
+    .unit-meta  { font-size: 11px; color: var(--text-2); line-height: 1.7; }
+    .unit-meta .meta-label { color: var(--text-3); margin-right: 3px; font-size: 10px; font-weight: 600; letter-spacing: .03em; }
+    .unit-pain  { color: #7C3AED; }
+    .unit-client{ color: #0E7490; }
 
-    /* ─── Instructors teaser ─── */
-    .instructors {
-      padding: 0 16px 20px;
-    }
-    .inst-row {
-      display: grid; grid-template-columns: 1fr 1fr;
+    /* ─── Divider ─── */
+    .divider { height: 1px; background: var(--border); margin: 8px 16px; }
+
+    /* ─── Instructors ─── */
+    .instructors { padding: 0 16px 8px; }
+    .inst-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 10px;
     }
     .inst-card {
-      background: #1A1A1D; border: 1px solid #27272A;
+      background: var(--bg-card); border: 1px solid var(--border);
       border-radius: 12px; padding: 16px 14px;
+      box-shadow: var(--shadow);
     }
     .inst-avatar {
       width: 40px; height: 40px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-size: 18px; font-weight: 700; color: #fff;
-      margin-bottom: 10px;
+      font-size: 17px; font-weight: 700; color: #fff;
+      margin-bottom: 10px; flex-shrink: 0;
     }
-    .inst-name { font-size: 14px; font-weight: 700; color: #F4F4F5; margin-bottom: 3px; }
-    .inst-title { font-size: 11px; color: #71717A; line-height: 1.5; }
-    .inst-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+    .inst-name  { font-size: 14px; font-weight: 700; color: var(--text-1); margin-bottom: 3px; }
+    .inst-role  { font-size: 11px; color: var(--text-3); line-height: 1.5; }
+    .inst-tags  { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
     .inst-tag {
-      font-size: 10px; color: #A1A1AA;
-      background: #27272A; border-radius: 4px; padding: 2px 7px;
+      font-size: 10px; font-weight: 500; color: var(--text-2);
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 4px; padding: 2px 7px;
     }
 
     /* ─── CTA ─── */
     .cta {
-      margin: 0 16px 40px;
-      background: linear-gradient(135deg, #18261E, #1A1F2E);
-      border: 1px solid #2D6A4F44;
+      margin: 8px 16px 32px;
+      background: linear-gradient(135deg, #F0FAF4, #EFF6FF);
+      border: 1px solid #B7E4C7;
       border-radius: 16px; padding: 28px 24px;
-      text-align: center;
     }
-    .cta h3 { font-size: 18px; font-weight: 700; color: #F4F4F5; margin-bottom: 8px; }
-    .cta p { font-size: 13px; color: #A1A1AA; line-height: 1.7; margin-bottom: 20px; }
-    .cta-note {
-      font-size: 11px; color: #52525B; margin-top: 12px; line-height: 1.6;
-    }
+    .cta h3 { font-size: 17px; font-weight: 700; color: var(--text-1); margin-bottom: 8px; font-family: 'Noto Serif SC', serif; }
+    .cta p  { font-size: 13px; color: var(--text-2); line-height: 1.8; }
+    .cta-note { font-size: 11px; color: var(--text-3); margin-top: 14px; padding-top: 14px; border-top: 1px solid #B7E4C7; line-height: 1.7; }
 
     /* ─── Footer ─── */
     .footer {
-      text-align: center; padding: 24px 20px 40px;
-      font-size: 11px; color: #3F3F46; line-height: 1.8;
-      border-top: 1px solid #1A1A1D;
+      text-align: center; padding: 20px 20px 40px;
+      font-size: 11px; color: var(--text-3); line-height: 1.8;
+      border-top: 1px solid var(--border);
     }
 
-    /* Desktop wider */
+    /* Desktop */
     @media (min-width: 640px) {
-      .hero { padding: 64px 40px 68px; }
-      .hero h1 { font-size: 38px; }
-      .cards { padding: 0 24px 24px; }
-      .instructors { padding: 0 24px 24px; }
-      .cta { margin: 0 24px 48px; }
-      .inst-row { grid-template-columns: 1fr 1fr 1fr 1fr; }
+      .hero { padding: 60px 44px 64px; }
+      .hero h1 { font-size: 36px; }
+      .cards, .instructors { padding-left: 24px; padding-right: 24px; }
+      .cta { margin-left: 24px; margin-right: 24px; }
+      .inst-grid { grid-template-columns: repeat(4, 1fr); }
+      .section-header { padding-left: 24px; padding-right: 24px; }
     }
   </style>
 </head>
@@ -227,11 +243,11 @@
 
 <!-- Hero -->
 <div class="hero">
-  <div class="hero-eyebrow">朝曦家办 · 企业家专属培训课程</div>
+  <div class="hero-eyebrow">朝曦家办 · 企业家专属培训</div>
   <h1>懂企业的成长<br><em>更懂企业家的心事</em></h1>
   <p class="hero-desc">
-    六大系列课程，覆盖企业从初创到传承的完整生命周期。<br>不讲大道理，只聊真问题。
-    每个主题均源自真实服务案例。
+    六大系列课程，覆盖企业从初创到传承的完整生命周期。
+    不讲大道理，只聊真问题。每个主题均源自真实服务案例，陪伴企业家在关键节点找到答案。
   </p>
   <div class="hero-stats">
     <div><div class="stat-num">6</div><div class="stat-label">核心系列</div></div>
@@ -240,14 +256,14 @@
   </div>
 </div>
 
-<!-- Section header -->
+<!-- Series -->
 <div class="section-header">
   <h2>六大系列课程</h2>
   <p>点击每个系列查看详细课程单元</p>
 </div>
-
-<!-- Cards -->
 <div class="cards" id="series-list"></div>
+
+<div class="divider"></div>
 
 <!-- Instructors -->
 <div class="section-header">
@@ -255,11 +271,11 @@
   <p>资深专家，源自真实案例，贴近实战</p>
 </div>
 <div class="instructors">
-  <div class="inst-row">
+  <div class="inst-grid">
     <div class="inst-card">
       <div class="inst-avatar" style="background:#0369A1">刘</div>
       <div class="inst-name">刘怀宇</div>
-      <div class="inst-title">朝曦合伙人 · 上海</div>
+      <div class="inst-role">朝曦合伙人 · 上海</div>
       <div class="inst-tags">
         <span class="inst-tag">家族传承</span>
         <span class="inst-tag">资本市场</span>
@@ -269,7 +285,7 @@
     <div class="inst-card">
       <div class="inst-avatar" style="background:#0F766E">李</div>
       <div class="inst-name">李红岩</div>
-      <div class="inst-title">南区负责人 · 深圳</div>
+      <div class="inst-role">南区负责人 · 深圳</div>
       <div class="inst-tags">
         <span class="inst-tag">资产架构</span>
         <span class="inst-tag">税务合规</span>
@@ -279,7 +295,7 @@
     <div class="inst-card">
       <div class="inst-avatar" style="background:#C2410C">熊</div>
       <div class="inst-name">熊能</div>
-      <div class="inst-title">西区负责人 · 成都</div>
+      <div class="inst-role">西区负责人 · 成都</div>
       <div class="inst-tags">
         <span class="inst-tag">资产架构</span>
         <span class="inst-tag">资本市场</span>
@@ -289,7 +305,7 @@
     <div class="inst-card">
       <div class="inst-avatar" style="background:#7C3AED">胡</div>
       <div class="inst-name">胡顺亥</div>
-      <div class="inst-title">资深财富架构师 · 上海</div>
+      <div class="inst-role">资深财富架构师 · 上海</div>
       <div class="inst-tags">
         <span class="inst-tag">财富传承</span>
         <span class="inst-tag">法律合规</span>
@@ -299,11 +315,17 @@
   </div>
 </div>
 
+<div class="divider" style="margin-top:16px"></div>
+
 <!-- CTA -->
+<div class="section-header" style="padding-bottom:10px">
+  <h2>量身定制，为您的团队而来</h2>
+</div>
 <div class="cta">
-  <h3>量身定制，为您的团队而来</h3>
-  <p>课程支持单次沙龙、系列培训、一对一咨询等多种形式，可根据贵行客群需求组合定制。</p>
-  <p class="cta-note">如需进一步了解课程详情或预约演示，欢迎与朝曦家办联系</p>
+  <p>课程支持<strong>单次沙龙</strong>、<strong>系列培训</strong>、<strong>一对一咨询</strong>等多种形式，可根据贵行客群需求组合定制。每门课程均可独立成课，也可与其他课程联动串讲。</p>
+  <div class="cta-note">
+    如需进一步了解课程详情、预约演示或商谈合作，欢迎与朝曦家办联系。
+  </div>
 </div>
 
 <!-- Footer -->
@@ -317,7 +339,7 @@ const SERIES = [
   {
     tag: 'Series 01', phase: '企业初创与成长期',
     title: '股权架构顶层设计与激励落地',
-    color: '#B45309', bg: '#B4530915', border: '#FDE68A33',
+    color: '#B45309', bg: '#FFFBEB', border: '#FDE68A',
     units: [
       { name: '企业全生命周期股权设计', pain: '早期架构不合理，为融资、上市埋下隐患', client: '早期创业者、新兴企业家、家族接班人' },
       { name: '创始人控制权保护', pain: '多轮融资股权稀释，控制权旁落风险', client: '正在或计划进行多轮融资的企业实控人' },
@@ -333,7 +355,7 @@ const SERIES = [
   {
     tag: 'Series 02', phase: '业务扩张期',
     title: '跨境业务架构与税务全景',
-    color: '#1D4ED8', bg: '#1D4ED815', border: '#BFDBFE33',
+    color: '#1D4ED8', bg: '#EFF6FF', border: '#BFDBFE',
     units: [
       { name: '跨境电商全链条税务合规', pain: '跨境业务"关税汇"风险与利润侵蚀', client: '跨境电商卖家、制造业出海企业主' },
       { name: '境外投资架构设计', pain: '架构不合理致退出税负高、资金回流难', client: '计划海外投资/并购的企业家' },
@@ -347,7 +369,7 @@ const SERIES = [
   {
     tag: 'Series 03', phase: '资本成熟期',
     title: '股东减持与税务合规',
-    color: '#065F46', bg: '#065F4615', border: '#A7F3D033',
+    color: '#065F46', bg: '#ECFDF5', border: '#A7F3D0',
     units: [
       { name: '有限合伙平台减持', pain: '合伙架构减持税务复杂，追税风险高', client: '通过合伙平台持股的上市公司股东' },
       { name: '有限公司平台减持', pain: '公司制持股面临"双重征税"困境', client: '通过公司平台持股的上市公司股东' },
@@ -360,7 +382,7 @@ const SERIES = [
   {
     tag: 'Series 04', phase: '财富资本化',
     title: '境外上市与跨境资本路径创新',
-    color: '#6D28D9', bg: '#6D28D915', border: '#DDD6FE33',
+    color: '#6D28D9', bg: '#F5F3FF', border: '#DDD6FE',
     units: [
       { name: '境外上市架构设计', pain: '境外上市顶层架构模糊，员工激励平台难选择', client: '计划赴港/赴美上市的企业家' },
       { name: '境内外投融资架构', pain: '架构僵化，无法灵活应对多投资场景', client: '计划进行跨境投资的企业家' },
@@ -373,7 +395,7 @@ const SERIES = [
   {
     tag: 'Series 05', phase: '家族永续期',
     title: '跨境/境内家族信托、税务与治理',
-    color: '#0E7490', bg: '#0E749015', border: '#A5F3FC33',
+    color: '#0E7490', bg: '#ECFEFF', border: '#A5F3FC',
     units: [
       { name: '涉税数据，内外兼修', pain: '金税四期严监管下，税务处理风险极高', client: '希望提高税务合规质量的企业家' },
       { name: '穿越CRS"暴风眼"', pain: '海外账户面临CRS信息交换后的补税风险', client: '在海外拥有金融账户的高净值客户' },
@@ -392,7 +414,7 @@ const SERIES = [
   {
     tag: 'Series 06', phase: '企业家投资思维',
     title: '从产业经营到资产配置的范式转换',
-    color: '#B91C1C', bg: '#B91C1C15', border: '#FECDD333',
+    color: '#B91C1C', bg: '#FFF1F2', border: '#FECDD3',
     units: [
       { name: '认知重塑：企业家为何需要投资思维', pain: '过度依赖主业，忽视配置，周期波动下财富缩水', client: '主业稳定但缺乏投资系统认知的企业家' },
       { name: '理论学习：资产价格的运行逻辑与风格周期', pain: '忽视市场周期与风格轮动，努力却亏钱', client: '有投资经验但回报不理想的企业家' },
@@ -407,12 +429,11 @@ const list = document.getElementById('series-list')
 SERIES.forEach((s, si) => {
   const card = document.createElement('div')
   card.className = 'series-card'
-  card.style.borderColor = s.border
 
   card.innerHTML = `
-    <div class="card-header" style="background: linear-gradient(135deg, ${s.bg} 0%, transparent 100%);">
+    <div class="card-header" style="border-left: 3px solid ${s.color};">
       <div class="card-meta">
-        <span class="card-tag" style="color:${s.color}; background:${s.bg}; border: 1px solid ${s.border};">${s.tag}</span>
+        <span class="card-tag" style="color:${s.color}; background:${s.bg}; border-color:${s.border};">${s.tag}</span>
         <span class="card-count">${s.units.length} 个课程单元</span>
       </div>
       <div class="card-phase">${s.phase}</div>
@@ -426,21 +447,23 @@ SERIES.forEach((s, si) => {
       ${s.units.map((u, i) => `
         <div class="unit-item">
           <span class="unit-num" style="background:${s.color}">${String(i+1).padStart(2,'0')}</span>
-          <div>
+          <div style="flex:1">
             <div class="unit-name">${u.name}</div>
             <div class="unit-meta">
-              <span>核心痛点</span>${u.pain}<br>
-              <span>核心客群</span>${u.client}
+              <span class="meta-label">核心痛点</span><span class="unit-pain">${u.pain}</span><br>
+              <span class="meta-label">核心客群</span><span class="unit-client">${u.client}</span>
             </div>
           </div>
         </div>
       `).join('')}
+      <div style="padding:10px 20px 12px; text-align:right; background:${s.bg}; border-top:1px solid ${s.border};">
+        <span style="font-size:11px; color:${s.color}; font-weight:600;">💡 课程可定制组合，支持单次或系列授课</span>
+      </div>
     </div>
   `
   list.appendChild(card)
 })
 
-// Toggle expand/collapse
 document.getElementById('series-list').addEventListener('click', e => {
   const btn = e.target.closest('.toggle-btn')
   if (!btn) return
