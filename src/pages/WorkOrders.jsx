@@ -4,12 +4,14 @@ import { CONTEXT_KEY } from './CourseMatch'
 
 const FILTERS     = ['全部','待处理','课程匹配','渠道已确认','合同签署','讲师排期','通关进行中','已归档']
 const STORAGE_KEY = 'zx_pending_orders'
+const PORTAL_ORDER_KEY = 'zx_portal_submitted_orders'
 const OVERRIDE_KEY = 'zx_order_overrides'
 const TOKEN_KEY   = 'zx_github_token'
 const GITHUB_REPO = 'annayuqianyu-crypto/zhaoxi-training-platform'
 
 /* ─── localStorage helpers ─── */
 function loadLocal()  { try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]') } catch { return [] } }
+function loadPortalOrders() { try { return JSON.parse(localStorage.getItem(PORTAL_ORDER_KEY) || '[]') } catch { return [] } }
 function saveLocal(l) { localStorage.setItem(STORAGE_KEY, JSON.stringify(l)) }
 function getToken()   { return localStorage.getItem(TOKEN_KEY) || '' }
 function loadOverrides() { try { return JSON.parse(localStorage.getItem(OVERRIDE_KEY) || '{}') } catch { return {} } }
@@ -71,7 +73,30 @@ export function WorkOrders({ navigate }) {
     ])
     if (needToken) { setShowTokenSetup(true); setLoading(false); return }
     const ghIds = new Set(ghOrders.map(o => o.id))
-    setExternal(applyOverrides([...ghOrders, ...localOrders.filter(o => !ghIds.has(o.id))]))
+    const portalOrders = loadPortalOrders().map(o => ({
+      id: o.id,
+      channel: o.channel || '',
+      contact: o.contact || '',
+      contactRole: o.contactRole || '',
+      phone: o.phone || '',
+      salesName: o.salesName || '',
+      date: o.date || '待定',
+      audience: o.audience || '',
+      people: o.people || 0,
+      duration: o.duration || '',
+      topic: o.topic || '',
+      note: o.note || '',
+      status: o.status || '待处理',
+      source: 'portal',
+      submittedAt: o.submittedAt,
+      score: null,
+    }))
+    const portalIds = new Set(portalOrders.map(o => o.id))
+    setExternal(applyOverrides([
+      ...ghOrders,
+      ...localOrders.filter(o => !ghIds.has(o.id)),
+      ...portalOrders.filter(o => !ghIds.has(o.id)),
+    ]))
     setLoading(false)
   }, [])
 
@@ -224,9 +249,15 @@ export function WorkOrders({ navigate }) {
                   <td>
                     {w.source==='h5' ? <span className="badge badge-blue">H5问卷</span>
                       : w.source==='internal' ? <span className="badge badge-gray">内部</span>
+                      : w.source==='portal' ? <span className="badge badge-blue">渠道提交</span>
                       : <span className="badge badge-gray">系统</span>}
                   </td>
-                  <td><span className={`badge ${STATUS_COLOR[w.status]||'badge-gray'}`}>{w.status}</span></td>
+                  <td>
+                    <span className={`badge ${STATUS_COLOR[w.status]||'badge-gray'}`}>{w.status}</span>
+                    {w.source==='portal' && (
+                      <span style={{ marginLeft:6, display:'inline-block', fontSize:10, fontWeight:700, color:'#1D4ED8', background:'#EFF6FF', border:'1px solid #BFDBFE', borderRadius:4, padding:'1px 5px', verticalAlign:'middle' }}>渠道提交</span>
+                    )}
+                  </td>
                   <td style={{ textAlign:'center', color:w.score?'var(--accent)':'var(--text-3)', fontWeight:w.score?700:400 }}>{w.score||'—'}</td>
                 </tr>
               ))}
@@ -277,6 +308,7 @@ export function WorkOrders({ navigate }) {
               <span className={`badge ${STATUS_COLOR[selectedOrder.status]||'badge-gray'}`}>{selectedOrder.status}</span>
               {selectedOrder.source==='h5' && <span className="badge badge-blue">H5问卷</span>}
               {selectedOrder.source==='internal' && <span className="badge badge-gray">内部录入</span>}
+              {selectedOrder.source==='portal' && <span style={{ fontSize:11, fontWeight:700, color:'#1D4ED8', background:'#EFF6FF', border:'1px solid #BFDBFE', borderRadius:4, padding:'2px 7px' }}>渠道提交</span>}
               {selectedOrder.score && <span className="badge badge-green">质量评分 {selectedOrder.score}</span>}
             </div>
 
@@ -291,6 +323,35 @@ export function WorkOrders({ navigate }) {
                 <span style={{ color:'var(--text-1)', wordBreak:'break-all' }}>{value}</span>
               </div>
             ))}
+
+            {selectedOrder.source === 'portal' && (
+              <>
+                {selectedOrder.phone && (
+                  <div style={{ display:'flex', gap:8, padding:'7px 0', borderBottom:'1px solid var(--border)', fontSize:13 }}>
+                    <span style={{ color:'var(--text-3)', minWidth:100, flexShrink:0 }}>联系方式</span>
+                    <span style={{ color:'var(--text-1)', wordBreak:'break-all' }}>{selectedOrder.phone}</span>
+                  </div>
+                )}
+                {selectedOrder.contactRole && (
+                  <div style={{ display:'flex', gap:8, padding:'7px 0', borderBottom:'1px solid var(--border)', fontSize:13 }}>
+                    <span style={{ color:'var(--text-3)', minWidth:100, flexShrink:0 }}>联系人职务</span>
+                    <span style={{ color:'var(--text-1)', wordBreak:'break-all' }}>{selectedOrder.contactRole}</span>
+                  </div>
+                )}
+                {selectedOrder.topic && (
+                  <div style={{ display:'flex', gap:8, padding:'7px 0', borderBottom:'1px solid var(--border)', fontSize:13 }}>
+                    <span style={{ color:'var(--text-3)', minWidth:100, flexShrink:0 }}>培训主题方向</span>
+                    <span style={{ color:'var(--text-1)', wordBreak:'break-all' }}>{selectedOrder.topic}</span>
+                  </div>
+                )}
+                {selectedOrder.submittedAt && (
+                  <div style={{ display:'flex', gap:8, padding:'7px 0', borderBottom:'1px solid var(--border)', fontSize:13 }}>
+                    <span style={{ color:'var(--text-3)', minWidth:100, flexShrink:0 }}>提交时间</span>
+                    <span style={{ color:'var(--text-1)' }}>{new Date(selectedOrder.submittedAt).toLocaleString('zh-CN')}</span>
+                  </div>
+                )}
+              </>
+            )}
 
             {selectedOrder.courses && selectedOrder.courses.length > 0 && (
               <div style={{ padding:'8px 0', borderBottom:'1px solid var(--border)', fontSize:13 }}>

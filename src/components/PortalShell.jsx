@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { ProductLearning } from '../pages/ProductLearning'
 import { PortalCourseMatch } from '../pages/PortalCourseMatch'
+import { PortalWorkOrder } from '../pages/PortalWorkOrder'
 
 const TABS = [
   { key: 'coursematch', label: '🎯 课程匹配' },
+  { key: 'workorder',   label: '📋 提交需求' },
   { key: 'learning',    label: '📚 产品学习' },
 ]
 
@@ -77,6 +79,7 @@ export function PortalShell({ user, onLogout }) {
       {/* Content area */}
       <main style={{ flex: 1, overflow: 'auto', background: 'var(--bg)' }}>
         {activeTab === 'coursematch' && <PortalCourseMatch user={user} />}
+        {activeTab === 'workorder'   && <PortalWorkOrder user={user} />}
         {activeTab === 'learning'    && <ProductLearning />}
       </main>
     </div>
