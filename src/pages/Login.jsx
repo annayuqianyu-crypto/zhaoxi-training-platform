@@ -8,7 +8,8 @@ export function LoginPage({ onLogin }) {
   function submit(e) {
     e.preventDefault()
     if (email.endsWith('@zxpro.com.cn') && pass === 'ZXpro@2026') {
-      onLogin({ email, role: 'staff', name: email.split('@')[0] })
+      const role = email === 'anna.yu@zxpro.com.cn' ? 'admin' : 'staff'
+      onLogin({ email, role, name: email.split('@')[0] })
     } else {
       setErr('账号或密码错误，请重试')
     }
