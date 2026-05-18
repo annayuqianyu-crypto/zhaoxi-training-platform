@@ -18,6 +18,8 @@
   <meta property="og:site_name"   content="朝曦家办知识工坊" />
   <meta name="twitter:card"       content="summary_large_image" />
 
+  <!-- QR code generator (CDN, 22 KB) -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&display=swap" rel="stylesheet">
   <style>
@@ -253,6 +255,7 @@
       width: 100%; max-width: 480px;
       background: var(--bg-card); border-radius: 20px 20px 0 0;
       padding: 20px 20px 36px;
+      max-height: 92vh; overflow-y: auto;
       animation: slideUp .25s ease;
     }
     @keyframes slideUp {
@@ -439,42 +442,35 @@
 </div>
 
 <!-- ── 浮动分享按钮 ── -->
-<button class="fab" id="fab-share" title="分享给客户">📤</button>
+<button class="fab" id="fab-share" title="生成分享海报">📤</button>
 
-<!-- ── 分享底部弹层 ── -->
+<!-- ── 海报弹层 ── -->
 <div class="share-overlay" id="share-overlay">
   <div class="share-sheet" id="share-sheet">
     <div class="sheet-handle"></div>
-    <div class="sheet-title">分享给客户</div>
-    <div class="sheet-sub">以下是客户收到后看到的微信卡片效果</div>
+    <div class="sheet-title">发送给客户</div>
+    <div class="sheet-sub">保存海报图片，直接发到微信 · 客户长按扫码即可进入</div>
 
-    <!-- 仿微信卡片预览 -->
-    <div class="wechat-card">
-      <img class="wechat-card-img" src="course-cover.png" alt="课程体系封面" />
-      <div class="wechat-card-body">
-        <div class="wechat-card-title">朝曦家办 · 六大系列课程体系</div>
-        <div class="wechat-card-footer">
-          <span class="wechat-mp-icon">曦</span>
-          <span class="wechat-mp-name">朝曦家办知识工坊</span>
-          <span class="wechat-mp-badge">H5 链接</span>
-        </div>
-      </div>
+    <!-- Canvas 海报区 -->
+    <div style="position:relative; border-radius:14px; overflow:hidden; margin-bottom:14px; box-shadow:0 4px 20px rgba(0,0,0,.12);">
+      <canvas id="poster-canvas" style="width:100%; display:block;"></canvas>
+      <div id="poster-loading" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);font-size:13px;color:var(--text-3);">生成中…</div>
     </div>
 
-    <p class="share-hint">
-      复制链接后，在微信聊天框直接粘贴发送<br>
-      对方点击即可查看完整课程体系
+    <p class="share-hint" id="save-hint" style="display:none">
+      📱 手机：长按图片 → 保存到相册 → 发送给客户<br>
+      💻 电脑：右键图片 → 另存为
     </p>
 
     <div class="share-actions">
-      <button class="share-btn share-btn-primary" id="btn-copy-url">
-        <span>🔗</span> 复制链接
+      <button class="share-btn share-btn-primary" id="btn-download">
+        ⬇ 下载海报图片
       </button>
-      <button class="share-btn share-btn-secondary" id="btn-open-preview">
-        <span>👁</span> 在新窗口预览
+      <button class="share-btn share-btn-secondary" id="btn-copy-url">
+        🔗 复制页面链接
       </button>
     </div>
-    <div class="copied-tip" id="copied-tip">✓ 链接已复制，去微信粘贴发送吧</div>
+    <div class="copied-tip" id="copied-tip">✓ 链接已复制</div>
   </div>
 </div>
 
@@ -618,49 +614,273 @@ document.getElementById('series-list').addEventListener('click', e => {
   btn.querySelector('span:first-child').textContent = open ? '收起课程单元' : '展开课程单元'
 })
 
-/* ── 分享功能 ── */
-const SHARE_URL = 'https://annayuqianyu-crypto.github.io/zhaoxi-training-platform/course-system.html'
+/* ══════════════════════════════════════
+   海报生成 & 分享
+══════════════════════════════════════ */
+const SHARE_URL  = 'https://annayuqianyu-crypto.github.io/zhaoxi-training-platform/course-system.html'
+const SERIES_TAGS = ['股权架构顶层设计','跨境业务与税务','股东减持合规','境外上市路径','家族信托治理','企业家投资思维']
+const ACCENT     = '#2D6A4F'
+const ACCENT_LT  = '#D8F3DC'
 
-const overlay   = document.getElementById('share-overlay')
-const fab       = document.getElementById('fab-share')
-const copiedTip = document.getElementById('copied-tip')
+const overlay = document.getElementById('share-overlay')
+const fab     = document.getElementById('fab-share')
+let posterGenerated = false
 
-fab.addEventListener('click', () => overlay.classList.add('open'))
+/* ── Open / close overlay ── */
+fab.addEventListener('click', () => {
+  overlay.classList.add('open')
+  if (!posterGenerated) { generatePoster(); posterGenerated = true }
+})
 overlay.addEventListener('click', e => {
-  if (!document.getElementById('share-sheet').contains(e.target)) {
+  if (!document.getElementById('share-sheet').contains(e.target))
     overlay.classList.remove('open')
-  }
 })
 
+/* ── Copy link ── */
 document.getElementById('btn-copy-url').addEventListener('click', () => {
-  const doCopy = () => {
-    copiedTip.style.display = 'block'
-    document.getElementById('btn-copy-url').textContent = '✓ 已复制'
-    document.getElementById('btn-copy-url').style.background = '#1B5E3B'
-    setTimeout(() => {
-      copiedTip.style.display = 'none'
-      document.getElementById('btn-copy-url').innerHTML = '<span>🔗</span> 复制链接'
-      document.getElementById('btn-copy-url').style.background = ''
-    }, 2500)
+  const tip = document.getElementById('copied-tip')
+  const btn = document.getElementById('btn-copy-url')
+  const copy = () => {
+    tip.style.display = 'block'
+    btn.textContent = '✓ 已复制'
+    setTimeout(() => { tip.style.display = 'none'; btn.textContent = '🔗 复制页面链接' }, 2200)
   }
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(SHARE_URL).then(doCopy).catch(() => {
-      const el = document.createElement('input')
-      el.value = SHARE_URL; document.body.appendChild(el)
-      el.select(); document.execCommand('copy')
-      document.body.removeChild(el); doCopy()
-    })
-  } else {
-    const el = document.createElement('input')
-    el.value = SHARE_URL; document.body.appendChild(el)
-    el.select(); document.execCommand('copy')
-    document.body.removeChild(el); doCopy()
-  }
+  navigator.clipboard ? navigator.clipboard.writeText(SHARE_URL).then(copy).catch(copy) : copy()
 })
 
-document.getElementById('btn-open-preview').addEventListener('click', () => {
-  window.open(SHARE_URL, '_blank')
+/* ── Download poster ── */
+document.getElementById('btn-download').addEventListener('click', () => {
+  const canvas = document.getElementById('poster-canvas')
+  const a = document.createElement('a')
+  a.download = '朝曦家办-课程体系.png'
+  a.href = canvas.toDataURL('image/png')
+  a.click()
 })
+
+/* ════ Draw poster on canvas ════ */
+function generatePoster() {
+  const canvas  = document.getElementById('poster-canvas')
+  const loading = document.getElementById('poster-loading')
+
+  // Poster: 750 × 1120 (standard WeChat share poster ratio)
+  const W = 750, H = 1120
+  canvas.width  = W
+  canvas.height = H
+  const ctx = canvas.getContext('2d')
+
+  /* Background */
+  const grad = ctx.createLinearGradient(0, 0, 0, H)
+  grad.addColorStop(0,   '#FFFFFF')
+  grad.addColorStop(0.45,'#F2FBF5')
+  grad.addColorStop(1,   '#EAF6EF')
+  ctx.fillStyle = grad
+  ctx.fillRect(0, 0, W, H)
+
+  /* Decorative circle top-right */
+  ctx.beginPath()
+  ctx.arc(W + 60, -60, 240, 0, Math.PI * 2)
+  ctx.fillStyle = 'rgba(45,106,79,0.07)'
+  ctx.fill()
+
+  /* Decorative circle bottom-left */
+  ctx.beginPath()
+  ctx.arc(-60, H + 40, 200, 0, Math.PI * 2)
+  ctx.fillStyle = 'rgba(45,106,79,0.05)'
+  ctx.fill()
+
+  /* ── Header bar ── */
+  ctx.fillStyle = ACCENT
+  roundRect(ctx, 0, 0, W, 8, 0)
+  ctx.fill()
+
+  /* Logo mark */
+  roundRect(ctx, 44, 38, 56, 56, 12)
+  ctx.fillStyle = ACCENT
+  ctx.fill()
+  ctx.fillStyle = '#fff'
+  ctx.font = 'bold 28px "PingFang SC","Microsoft YaHei",sans-serif'
+  ctx.textAlign = 'center'
+  ctx.fillText('曦', 72, 76)
+
+  /* Brand name */
+  ctx.textAlign = 'left'
+  ctx.fillStyle = '#1A1A2E'
+  ctx.font = 'bold 22px "PingFang SC","Microsoft YaHei",sans-serif'
+  ctx.fillText('朝曦家办', 116, 62)
+  ctx.fillStyle = '#A1A1AA'
+  ctx.font = '15px "PingFang SC","Microsoft YaHei",sans-serif'
+  ctx.fillText('知识工坊 · 企业家专属培训', 116, 84)
+
+  /* ── Hero text ── */
+  ctx.fillStyle = '#1A1A2E'
+  ctx.font = 'bold 46px "PingFang SC","Microsoft YaHei",sans-serif'
+  ctx.textAlign = 'center'
+  ctx.fillText('六大系列课程体系', W / 2, 196)
+
+  ctx.fillStyle = ACCENT
+  ctx.font = '20px "PingFang SC","Microsoft YaHei",sans-serif'
+  ctx.fillText('懂企业的成长，更懂企业家的心事', W / 2, 234)
+
+  /* ── Stats row ── */
+  const stats = [['6', '核心系列'], ['44', '课程单元'], ['3', '专业领域']]
+  stats.forEach(([num, label], i) => {
+    const x = 128 + i * 248
+    roundRect(ctx, x - 80, 262, 160, 64, 12)
+    ctx.fillStyle = ACCENT_LT
+    ctx.fill()
+    ctx.fillStyle = ACCENT
+    ctx.font = 'bold 30px "PingFang SC","Microsoft YaHei",sans-serif'
+    ctx.textAlign = 'center'
+    ctx.fillText(num, x, 297)
+    ctx.font = '14px "PingFang SC","Microsoft YaHei",sans-serif'
+    ctx.fillStyle = '#52525B'
+    ctx.fillText(label, x, 318)
+  })
+
+  /* ── Divider ── */
+  ctx.strokeStyle = '#E4DDD3'
+  ctx.lineWidth = 1
+  ctx.beginPath(); ctx.moveTo(44, 352); ctx.lineTo(W - 44, 352); ctx.stroke()
+
+  /* ── Series list ── */
+  const seriesColors = ['#B45309','#1D4ED8','#065F46','#6D28D9','#0E7490','#B91C1C']
+  const seriesBgs    = ['#FFFBEB','#EFF6FF','#ECFDF5','#F5F3FF','#ECFEFF','#FFF1F2']
+
+  ctx.textAlign = 'left'
+  SERIES_TAGS.forEach((tag, i) => {
+    const row = Math.floor(i / 2)
+    const col = i % 2
+    const x = 44 + col * 335
+    const y = 374 + row * 72
+
+    /* pill bg */
+    roundRect(ctx, x, y, 310, 56, 10)
+    ctx.fillStyle = seriesBgs[i]
+    ctx.fill()
+    ctx.strokeStyle = seriesColors[i] + '55'
+    ctx.lineWidth = 1
+    ctx.stroke()
+
+    /* series number */
+    roundRect(ctx, x + 10, y + 14, 44, 26, 6)
+    ctx.fillStyle = seriesColors[i]
+    ctx.fill()
+    ctx.fillStyle = '#fff'
+    ctx.font = 'bold 12px "PingFang SC","Microsoft YaHei",sans-serif'
+    ctx.textAlign = 'center'
+    ctx.fillText(`S0${i + 1}`, x + 32, y + 31)
+
+    /* tag text */
+    ctx.fillStyle = '#1A1A2E'
+    ctx.font = `bold 15px "PingFang SC","Microsoft YaHei",sans-serif`
+    ctx.textAlign = 'left'
+    ctx.fillText(tag, x + 62, y + 33)
+  })
+
+  /* ── Bottom section: scan tip ── */
+  const qrTop = 612
+  ctx.strokeStyle = '#E4DDD3'
+  ctx.lineWidth = 1
+  ctx.beginPath(); ctx.moveTo(44, qrTop - 14); ctx.lineTo(W - 44, qrTop - 14); ctx.stroke()
+
+  ctx.fillStyle = '#52525B'
+  ctx.font = '17px "PingFang SC","Microsoft YaHei",sans-serif'
+  ctx.textAlign = 'center'
+  ctx.fillText('扫描下方二维码，查看完整课程体系', W / 2, qrTop + 12)
+
+  /* ── QR Code (rendered via qrcode library) ── */
+  const qrSize = 240
+  const qrX = (W - qrSize) / 2
+  const qrY = qrTop + 36
+
+  /* Draw QR placeholder frame first, then replace with real QR */
+  roundRect(ctx, qrX - 8, qrY - 8, qrSize + 16, qrSize + 16, 16)
+  ctx.fillStyle = '#FFFFFF'
+  ctx.fill()
+  ctx.strokeStyle = '#E4DDD3'
+  ctx.lineWidth = 1
+  ctx.stroke()
+
+  /* Generate real QR code into a temp canvas using qrcode.js */
+  if (window.QRCode) {
+    const tempDiv = document.createElement('div')
+    document.body.appendChild(tempDiv)
+    new QRCode(tempDiv, {
+      text: SHARE_URL,
+      width: qrSize, height: qrSize,
+      colorDark: '#1A1A2E', colorLight: '#FFFFFF',
+      correctLevel: QRCode.CorrectLevel.M,
+    })
+    setTimeout(() => {
+      const qrImg = tempDiv.querySelector('img') || tempDiv.querySelector('canvas')
+      if (qrImg) {
+        if (qrImg.tagName === 'IMG') {
+          const img = new Image()
+          img.onload = () => {
+            ctx.drawImage(img, qrX, qrY, qrSize, qrSize)
+            finishPoster(ctx, W, H, qrY, qrSize)
+            document.body.removeChild(tempDiv)
+            loading.style.display = 'none'
+            document.getElementById('save-hint').style.display = 'block'
+          }
+          img.src = qrImg.src
+        } else {
+          ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize)
+          finishPoster(ctx, W, H, qrY, qrSize)
+          document.body.removeChild(tempDiv)
+          loading.style.display = 'none'
+          document.getElementById('save-hint').style.display = 'block'
+        }
+      }
+    }, 300)
+  } else {
+    /* QR lib not loaded – draw URL text as fallback */
+    ctx.fillStyle = '#A1A1AA'
+    ctx.font = '12px monospace'
+    ctx.textAlign = 'center'
+    ctx.fillText(SHARE_URL, W / 2, qrY + qrSize / 2)
+    finishPoster(ctx, W, H, qrY, qrSize)
+    loading.style.display = 'none'
+    document.getElementById('save-hint').style.display = 'block'
+  }
+}
+
+function finishPoster(ctx, W, H, qrY, qrSize) {
+  /* Center logo over QR */
+  const lx = W / 2, ly = qrY + qrSize / 2
+  roundRect(ctx, lx - 22, ly - 22, 44, 44, 10)
+  ctx.fillStyle = ACCENT; ctx.fill()
+  ctx.fillStyle = '#fff'
+  ctx.font = 'bold 20px "PingFang SC","Microsoft YaHei",sans-serif'
+  ctx.textAlign = 'center'
+  ctx.fillText('曦', lx, ly + 7)
+
+  /* Bottom strip */
+  ctx.fillStyle = ACCENT
+  ctx.fillRect(0, H - 80, W, 80)
+  ctx.fillStyle = '#fff'
+  ctx.font = 'bold 18px "PingFang SC","Microsoft YaHei",sans-serif'
+  ctx.textAlign = 'center'
+  ctx.fillText('朝曦家办 · 知识工坊', W / 2, H - 44)
+  ctx.fillStyle = 'rgba(255,255,255,0.65)'
+  ctx.font = '13px "PingFang SC","Microsoft YaHei",sans-serif'
+  ctx.fillText('课程定制 · 量身组合 · 支持单次沙龙与系列培训', W / 2, H - 22)
+}
+
+/* Utility: draw rounded rect path */
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath()
+  ctx.moveTo(x + r, y)
+  ctx.lineTo(x + w - r, y)
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r)
+  ctx.lineTo(x + w, y + h - r)
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h)
+  ctx.lineTo(x + r, y + h)
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r)
+  ctx.lineTo(x, y + r)
+  ctx.quadraticCurveTo(x, y, x + r, y)
+  ctx.closePath()
+}
 </script>
 </body>
 </html>
