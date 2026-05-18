@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 
 const SERIES = [
   {
@@ -121,27 +121,156 @@ function getShareUrl() {
   return base + SHARE_PATH
 }
 
+/* ════ Poster generation (Canvas) ════ */
+const POSTER_TAGS = ['股权架构顶层设计', '跨境业务与税务', '股东减持合规', '境外上市路径', '家族信托治理', '企业家投资思维']
+const P_ACCENT    = '#2D6A4F'
+const P_ACCENT_LT = '#D8F3DC'
+
+function rr(ctx, x, y, w, h, r) {
+  ctx.beginPath()
+  ctx.moveTo(x + r, y); ctx.lineTo(x + w - r, y)
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r)
+  ctx.lineTo(x + w, y + h - r)
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h)
+  ctx.lineTo(x + r, y + h)
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r)
+  ctx.lineTo(x, y + r)
+  ctx.quadraticCurveTo(x, y, x + r, y)
+  ctx.closePath()
+}
+
+function loadQRLib() {
+  return new Promise(resolve => {
+    if (window.QRCode) { resolve(); return }
+    const s = document.createElement('script')
+    s.src = 'https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js'
+    s.onload = resolve; s.onerror = resolve
+    document.head.appendChild(s)
+  })
+}
+
+function drawPosterBase(ctx, W, H) {
+  const grad = ctx.createLinearGradient(0, 0, 0, H)
+  grad.addColorStop(0, '#FFFFFF'); grad.addColorStop(0.45, '#F2FBF5'); grad.addColorStop(1, '#EAF6EF')
+  ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H)
+
+  ctx.beginPath(); ctx.arc(W + 60, -60, 240, 0, Math.PI * 2); ctx.fillStyle = 'rgba(45,106,79,0.07)'; ctx.fill()
+  ctx.beginPath(); ctx.arc(-60, H + 40, 200, 0, Math.PI * 2); ctx.fillStyle = 'rgba(45,106,79,0.05)'; ctx.fill()
+
+  ctx.fillStyle = P_ACCENT; rr(ctx, 0, 0, W, 8, 0); ctx.fill()
+
+  rr(ctx, 44, 38, 56, 56, 12); ctx.fillStyle = P_ACCENT; ctx.fill()
+  ctx.fillStyle = '#fff'; ctx.font = 'bold 28px "PingFang SC","Microsoft YaHei",sans-serif'; ctx.textAlign = 'center'; ctx.fillText('曦', 72, 76)
+
+  ctx.textAlign = 'left'; ctx.fillStyle = '#1A1A2E'
+  ctx.font = 'bold 22px "PingFang SC","Microsoft YaHei",sans-serif'; ctx.fillText('朝曦家办', 116, 62)
+  ctx.fillStyle = '#A1A1AA'; ctx.font = '15px "PingFang SC","Microsoft YaHei",sans-serif'; ctx.fillText('知识工坊 · 企业家专属培训', 116, 84)
+
+  ctx.fillStyle = '#1A1A2E'; ctx.font = 'bold 46px "PingFang SC","Microsoft YaHei",sans-serif'; ctx.textAlign = 'center'; ctx.fillText('六大系列课程体系', W / 2, 196)
+  ctx.fillStyle = P_ACCENT; ctx.font = '20px "PingFang SC","Microsoft YaHei",sans-serif'; ctx.fillText('懂企业的成长，更懂企业家的心事', W / 2, 234)
+
+  ;[['6', '核心系列'], ['44', '课程单元'], ['3', '专业领域']].forEach(([num, label], i) => {
+    const x = 128 + i * 248
+    rr(ctx, x - 80, 262, 160, 64, 12); ctx.fillStyle = P_ACCENT_LT; ctx.fill()
+    ctx.fillStyle = P_ACCENT; ctx.font = 'bold 30px "PingFang SC","Microsoft YaHei",sans-serif'; ctx.textAlign = 'center'; ctx.fillText(num, x, 297)
+    ctx.font = '14px "PingFang SC","Microsoft YaHei",sans-serif'; ctx.fillStyle = '#52525B'; ctx.fillText(label, x, 318)
+  })
+
+  ctx.strokeStyle = '#E4DDD3'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(44, 352); ctx.lineTo(W - 44, 352); ctx.stroke()
+
+  const sColors = ['#B45309','#1D4ED8','#065F46','#6D28D9','#0E7490','#B91C1C']
+  const sBgs    = ['#FFFBEB','#EFF6FF','#ECFDF5','#F5F3FF','#ECFEFF','#FFF1F2']
+  ctx.textAlign = 'left'
+  POSTER_TAGS.forEach((tag, i) => {
+    const col = i % 2, row = Math.floor(i / 2)
+    const x = 44 + col * 335, y = 374 + row * 72
+    rr(ctx, x, y, 310, 56, 10); ctx.fillStyle = sBgs[i]; ctx.fill()
+    ctx.strokeStyle = sColors[i] + '55'; ctx.lineWidth = 1; ctx.stroke()
+    rr(ctx, x + 10, y + 14, 44, 26, 6); ctx.fillStyle = sColors[i]; ctx.fill()
+    ctx.fillStyle = '#fff'; ctx.font = 'bold 12px "PingFang SC","Microsoft YaHei",sans-serif'; ctx.textAlign = 'center'; ctx.fillText(`S0${i + 1}`, x + 32, y + 31)
+    ctx.fillStyle = '#1A1A2E'; ctx.font = 'bold 15px "PingFang SC","Microsoft YaHei",sans-serif'; ctx.textAlign = 'left'; ctx.fillText(tag, x + 62, y + 33)
+  })
+
+  const qrTop = 612
+  ctx.strokeStyle = '#E4DDD3'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(44, qrTop - 14); ctx.lineTo(W - 44, qrTop - 14); ctx.stroke()
+  ctx.fillStyle = '#52525B'; ctx.font = '17px "PingFang SC","Microsoft YaHei",sans-serif'; ctx.textAlign = 'center'; ctx.fillText('扫描下方二维码，查看完整课程体系', W / 2, qrTop + 12)
+  return { qrTop }
+}
+
+function finishPoster(ctx, W, H, qrY, qrSize) {
+  const lx = W / 2, ly = qrY + qrSize / 2
+  rr(ctx, lx - 22, ly - 22, 44, 44, 10); ctx.fillStyle = P_ACCENT; ctx.fill()
+  ctx.fillStyle = '#fff'; ctx.font = 'bold 20px "PingFang SC","Microsoft YaHei",sans-serif'; ctx.textAlign = 'center'; ctx.fillText('曦', lx, ly + 7)
+  ctx.fillStyle = P_ACCENT; ctx.fillRect(0, H - 80, W, 80)
+  ctx.fillStyle = '#fff'; ctx.font = 'bold 18px "PingFang SC","Microsoft YaHei",sans-serif'; ctx.textAlign = 'center'; ctx.fillText('朝曦家办 · 知识工坊', W / 2, H - 44)
+  ctx.fillStyle = 'rgba(255,255,255,0.65)'; ctx.font = '13px "PingFang SC","Microsoft YaHei",sans-serif'; ctx.fillText('课程定制 · 量身组合 · 支持单次沙龙与系列培训', W / 2, H - 22)
+}
+
+async function buildPoster(canvas, shareUrl) {
+  const W = 750, H = 1120
+  canvas.width = W; canvas.height = H
+  const ctx = canvas.getContext('2d')
+  const { qrTop } = drawPosterBase(ctx, W, H)
+  const qrSize = 240, qrX = (W - qrSize) / 2, qrY = qrTop + 36
+  rr(ctx, qrX - 8, qrY - 8, qrSize + 16, qrSize + 16, 16); ctx.fillStyle = '#fff'; ctx.fill()
+  ctx.strokeStyle = '#E4DDD3'; ctx.lineWidth = 1; ctx.stroke()
+
+  await loadQRLib()
+
+  return new Promise(resolve => {
+    if (!window.QRCode) {
+      ctx.fillStyle = '#A1A1AA'; ctx.font = '12px monospace'; ctx.textAlign = 'center'; ctx.fillText(shareUrl, W / 2, qrY + qrSize / 2)
+      finishPoster(ctx, W, H, qrY, qrSize); resolve(); return
+    }
+    const tmp = document.createElement('div'); document.body.appendChild(tmp)
+    new window.QRCode(tmp, { text: shareUrl, width: qrSize, height: qrSize, colorDark: '#1A1A2E', colorLight: '#FFFFFF', correctLevel: window.QRCode.CorrectLevel.M })
+    setTimeout(() => {
+      const el = tmp.querySelector('img') || tmp.querySelector('canvas')
+      const draw = (src) => { ctx.drawImage(src, qrX, qrY, qrSize, qrSize); finishPoster(ctx, W, H, qrY, qrSize); document.body.removeChild(tmp); resolve() }
+      if (!el) { document.body.removeChild(tmp); finishPoster(ctx, W, H, qrY, qrSize); resolve() }
+      else if (el.tagName === 'IMG') { const img = new Image(); img.onload = () => draw(img); img.src = el.src }
+      else draw(el)
+    }, 300)
+  })
+}
+
 export function TrainingSystem() {
   const [current, setCurrent] = useState(0)
   const sliderRef = useRef(null)
   const [shareOpen, setShareOpen] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [posterReady, setPosterReady] = useState(false)
+  const canvasRef = useRef(null)
+
+  /* Generate poster when modal opens */
+  useEffect(() => {
+    if (!shareOpen) { setPosterReady(false); return }
+    setPosterReady(false)
+    const timer = setTimeout(() => {
+      if (canvasRef.current) {
+        buildPoster(canvasRef.current, getShareUrl()).then(() => setPosterReady(true))
+      }
+    }, 80)
+    return () => clearTimeout(timer)
+  }, [shareOpen])
 
   const handleCopy = useCallback(() => {
-    navigator.clipboard.writeText(getShareUrl()).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
+    const url = getShareUrl()
+    navigator.clipboard.writeText(url).then(() => {
+      setCopied(true); setTimeout(() => setCopied(false), 2000)
     }).catch(() => {
-      // fallback for older browsers
-      const el = document.createElement('input')
-      el.value = getShareUrl()
-      document.body.appendChild(el)
-      el.select()
-      document.execCommand('copy')
-      document.body.removeChild(el)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
+      const el = document.createElement('input'); el.value = url
+      document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el)
+      setCopied(true); setTimeout(() => setCopied(false), 2000)
     })
+  }, [])
+
+  const handleDownload = useCallback(() => {
+    if (!canvasRef.current) return
+    const a = document.createElement('a')
+    a.download = '朝曦家办-课程体系.png'
+    a.href = canvasRef.current.toDataURL('image/png')
+    a.click()
   }, [])
 
   const totalUnits = SERIES.reduce((s, c) => s + c.units.length, 0)
@@ -397,83 +526,63 @@ export function TrainingSystem() {
       {/* ════════ Share Modal ════════ */}
       {shareOpen && (
         <div
-          style={{
-            position: 'fixed', inset: 0, background: '#00000066',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            zIndex: 1000, padding: 20,
-          }}
+          style={{ position: 'fixed', inset: 0, background: '#00000066', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 20 }}
           onClick={() => setShareOpen(false)}
         >
           <div
-            style={{
-              background: 'var(--bg-card)', borderRadius: 20, padding: 28,
-              width: '100%', maxWidth: 420,
-              boxShadow: '0 24px 64px #00000040',
-            }}
+            style={{ background: 'var(--bg-card)', borderRadius: 20, padding: '22px 22px 18px', width: '100%', maxWidth: 360, boxShadow: '0 24px 64px #00000040' }}
             onClick={e => e.stopPropagation()}
           >
             {/* Header */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 22 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
               <div>
-                <div style={{ fontSize: 17, fontWeight: 700 }}>分享给客户</div>
-                <div style={{ fontSize: 12, color: 'var(--text-3)', marginTop: 3 }}>生成海报图片，通过微信发送</div>
+                <div style={{ fontSize: 16, fontWeight: 700 }}>分享给客户</div>
+                <div style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 2 }}>保存海报 → 微信发送 → 客户长按扫码进入</div>
               </div>
               <button
                 onClick={() => setShareOpen(false)}
-                style={{ width: 30, height: 30, borderRadius: '50%', border: 'none', background: 'var(--border)', cursor: 'pointer', fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-2)' }}
+                style={{ width: 28, height: 28, borderRadius: '50%', border: 'none', background: 'var(--border)', cursor: 'pointer', fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-2)', flexShrink: 0 }}
               >×</button>
             </div>
 
-            {/* Steps */}
-            {[
-              { step: '1', icon: '🖼️', text: '点击下方按钮，在新页面打开分享工具' },
-              { step: '2', icon: '📤', text: '点击右下角「📤」按钮，自动生成带二维码的品牌海报' },
-              { step: '3', icon: '💾', text: '下载海报图片，发送到微信' },
-              { step: '4', icon: '📱', text: '客户长按图片扫码，即可进入课程体系页面' },
-            ].map(({ step, icon, text }) => (
-              <div key={step} style={{
-                display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 14,
-              }}>
-                <div style={{
-                  width: 24, height: 24, borderRadius: '50%', flexShrink: 0,
-                  background: 'var(--accent-lt)', color: 'var(--accent)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 11, fontWeight: 800, marginTop: 1,
-                }}>{step}</div>
-                <div style={{ fontSize: 13, color: 'var(--text-2)', lineHeight: 1.6, paddingTop: 2 }}>
-                  <span style={{ marginRight: 5 }}>{icon}</span>{text}
+            {/* Canvas poster preview */}
+            <div style={{ position: 'relative', borderRadius: 10, overflow: 'hidden', marginBottom: 14, boxShadow: '0 4px 20px rgba(0,0,0,.13)', background: '#F2FBF5' }}>
+              <canvas ref={canvasRef} style={{ width: '100%', display: 'block' }} />
+              {!posterReady && (
+                <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#F7F4EF', gap: 8 }}>
+                  <div style={{ width: 28, height: 28, border: '3px solid #D8F3DC', borderTopColor: '#2D6A4F', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+                  <span style={{ fontSize: 12, color: 'var(--text-3)' }}>海报生成中…</span>
+                  <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
                 </div>
-              </div>
-            ))}
+              )}
+            </div>
 
-            {/* Main CTA */}
-            <a
-              href={SHARE_PATH}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => setShareOpen(false)}
+            {/* Download */}
+            <button
+              onClick={handleDownload}
+              disabled={!posterReady}
               style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                padding: '13px', borderRadius: 12, textDecoration: 'none',
-                background: 'linear-gradient(135deg, #2D6A4F, #40916C)',
+                width: '100%', padding: '12px', borderRadius: 11, border: 'none',
+                background: posterReady ? 'linear-gradient(135deg, #2D6A4F, #40916C)' : '#D4D4D8',
                 color: '#fff', fontSize: 14, fontWeight: 700,
-                boxShadow: '0 4px 16px #2D6A4F44',
-                marginTop: 6, marginBottom: 12,
+                cursor: posterReady ? 'pointer' : 'default',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
+                marginBottom: 9, boxShadow: posterReady ? '0 4px 16px #2D6A4F44' : 'none',
+                transition: 'all .2s',
               }}
             >
-              <span style={{ fontSize: 16 }}>🖼️</span> 打开海报生成页
-            </a>
+              ⬇ 下载海报图片
+            </button>
 
-            {/* Secondary: copy link */}
+            {/* Copy link */}
             <button
               onClick={handleCopy}
               style={{
-                width: '100%', padding: '11px', borderRadius: 10,
+                width: '100%', padding: '9px', borderRadius: 9,
                 border: '1px solid var(--border)', background: 'var(--bg)',
-                color: copied ? 'var(--accent)' : 'var(--text-2)',
-                fontSize: 13, fontWeight: 600, cursor: 'pointer',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-                transition: 'all .2s',
+                color: copied ? 'var(--accent)' : 'var(--text-3)',
+                fontSize: 12, fontWeight: 600, cursor: 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5,
               }}
             >
               {copied ? '✓ 链接已复制' : '🔗 仅复制页面链接'}
