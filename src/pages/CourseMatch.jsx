@@ -84,7 +84,7 @@ async function downloadWordDoc(order, editForm, courseIds, outline) {
         new Paragraph({ heading: HeadingLevel.HEADING_1, spacing:{ after:200 },
           children:[new TextRun({ text:'朝曦培训方案资料包', font:'Arial', size:36, bold:true, color:'2D6A4F' })] }),
         new Paragraph({ spacing:{ after:100 },
-          children:[new TextRun({ text:`工单：${order.id}　渠道：${editForm.channel||order.channel}　联系人：${editForm.contact||order.contact}`, font:'Arial', size:22, color:'444444' })] }),
+          children:[new TextRun({ text:`工单：${order.id}　渠道：________________　联系人：________________`, font:'Arial', size:22, color:'444444' })] }),
         new Paragraph({ spacing:{ after:400 },
           children:[new TextRun({ text:`生成时间：${new Date().toLocaleString('zh-CN')}`, font:'Arial', size:20, color:'888888' })] }),
         new Paragraph({ heading: HeadingLevel.HEADING_2, spacing:{ before:240, after:160 },
