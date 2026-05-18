@@ -13,13 +13,13 @@ const NAV = [
   // ── 培训体系 ──────────────────────────────
   { type: 'group', label: '培训体系' },
   { type: 'item', id: 'trainingsystem', label: '课程体系',  num: '—',  icon: '◈' },
+  { type: 'item', id: 'coursematch',    label: '课程匹配',  num: '02',  icon: '◈', tag: 'M2' },
+  { type: 'item', id: 'schedule',       label: '讲师排期',  num: '04',  icon: '◷', tag: 'M4' },
 
   // ── 外部培训 ──────────────────────────────
   { type: 'group', label: '外部培训' },
   { type: 'item', id: 'submit',      label: '提交需求',  num: '01',  icon: '✦', tag: 'M1' },
   { type: 'item', id: 'workorders',  label: '需求工单',  num: '01+', icon: '◈', tag: 'M1', adminOnly: true },
-  { type: 'item', id: 'coursematch', label: '课程匹配',  num: '02',  icon: '◈', tag: 'M2' },
-  { type: 'item', id: 'schedule',    label: '讲师排期',  num: '04',  icon: '◷', tag: 'M4' },
 ]
 
 const PAGE_MAP = {
