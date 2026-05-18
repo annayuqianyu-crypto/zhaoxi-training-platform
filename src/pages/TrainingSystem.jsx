@@ -406,17 +406,17 @@ export function TrainingSystem() {
         >
           <div
             style={{
-              background: 'var(--bg-card)', borderRadius: 20, padding: 32,
-              width: '100%', maxWidth: 440,
+              background: 'var(--bg-card)', borderRadius: 20, padding: 28,
+              width: '100%', maxWidth: 420,
               boxShadow: '0 24px 64px #00000040',
             }}
             onClick={e => e.stopPropagation()}
           >
             {/* Header */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 22 }}>
               <div>
-                <div style={{ fontSize: 17, fontWeight: 700 }}>分享课程体系</div>
-                <div style={{ fontSize: 12, color: 'var(--text-3)', marginTop: 3 }}>发给客户，仅展示课程体系，不含内部信息</div>
+                <div style={{ fontSize: 17, fontWeight: 700 }}>分享给客户</div>
+                <div style={{ fontSize: 12, color: 'var(--text-3)', marginTop: 3 }}>生成海报图片，通过微信发送</div>
               </div>
               <button
                 onClick={() => setShareOpen(false)}
@@ -424,67 +424,60 @@ export function TrainingSystem() {
               >×</button>
             </div>
 
-            {/* Preview card */}
-            <div style={{
-              background: '#18181B', borderRadius: 12,
-              padding: '16px 18px', marginBottom: 20,
-              display: 'flex', alignItems: 'center', gap: 14,
-              border: '1px solid #27272A',
-            }}>
-              <div style={{
-                width: 44, height: 44, borderRadius: 10, flexShrink: 0,
-                background: 'linear-gradient(135deg, #2D6A4F, #40916C)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 20, fontWeight: 800, color: '#fff',
-              }}>曦</div>
-              <div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: '#F4F4F5' }}>朝曦家办 · 系列课程体系</div>
-                <div style={{ fontSize: 11, color: '#71717A', marginTop: 3 }}>六大系列 · {totalUnits} 个课程单元 · 独立 H5 页面</div>
+            {/* Steps */}
+            {[
+              { step: '1', icon: '🖼️', text: '点击下方按钮，在新页面打开分享工具' },
+              { step: '2', icon: '📤', text: '点击右下角「📤」按钮，自动生成带二维码的品牌海报' },
+              { step: '3', icon: '💾', text: '下载海报图片，发送到微信' },
+              { step: '4', icon: '📱', text: '客户长按图片扫码，即可进入课程体系页面' },
+            ].map(({ step, icon, text }) => (
+              <div key={step} style={{
+                display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 14,
+              }}>
+                <div style={{
+                  width: 24, height: 24, borderRadius: '50%', flexShrink: 0,
+                  background: 'var(--accent-lt)', color: 'var(--accent)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: 11, fontWeight: 800, marginTop: 1,
+                }}>{step}</div>
+                <div style={{ fontSize: 13, color: 'var(--text-2)', lineHeight: 1.6, paddingTop: 2 }}>
+                  <span style={{ marginRight: 5 }}>{icon}</span>{text}
+                </div>
               </div>
-            </div>
+            ))}
 
-            {/* URL row */}
-            <div style={{ fontSize: 11, color: 'var(--text-3)', marginBottom: 6, fontWeight: 600 }}>页面链接</div>
-            <div style={{
-              display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20,
-            }}>
-              <div style={{
-                flex: 1, padding: '10px 14px',
-                background: 'var(--bg-page)', border: '1px solid var(--border)',
-                borderRadius: 8, fontSize: 12, color: 'var(--text-2)',
-                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                userSelect: 'all',
-              }}>{getShareUrl()}</div>
-              <button
-                onClick={handleCopy}
-                style={{
-                  flexShrink: 0, padding: '10px 18px', borderRadius: 8,
-                  border: 'none', cursor: 'pointer', fontSize: 12, fontWeight: 700,
-                  background: copied ? '#2D6A4F' : 'var(--accent)',
-                  color: '#fff', transition: 'background .2s', whiteSpace: 'nowrap',
-                }}
-              >{copied ? '✓ 已复制' : '复制链接'}</button>
-            </div>
-
-            {/* Open preview */}
+            {/* Main CTA */}
             <a
               href={SHARE_PATH}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => setShareOpen(false)}
               style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
-                padding: '12px', borderRadius: 10, textDecoration: 'none',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                padding: '13px', borderRadius: 12, textDecoration: 'none',
                 background: 'linear-gradient(135deg, #2D6A4F, #40916C)',
-                color: '#fff', fontSize: 13, fontWeight: 700,
-                boxShadow: '0 4px 14px #2D6A4F44',
+                color: '#fff', fontSize: 14, fontWeight: 700,
+                boxShadow: '0 4px 16px #2D6A4F44',
+                marginTop: 6, marginBottom: 12,
               }}
             >
-              <span>👁️</span> 预览客户视角
+              <span style={{ fontSize: 16 }}>🖼️</span> 打开海报生成页
             </a>
 
-            <p style={{ fontSize: 11, color: 'var(--text-3)', textAlign: 'center', marginTop: 14, lineHeight: 1.6 }}>
-              客户打开后仅看到课程体系概况，不含合同、排期等内部模块
-            </p>
+            {/* Secondary: copy link */}
+            <button
+              onClick={handleCopy}
+              style={{
+                width: '100%', padding: '11px', borderRadius: 10,
+                border: '1px solid var(--border)', background: 'var(--bg)',
+                color: copied ? 'var(--accent)' : 'var(--text-2)',
+                fontSize: 13, fontWeight: 600, cursor: 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                transition: 'all .2s',
+              }}
+            >
+              {copied ? '✓ 链接已复制' : '🔗 仅复制页面链接'}
+            </button>
           </div>
         </div>
       )}
