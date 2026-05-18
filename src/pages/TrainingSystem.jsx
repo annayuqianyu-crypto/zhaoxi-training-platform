@@ -478,25 +478,25 @@ export function TrainingSystem() {
                     minWidth: 28, textAlign: 'center',
                   }}>{String(i + 1).padStart(2, '0')}</span>
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: '#18181B', marginBottom: 5, lineHeight: 1.4 }}>
+                    <div style={{ fontSize: 15, fontWeight: 700, color: '#18181B', marginBottom: 6, lineHeight: 1.4 }}>
                       {u.name}
                     </div>
-                    <div style={{ fontSize: 12, color: '#71717A', lineHeight: 1.7 }}>
+                    <div style={{ fontSize: 13, color: '#71717A', lineHeight: 1.8 }}>
                       <span style={{ color: '#A1A1AA', marginRight: 4 }}>核心痛点</span>{u.pain}
                     </div>
-                    <div style={{ fontSize: 12, color: '#71717A', marginTop: 3, lineHeight: 1.7 }}>
+                    <div style={{ fontSize: 13, color: '#71717A', marginTop: 4, lineHeight: 1.8 }}>
                       <span style={{ color: '#A1A1AA', marginRight: 4 }}>核心客群</span>{u.client}
                     </div>
                     {u.case && (
-                      <div style={{ fontSize: 12, marginTop: 5, lineHeight: 1.7 }}>
+                      <div style={{ fontSize: 13, marginTop: 6, lineHeight: 1.8 }}>
                         <span style={{ color: '#A1A1AA', marginRight: 4 }}>关联案例</span>
                         <span style={{
                           color: s.color,
                           background: s.bg,
                           border: `1px solid ${s.border}`,
                           borderRadius: 5,
-                          padding: '1px 8px',
-                          fontSize: 11.5,
+                          padding: '2px 9px',
+                          fontSize: 12.5,
                         }}>{u.case}</span>
                       </div>
                     )}
