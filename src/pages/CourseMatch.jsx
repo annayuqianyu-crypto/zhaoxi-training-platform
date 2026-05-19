@@ -342,32 +342,26 @@ export function CourseMatch({ navigate, portalMode = false }) {
 
   /* ─── SKU 适配匹配 ─── */
   async function matchSKUs() {
-    if (editCourseIds.length === 0) {
-      setSkuError('请先选择课程方案，再进行 SKU 匹配'); return
+    if (!supplementText.trim()) {
+      setSkuError('请先在上方文本框中输入客户需求或会议纪要，再进行 SKU 匹配'); return
     }
     setSkuLoading(true); setSkuError('')
     try {
-      // 构建课程方案摘要
-      const selectedUnits = COURSE_UNITS.filter(u => editCourseIds.includes(u.id))
-      const planSummary = selectedUnits.map(u =>
-        `【${u.series}】${u.course}${u.outline ? '：' + u.outline.slice(0, 120) : ''}`
-      ).join('\n')
-
       // 构建紧凑 SKU 索引（只传 id + name + keywords，控制 token）
       const skuIndex = SKU_CARDS.map(s =>
         `${s.id}|${s.name}|${s.keywords.slice(0, 80)}`
       ).join('\n')
 
-      const prompt = `你是朝曦家族办公室培训产品专家。根据以下课程方案，从知识卡片库中挑选最适合推荐给客户的 SKU 产品。
+      const prompt = `你是朝曦家族办公室培训产品专家。根据以下客户需求，从知识卡片库中挑选最适合推荐给该客户的 SKU 产品。
 
-课程方案内容：
-${planSummary}
+客户需求／会议纪要：
+${supplementText.trim()}
 
 知识卡片库（格式：编号|产品名称|客户场景关键词）：
 ${skuIndex}
 
 要求：
-1. 选出最匹配课程主题和客户场景的 SKU，数量 8-12 个
+1. 严格依据客户需求文本中描述的痛点、场景、关键词来选取 SKU，数量 8-12 个
 2. 必须覆盖不同产品类型，不得集中于同一类别
 3. 只返回 JSON：{"ids":["Legal-2603","Tax-2471",...]}`
 
@@ -772,8 +766,8 @@ ${skuIndex}
                 <button
                   className="btn btn-secondary btn-sm"
                   onClick={matchSKUs}
-                  disabled={skuLoading || editCourseIds.length === 0}
-                  title={editCourseIds.length === 0 ? '请先选择课程' : ''}
+                  disabled={skuLoading || !supplementText.trim()}
+                  title={!supplementText.trim() ? '请先在上方填写客户需求或会议纪要' : ''}
                 >
                   {skuLoading ? '⏳ AI 匹配中…' : '🤖 AI 匹配适配 SKU'}
                 </button>
@@ -789,7 +783,7 @@ ${skuIndex}
               {!skuMatches && !skuLoading && (
                 <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:10,
                   padding:'24px', textAlign:'center', color:'var(--text-3)', fontSize:12 }}>
-                  选好课程后，点击「AI 匹配适配 SKU」，系统将从 337 条知识卡片中筛选最适合该客户的产品
+                  在上方填写客户需求或会议纪要后，点击「AI 匹配适配 SKU」，系统将从 337 条知识卡片中筛选最匹配的产品
                 </div>
               )}
 
