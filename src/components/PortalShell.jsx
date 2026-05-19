@@ -2,11 +2,13 @@ import { useState } from 'react'
 import { ProductLearning } from '../pages/ProductLearning'
 import { PortalCourseMatch } from '../pages/PortalCourseMatch'
 import { PortalWorkOrder } from '../pages/PortalWorkOrder'
+import { PortalHistory, loadHistory } from '../pages/PortalHistory'
 
 const TABS = [
   { key: 'coursematch', label: '🎯 课程匹配' },
   { key: 'workorder',   label: '📋 提交需求' },
   { key: 'learning',    label: '📚 产品学习' },
+  { key: 'history',     label: '📂 历史记录' },
 ]
 
 export function PortalShell({ user, onLogout }) {
@@ -36,18 +38,31 @@ export function PortalShell({ user, onLogout }) {
 
         {/* Tabs */}
         <nav style={{ display: 'flex', gap: 4 }}>
-          {TABS.map(t => (
-            <button key={t.key}
-              onClick={() => setActiveTab(t.key)}
-              style={{
-                padding: '7px 18px', borderRadius: 8,
-                cursor: 'pointer', fontSize: 13, fontWeight: 600,
-                border: 'none', transition: 'all .15s',
-                background: activeTab === t.key ? 'var(--bg-sidebar-active)' : 'transparent',
-                color: activeTab === t.key ? '#fff' : '#A1A1AA',
-              }}
-            >{t.label}</button>
-          ))}
+          {TABS.map(t => {
+            const histCount = t.key === 'history' ? loadHistory(user.name).length : 0
+            return (
+              <button key={t.key}
+                onClick={() => setActiveTab(t.key)}
+                style={{
+                  padding: '7px 18px', borderRadius: 8,
+                  cursor: 'pointer', fontSize: 13, fontWeight: 600,
+                  border: 'none', transition: 'all .15s',
+                  background: activeTab === t.key ? 'var(--bg-sidebar-active)' : 'transparent',
+                  color: activeTab === t.key ? '#fff' : '#A1A1AA',
+                  display: 'flex', alignItems: 'center', gap: 6,
+                }}
+              >
+                {t.label}
+                {t.key === 'history' && histCount > 0 && (
+                  <span style={{
+                    background: '#2D6A4F', color: '#fff',
+                    borderRadius: 99, fontSize: 10, fontWeight: 700,
+                    padding: '1px 6px', lineHeight: 1.4,
+                  }}>{histCount}</span>
+                )}
+              </button>
+            )
+          })}
         </nav>
 
         {/* Right: user info + logout */}
@@ -81,6 +96,12 @@ export function PortalShell({ user, onLogout }) {
         {activeTab === 'coursematch' && <PortalCourseMatch user={user} />}
         {activeTab === 'workorder'   && <PortalWorkOrder user={user} />}
         {activeTab === 'learning'    && <ProductLearning />}
+        {activeTab === 'history'     && (
+          <PortalHistory
+            user={user}
+            onLoad={() => setActiveTab('coursematch')}
+          />
+        )}
       </main>
     </div>
   )
