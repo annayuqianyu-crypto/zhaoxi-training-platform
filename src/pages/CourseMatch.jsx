@@ -4,6 +4,7 @@ import { Document, Packer, Paragraph, TextRun, HeadingLevel, Table, TableRow, Ta
 import { COURSE_CATALOG, SKU_LIST, INSTRUCTORS } from '../data/mock'
 import { COURSE_UNITS } from '../data/courseUnits'
 import { SKU_FULL } from '../data/skuFull'
+import { SKU_CARDS } from '../data/skuCards'
 
 export const CONTEXT_KEY  = 'zx_coursematch_context'
 const OVERRIDE_KEY = 'zx_order_overrides'
@@ -13,6 +14,9 @@ const DS_API_URL = 'https://api.deepseek.com/v1/chat/completions'
 const DS_API_KEY = 'sk-603a729e51d54a82bf8b8de3e06530b4'
 const DS_MODEL   = 'deepseek-chat'
 
+const SKU_PAGE_MAP = Object.fromEntries(
+  SKU_FULL.filter(s => s.pageUrl).map(s => [s.id, s.pageUrl])
+)
 
 /* ─── helpers ─── */
 function loadOverrides() { try { return JSON.parse(localStorage.getItem(OVERRIDE_KEY) || '{}') } catch { return {} } }
@@ -84,7 +88,7 @@ async function downloadWordDoc(order, editForm, courseIds, outline) {
         new Paragraph({ heading: HeadingLevel.HEADING_1, spacing:{ after:200 },
           children:[new TextRun({ text:'朝曦培训方案资料包', font:'Arial', size:36, bold:true, color:'2D6A4F' })] }),
         new Paragraph({ spacing:{ after:100 },
-          children:[new TextRun({ text:`工单：${order.id}　渠道：________________　联系人：________________`, font:'Arial', size:22, color:'444444' })] }),
+          children:[new TextRun({ text:`工单：${order.id}　渠道：${editForm.channel||order.channel}　联系人：${editForm.contact||order.contact}`, font:'Arial', size:22, color:'444444' })] }),
         new Paragraph({ spacing:{ after:400 },
           children:[new TextRun({ text:`生成时间：${new Date().toLocaleString('zh-CN')}`, font:'Arial', size:20, color:'888888' })] }),
         new Paragraph({ heading: HeadingLevel.HEADING_2, spacing:{ before:240, after:160 },
@@ -163,6 +167,11 @@ ${info}
 课程库（ID 必须与下表完全一致）：
 ${courseList}
 
+【强制要求】
+1. top3 中的三个课程必须来自【不同的课程系列】（seriesName 不得重复）
+2. 三个课程的 id 必须各不相同，严禁出现重复 id
+3. 优先覆盖客户需求中涉及的不同主题，而非集中在同一系列
+
 返回合法 JSON 对象，格式如下，score 为整数（60-99）：
 {"top3":[{"id":"C1-01","name":"企业全生命周期股权设计","seriesName":"课程一","score":85,"reason":"推荐理由"},{"id":"C2-01","name":"课程名","seriesName":"课程二","score":78,"reason":"推荐理由"},{"id":"C5-01","name":"课程名","seriesName":"课程五","score":72,"reason":"推荐理由"}],"suggestions":"补充建议"}`
 }
@@ -221,10 +230,13 @@ export function CourseMatch({ navigate, portalMode = false }) {
   const [saved, setSaved]                               = useState(false)
 
   /* ─── AI state ─── */
-  const [supplementText, setSupplementText] = useState('')
-  const [aiLoading, setAiLoading]           = useState(false)
-  const [aiResult, setAiResult]             = useState(null)
-  const [aiError, setAiError]               = useState('')
+  const [supplementText, setSupplementText]   = useState('')
+  const [aiLoading, setAiLoading]             = useState(false)
+  const [aiResult, setAiResult]               = useState(null)
+  const [aiError, setAiError]                 = useState('')
+  const [skuLoading, setSkuLoading]           = useState(false)
+  const [skuMatches, setSkuMatches]           = useState(null)  // [{id,name,def,features}]
+  const [skuError, setSkuError]               = useState('')
 
   useEffect(() => {
     const raw = localStorage.getItem(CONTEXT_KEY)
@@ -238,62 +250,25 @@ export function CourseMatch({ navigate, portalMode = false }) {
     setSelectedInstructors(c.selectedInstructors || [])
     setSupplementText(c.supplementText || '')
     setAiResult(c.aiResult || null)
+    setSkuMatches(c.skuMatches || null)
   }, [])
 
-  /* ─── No context: show quick-entry form ─── */
-  const [quickNote, setQuickNote] = useState('')
-  const [quickErr,  setQuickErr]  = useState(false)
-
+  /* ─── No context ─── */
   if (!ctx) {
-    function startQuick(e) {
-      e.preventDefault()
-      if (!quickNote.trim()) { setQuickErr(true); return }
-      const stub = {
-        order: { id: 'QUICK-' + Date.now(), channel: '—', contact: '—', painpoints: {} },
-        editForm: { background: quickNote.trim() },
-        editCourseIds: [], editOutline: '', selectedInstructors: [],
-        supplementText: '', aiResult: null,
-      }
-      localStorage.setItem(CONTEXT_KEY, JSON.stringify(stub))
-      setCtx(stub)
-      setEditForm(stub.editForm)
-      setSupplementText('')
-    }
     return (
       <>
         <div className="topbar">
           <span className="topbar-title">课程匹配</span>
           <span className="topbar-sub">· M2</span>
         </div>
-        <div className="content" style={{ maxWidth: 560, margin: '60px auto 0' }}>
-          <div style={{ textAlign:'center', marginBottom: 32 }}>
-            <div style={{ fontSize: 36, marginBottom: 12 }}>🎯</div>
-            <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 8 }}>快速课程匹配</h2>
-            <p style={{ fontSize: 13, color: 'var(--text-3)', lineHeight: 1.7 }}>
-              简单描述您的培训需求或初步想法，我们将为您推荐合适的课程方向
-            </p>
+        <div className="content" style={{ textAlign:'center', paddingTop:80 }}>
+          <div style={{ fontSize:32, marginBottom:16 }}>📋</div>
+          <div style={{ fontSize:15, color:'var(--text-2)', marginBottom:20 }}>
+            {portalMode ? '请先填写客户信息以开始匹配' : '请先从「需求工单」中选择一条前期沟通工单，点击「前往课程匹配」进入本页'}
           </div>
-          <form onSubmit={startQuick}>
-            <div className="form-group">
-              <label className="form-label">需求简述</label>
-              <textarea
-                value={quickNote}
-                onChange={e => { setQuickNote(e.target.value); setQuickErr(false) }}
-                placeholder="例如：想了解股权架构和税务合规相关课程，客户是一家准备上市的科技公司……"
-                style={{
-                  width: '100%', height: 140, padding: '12px 14px',
-                  border: `1.5px solid ${quickErr ? 'var(--red)' : 'var(--border)'}`,
-                  borderRadius: 10, fontFamily: 'inherit', fontSize: 14,
-                  lineHeight: 1.7, background: 'var(--bg)', color: 'var(--text-1)',
-                  resize: 'vertical', outline: 'none', boxSizing: 'border-box',
-                }}
-              />
-              {quickErr && <div style={{ fontSize: 12, color: 'var(--red)', marginTop: 4 }}>请填写需求简述后再开始匹配</div>}
-            </div>
-            <button className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', marginTop: 4 }} type="submit">
-              开始课程匹配 →
-            </button>
-          </form>
+          <button className="btn btn-primary" onClick={() => navigate('workorders')}>
+            {portalMode ? '← 返回填写信息' : '← 返回需求工单'}
+          </button>
         </div>
       </>
     )
@@ -326,10 +301,10 @@ export function CourseMatch({ navigate, portalMode = false }) {
   function handleSave() {
     saveOverride(order.id, {
       editForm, editCourseIds, editOutline, selectedInstructors,
-      supplementText, aiResult,
+      supplementText, aiResult, skuMatches,
       status: order.status, updatedAt: new Date().toISOString(),
     })
-    const updated = { ...ctx, editForm, editCourseIds, editOutline, selectedInstructors, supplementText, aiResult }
+    const updated = { ...ctx, editForm, editCourseIds, editOutline, selectedInstructors, supplementText, aiResult, skuMatches }
     localStorage.setItem(CONTEXT_KEY, JSON.stringify(updated))
     setSaved(true)
     setTimeout(() => setSaved(false), 2500)
@@ -341,12 +316,77 @@ export function CourseMatch({ navigate, portalMode = false }) {
     try {
       const prompt = buildAIPrompt(order, editForm, supplementText)
       const result = await callDeepSeekAPI(prompt)
+
+      // 兜底去重：确保 top3 中 id 各不相同、seriesName 各不相同
+      if (Array.isArray(result.top3)) {
+        const seenIds    = new Set()
+        const seenSeries = new Set()
+        result.top3 = result.top3.filter(item => {
+          if (!item?.id) return false
+          if (seenIds.has(item.id))       return false
+          if (seenSeries.has(item.seriesName)) return false
+          seenIds.add(item.id)
+          seenSeries.add(item.seriesName)
+          return true
+        }).slice(0, 3)
+      }
+
       setAiResult(result)
       saveOverride(order.id, { aiResult: result, supplementText })
     } catch (e) {
       setAiError(e.message || 'AI 分析失败，请稍后重试')
     } finally {
       setAiLoading(false)
+    }
+  }
+
+  /* ─── SKU 适配匹配 ─── */
+  async function matchSKUs() {
+    if (editCourseIds.length === 0) {
+      setSkuError('请先选择课程方案，再进行 SKU 匹配'); return
+    }
+    setSkuLoading(true); setSkuError('')
+    try {
+      // 构建课程方案摘要
+      const selectedUnits = COURSE_UNITS.filter(u => editCourseIds.includes(u.id))
+      const planSummary = selectedUnits.map(u =>
+        `【${u.series}】${u.course}${u.outline ? '：' + u.outline.slice(0, 120) : ''}`
+      ).join('\n')
+
+      // 构建紧凑 SKU 索引（只传 id + name + keywords，控制 token）
+      const skuIndex = SKU_CARDS.map(s =>
+        `${s.id}|${s.name}|${s.keywords.slice(0, 80)}`
+      ).join('\n')
+
+      const prompt = `你是朝曦家族办公室培训产品专家。根据以下课程方案，从知识卡片库中挑选最适合推荐给客户的 SKU 产品。
+
+课程方案内容：
+${planSummary}
+
+知识卡片库（格式：编号|产品名称|客户场景关键词）：
+${skuIndex}
+
+要求：
+1. 选出最匹配课程主题和客户场景的 SKU，数量 8-12 个
+2. 必须覆盖不同产品类型，不得集中于同一类别
+3. 只返回 JSON：{"ids":["Legal-2603","Tax-2471",...]}`
+
+      const res = await callDeepSeekAPI(prompt)
+      const ids = Array.isArray(res.ids) ? res.ids : []
+      const matched = ids
+        .map(id => SKU_CARDS.find(s => s.id === id))
+        .filter(Boolean)
+        .slice(0, 12)
+
+      setSkuMatches(matched)
+      // 持久化
+      const updated = { ...JSON.parse(localStorage.getItem(CONTEXT_KEY) || '{}'), skuMatches: matched }
+      localStorage.setItem(CONTEXT_KEY, JSON.stringify(updated))
+      saveOverride(order.id, { skuMatches: matched })
+    } catch (e) {
+      setSkuError(e.message || 'SKU 匹配失败，请重试')
+    } finally {
+      setSkuLoading(false)
     }
   }
 
@@ -391,7 +431,11 @@ export function CourseMatch({ navigate, portalMode = false }) {
     <>
       {/* ─── Topbar ─── */}
       <div className="topbar">
-        <span className="topbar-title">课程匹配</span>
+        <button className="btn btn-ghost btn-sm" onClick={() => navigate('workorders')} style={{ marginRight:4 }}>
+          {portalMode ? '← 重新匹配' : '← 返回需求工单'}
+        </button>
+        <span className="topbar-title" style={{ marginLeft:8 }}>课程匹配</span>
+        <span className="topbar-sub">· {order.id} &nbsp;·&nbsp; {order.channel}</span>
         <div className="topbar-actions">
           {saved && <span style={{ fontSize:12, color:'var(--accent)', fontWeight:600 }}>✅ 已保存</span>}
           <button className="btn btn-secondary btn-sm" onClick={handleSave}>💾 保存草稿</button>
@@ -399,6 +443,33 @@ export function CourseMatch({ navigate, portalMode = false }) {
       </div>
 
       <div className="content">
+
+        {/* ─── Work order summary strip ─── */}
+        <div style={{
+          display:'flex', gap:24, flexWrap:'wrap', alignItems:'center',
+          padding:'12px 18px', background:'var(--bg-card)', border:'1px solid var(--border)',
+          borderRadius:12, marginBottom:20, fontSize:12,
+        }}>
+          {[
+            ['渠道', editForm.channel || order.channel],
+            ['联系人', editForm.contact || order.contact],
+            ['参与类型', editForm.audience || order.audience || '—'],
+            ['人数', (editForm.people || order.people) ? `${editForm.people || order.people}人` : '—'],
+            ['时长', editForm.duration || order.duration || '—'],
+            ['日期', editForm.date || order.date || '—'],
+          ].map(([k, v]) => (
+            <div key={k} style={{ display:'flex', gap:6 }}>
+              <span style={{ color:'var(--text-3)' }}>{k}</span>
+              <span style={{ fontWeight:600, color:'var(--text-1)' }}>{v}</span>
+            </div>
+          ))}
+          {aiResult && (
+            <span style={{ marginLeft:'auto', fontSize:11, background:'#D1FAE5', color:'#065F46',
+              padding:'3px 10px', borderRadius:6, fontWeight:600 }}>
+              🤖 AI已分析
+            </span>
+          )}
+        </div>
 
         {/* ─── Tabs ─── */}
         <div style={{ display:'flex', borderBottom:'1px solid var(--border)', marginBottom:20 }}>
@@ -535,6 +606,31 @@ export function CourseMatch({ navigate, portalMode = false }) {
               </div>
             )}
 
+            {/* Basic info editable */}
+            <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, padding:20, marginBottom:20 }}>
+              <div style={{ fontSize:11, fontWeight:700, color:'var(--text-3)', letterSpacing:'.08em', marginBottom:14 }}>基本信息</div>
+              <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:12 }}>
+                {[['渠道/机构','channel','text'],['联系人','contact','text'],
+                  ['对接销售','salesName','text'],['参与类型','audience','text'],
+                  ['预计人数','people','number'],['培训时长','duration','text'],
+                  ['期望日期','date','text'],['目标受众职级','jobLevel','text'],
+                ].map(([label, key, type]) => (
+                  <div key={key}>
+                    <div style={{ fontSize:11, color:'var(--text-3)', marginBottom:4 }}>{label}</div>
+                    <input className="form-input" type={type} value={editForm[key]||''}
+                      onChange={e => { setEditForm(f => ({ ...f, [key]: e.target.value })); setSaved(false) }}
+                      style={{ fontSize:13, padding:'7px 10px' }} />
+                  </div>
+                ))}
+              </div>
+              <div style={{ marginTop:12 }}>
+                <div style={{ fontSize:11, color:'var(--text-3)', marginBottom:4 }}>特殊说明</div>
+                <textarea className="form-textarea" value={editForm.note||''}
+                  onChange={e => { setEditForm(f => ({ ...f, note: e.target.value })); setSaved(false) }}
+                  style={{ fontSize:13, height:56 }} />
+              </div>
+            </div>
+
             {/* Course selector */}
             <div style={{ marginBottom:20 }}>
               <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:14 }}>
@@ -651,6 +747,8 @@ export function CourseMatch({ navigate, portalMode = false }) {
                                   </div>
                                   <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:4 }}>
                                     {u.skus.map(s => {
+                                      const pageUrl = SKU_PAGE_MAP[s.id]
+                                      const href = pageUrl ? base + pageUrl : null
                                       const idColor = s.id.startsWith('Tax') || s.id.startsWith('TAX') ? '#7C3AED'
                                         : s.id.startsWith('Legal') ? '#1D4ED8' : '#C2410C'
                                       return (
@@ -659,8 +757,15 @@ export function CourseMatch({ navigate, portalMode = false }) {
                                           background:'var(--bg-card)', border:'1px solid var(--border)',
                                           borderRadius:6, padding:'6px 10px',
                                         }}>
-                                          <span style={{ fontFamily:'monospace', fontSize:10, fontWeight:700,
-                                            color: idColor, flexShrink:0, paddingTop:1 }}>{s.id}</span>
+                                          {href
+                                            ? <a href={href} target="_blank" rel="noreferrer"
+                                                style={{ fontFamily:'monospace', fontSize:10, fontWeight:700,
+                                                  color: idColor, textDecoration:'none', flexShrink:0, paddingTop:1 }}>
+                                                {s.id} ↗
+                                              </a>
+                                            : <span style={{ fontFamily:'monospace', fontSize:10, fontWeight:700,
+                                                color: idColor, flexShrink:0, paddingTop:1 }}>{s.id}</span>
+                                          }
                                           <span style={{ fontSize:11, color:'var(--text-1)', lineHeight:1.4 }}>{s.name}</span>
                                         </div>
                                       )
@@ -678,56 +783,71 @@ export function CourseMatch({ navigate, portalMode = false }) {
               ))}
             </div>
 
-            {/* SKU matching table */}
-            {editCourseIds.length > 0 && (
-              <div style={{ marginBottom:20 }}>
-                <div style={{ fontSize:13, fontWeight:700, color:'var(--text-1)', marginBottom:10 }}>
-                  课程 SKU 匹配表
-                  <span style={{ fontWeight:400, fontSize:12, color:'var(--text-3)', marginLeft:8 }}>共 {matchedSKUs.length} 条</span>
+            {/* ─── 客户适配 SKU 列表 ─── */}
+            <div style={{ marginBottom:20 }}>
+              <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:12 }}>
+                <div style={{ fontSize:13, fontWeight:700, color:'var(--text-1)' }}>
+                  客户适配 SKU 列表
+                  {skuMatches && (
+                    <span style={{ fontWeight:400, fontSize:12, color:'var(--text-3)', marginLeft:8 }}>
+                      共 {skuMatches.length} 条
+                    </span>
+                  )}
                 </div>
-                {matchedSKUs.length === 0
-                  ? <div style={{ background:'var(--bg)', borderRadius:10, padding:20, color:'var(--text-3)', fontSize:12, textAlign:'center' }}>
-                      当前所选课程暂无匹配 SKU
-                    </div>
-                  : (
-                    <div style={{ border:'1px solid var(--border)', borderRadius:12, overflow:'hidden' }}>
-                      <div style={{ display:'grid', gridTemplateColumns:'110px 1fr 80px 80px 90px 90px 90px', gap:0,
-                        background:'#2D6A4F', padding:'8px 14px', fontSize:11, fontWeight:700, color:'#fff' }}>
-                        {['产品编号','产品名称','所属部门','一级分类','二级分类','页数/字数','匹配等级'].map(h => (
-                          <div key={h} style={{ padding:'0 4px' }}>{h}</div>
-                        ))}
-                      </div>
-                      {matchedSKUs.map((s, i) => (
-                        <div key={s.id} style={{
-                          display:'grid', gridTemplateColumns:'110px 1fr 80px 80px 90px 90px 90px',
-                          gap:0, padding:'10px 14px', fontSize:12,
-                          background: i % 2 === 0 ? '#fff' : '#FAFAF9',
-                          borderTop:'1px solid var(--border)', alignItems:'center'
-                        }}>
-                          <div style={{ padding:'0 4px', fontFamily:'monospace', fontSize:11, color:'var(--accent)', fontWeight:700 }}>
-                            {s.id}
-                          </div>
-                          <div style={{ padding:'0 4px', fontWeight:600, color:'var(--text-1)' }}>{s.name}</div>
-                          <div style={{ padding:'0 4px', color:'var(--text-2)', fontSize:11 }}>{s.dept}</div>
-                          <div style={{ padding:'0 4px', color:'var(--text-2)', fontSize:11 }}>{s.cat1}</div>
-                          <div style={{ padding:'0 4px', color:'var(--text-2)', fontSize:11 }}>{s.cat2||'—'}</div>
-                          <div style={{ padding:'0 4px', color:'var(--text-2)', fontSize:11 }}>
-                            {s.slides > 0 ? <>{s.slides}页 / {(s.words/1000).toFixed(1)}K字</> : <span style={{ color:'#A1A1AA' }}>待更新</span>}
-                          </div>
-                          <div style={{ padding:'0 4px' }}>
-                            <span style={{ fontSize:11, padding:'2px 6px', borderRadius:4, fontWeight:600,
-                              background: s.match==='exact'?'#D1FAE5':s.match==='fuzzy'?'#FEF3C7':s.match?'#EFF6FF':'#F4F4F5',
-                              color: s.match==='exact'?'#065F46':s.match==='fuzzy'?'#92400E':s.match?'#1D4ED8':'#A1A1AA' }}>
-                              {s.match==='exact'?'精确匹配':s.match==='fuzzy'?'模糊匹配':s.match==='overview'?'参考资料':'未评级'}
-                            </span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )
-                }
+                <button
+                  className="btn btn-secondary btn-sm"
+                  onClick={matchSKUs}
+                  disabled={skuLoading || editCourseIds.length === 0}
+                  title={editCourseIds.length === 0 ? '请先选择课程' : ''}
+                >
+                  {skuLoading ? '⏳ AI 匹配中…' : '🤖 AI 匹配适配 SKU'}
+                </button>
               </div>
-            )}
+
+              {skuError && (
+                <div style={{ background:'#FEF2F2', border:'1px solid #FCA5A5', borderRadius:8,
+                  padding:'10px 14px', fontSize:12, color:'#DC2626', marginBottom:10 }}>
+                  ⚠️ {skuError}
+                </div>
+              )}
+
+              {!skuMatches && !skuLoading && (
+                <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:10,
+                  padding:'24px', textAlign:'center', color:'var(--text-3)', fontSize:12 }}>
+                  选好课程后，点击「AI 匹配适配 SKU」，系统将从 337 条知识卡片中筛选最适合该客户的产品
+                </div>
+              )}
+
+              {skuMatches && skuMatches.length > 0 && (
+                <div style={{ border:'1px solid var(--border)', borderRadius:12, overflow:'hidden' }}>
+                  {/* 表头 */}
+                  <div style={{
+                    display:'grid', gridTemplateColumns:'120px 1fr 2fr',
+                    background:'#2D6A4F', padding:'10px 16px',
+                    fontSize:11, fontWeight:700, color:'#fff', gap:16,
+                  }}>
+                    <div>产品名称</div>
+                    <div>定义</div>
+                    <div>主要特点和功能</div>
+                  </div>
+                  {skuMatches.map((s, i) => (
+                    <div key={s.id} style={{
+                      display:'grid', gridTemplateColumns:'120px 1fr 2fr',
+                      gap:16, padding:'12px 16px', fontSize:12,
+                      background: i % 2 === 0 ? '#fff' : '#F9FAF9',
+                      borderTop:'1px solid var(--border)', alignItems:'start',
+                    }}>
+                      <div>
+                        <div style={{ fontFamily:'monospace', fontSize:10, color:'#6B7280', marginBottom:3 }}>{s.id}</div>
+                        <div style={{ fontWeight:700, color:'var(--text-1)', lineHeight:1.4 }}>{s.name}</div>
+                      </div>
+                      <div style={{ color:'var(--text-2)', lineHeight:1.6 }}>{s.def}</div>
+                      <div style={{ color:'var(--text-1)', lineHeight:1.6 }}>{s.features}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
 
             <div style={{ display:'flex', gap:10, justifyContent:'flex-end' }}>
               <button className="btn btn-secondary" disabled={wordGenerating}
