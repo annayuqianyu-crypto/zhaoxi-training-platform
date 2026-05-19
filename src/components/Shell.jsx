@@ -1,82 +1,67 @@
-import { useState, useEffect } from 'react'
-import { Dashboard }         from '../pages/Dashboard'
-import { Contracts }         from '../pages/Contracts'
-import { KPI }               from '../pages/KPI'
-import { Qualification }     from '../pages/Qualification'
-import { Channels }          from '../pages/Channels'
-import { ProductLearning }   from '../pages/ProductLearning'
-import { InternalLedger }    from '../pages/InternalLedger'
-import { TrainingMaterials } from '../pages/TrainingMaterials'
+import { useState } from 'react'
+import { TrainingSystem }  from '../pages/TrainingSystem'
+import { CourseMatch }     from '../pages/CourseMatch'
+import { Schedule }        from '../pages/Schedule'
+import { WorkOrders }      from '../pages/WorkOrders'
+import { PortalWorkOrder } from '../pages/PortalWorkOrder'
 
+/* ─── Navigation structure ───
+   type: 'group'  → module section header (not clickable)
+   type: 'item'   → normal nav item
+─────────────────────────────── */
 const NAV = [
-  { type: 'group', label: '总览' },
-  { type: 'item', id: 'dashboard', label: '仪表盘', num: '—', icon: '◈' },
+  // ── 培训体系 ──────────────────────────────
+  { type: 'group', label: '培训体系' },
+  { type: 'item', id: 'trainingsystem', label: '课程体系',  num: '—',  icon: '◈' },
+  { type: 'item', id: 'coursematch',    label: '课程匹配',  num: '02',  icon: '◈', tag: 'M2' },
+  { type: 'item', id: 'schedule',       label: '讲师排期',  num: '04',  icon: '◷', tag: 'M4' },
 
-  { type: 'group', label: '外部培训管理' },
-  { type: 'item', id: 'contracts',  label: '合同 & 台账',  num: '03', icon: '◻', tag: 'M3/9' },
-  { type: 'item', id: 'kpi',        label: 'KPI 汇总',     num: '—',  icon: '◉', tag: 'KPI' },
-  { type: 'item', id: 'qualification', label: '通关 & 素材库', num: '05', icon: '◆', tag: 'M5/6' },
-  { type: 'item', id: 'channels',   label: '渠道分析',     num: '10', icon: '◑', tag: 'M10' },
-
-  { type: 'group', label: '知识工坊' },
-  { type: 'item', id: 'productlearning', label: '产品学习', num: '11', icon: '◈', tag: 'M11' },
-
-  { type: 'group', label: '内部培训' },
-  { type: 'item', id: 'internalledger',    label: '内训台账', num: '—', icon: '◉' },
-  { type: 'item', id: 'trainingmaterials', label: '培训资料', num: '—', icon: '◆' },
+  // ── 外部培训 ──────────────────────────────
+  { type: 'group', label: '外部培训' },
+  { type: 'item', id: 'submit',      label: '提交需求',  num: '01',  icon: '✦', tag: 'M1' },
+  { type: 'item', id: 'workorders',  label: '需求工单',  num: '01+', icon: '◈', tag: 'M1', adminOnly: true },
 ]
 
+const PAGE_MAP = {
+  trainingsystem: TrainingSystem,
+  submit:         PortalWorkOrder,
+  workorders:     WorkOrders,
+  coursematch:    CourseMatch,
+  schedule:       Schedule,
+}
+
 export function Shell({ user, onLogout }) {
-  const [page, setPage]           = useState('dashboard')
-  // 合同数据在 Shell 层统一托管，Contracts 和 KPI 共享同一份数据
-  // 初始化时从 localStorage 读取，变更时自动持久化
-  const [contracts, setContracts] = useState(() => {
-    try {
-      const saved = localStorage.getItem('zx_contracts')
-      return saved ? JSON.parse(saved) : []
-    } catch { return [] }
-  })
-
-  useEffect(() => {
-    localStorage.setItem('zx_contracts', JSON.stringify(contracts))
-  }, [contracts])
-
-  function renderPage() {
-    switch (page) {
-      case 'dashboard':        return <Dashboard user={user} navigate={setPage} />
-      case 'contracts':        return <Contracts data={contracts} setData={setContracts} />
-      case 'kpi':              return <KPI contracts={contracts} />
-      case 'qualification':    return <Qualification user={user} navigate={setPage} />
-      case 'channels':         return <Channels />
-      case 'productlearning':  return <ProductLearning />
-      case 'internalledger':   return <InternalLedger />
-      case 'trainingmaterials':return <TrainingMaterials />
-      default:                 return <Dashboard user={user} navigate={setPage} />
-    }
-  }
+  const [page, setPage] = useState('trainingsystem')
+  const Page = PAGE_MAP[page] || TrainingSystem
 
   return (
     <div className="app-shell">
       <aside className="sidebar">
         <div className="sidebar-logo">
           <div className="logo-mark">曦</div>
-          <h2>朝曦内部管理中台</h2>
-          <p>Internal Platform · v1.0</p>
+          <h2>朝曦家办-知识工坊</h2>
+          <p>Knowledge Hub · v1.3</p>
         </div>
 
         <div className="nav-section">
           {NAV.map((n, i) => {
+            // 仅管理员可见的条目，非 admin 跳过
+            if (n.adminOnly && user.role !== 'admin') return null
+
+            // Section group header
             if (n.type === 'group') {
               return (
                 <div key={i} style={{
                   padding: i === 0 ? '6px 14px 4px' : '14px 14px 4px',
                   fontSize: 10, fontWeight: 800, letterSpacing: '.12em',
-                  color: '#52525B', textTransform: 'uppercase', userSelect: 'none',
+                  color: '#52525B', textTransform: 'uppercase',
+                  userSelect: 'none',
                 }}>
                   {n.label}
                 </div>
               )
             }
+
             return (
               <div key={n.id}
                 className={`nav-item${page === n.id ? ' active' : ''}`}
@@ -94,25 +79,20 @@ export function Shell({ user, onLogout }) {
         </div>
 
         <div className="sidebar-bottom">
-          <div style={{
-            padding: '8px 14px', fontSize: 10, color: '#3F3F46',
-            background: '#111113', borderRadius: 6, margin: '0 10px 10px',
-            textAlign: 'center', letterSpacing: '.04em',
-          }}>
-            🔒 仅限内部使用 · 请勿外传
-          </div>
           <div className="user-chip" onClick={onLogout} title="点击退出">
             <div className="user-avatar">{user.name.charAt(0)}</div>
             <div>
               <div className="user-name">{user.name}</div>
-              <div className="user-role">管理员</div>
+              <div className="user-role">
+                {user.role === 'admin' ? '管理员' : user.role === 'sales' ? '销售' : user.role === 'teacher' ? '讲师' : 'BU成员'}
+              </div>
             </div>
           </div>
         </div>
       </aside>
 
       <div className="main">
-        {renderPage()}
+        <Page user={user} navigate={setPage} />
       </div>
     </div>
   )
