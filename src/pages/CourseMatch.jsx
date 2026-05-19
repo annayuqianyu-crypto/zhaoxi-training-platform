@@ -606,31 +606,6 @@ ${skuIndex}
               </div>
             )}
 
-            {/* Basic info editable */}
-            <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, padding:20, marginBottom:20 }}>
-              <div style={{ fontSize:11, fontWeight:700, color:'var(--text-3)', letterSpacing:'.08em', marginBottom:14 }}>基本信息</div>
-              <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:12 }}>
-                {[['渠道/机构','channel','text'],['联系人','contact','text'],
-                  ['对接销售','salesName','text'],['参与类型','audience','text'],
-                  ['预计人数','people','number'],['培训时长','duration','text'],
-                  ['期望日期','date','text'],['目标受众职级','jobLevel','text'],
-                ].map(([label, key, type]) => (
-                  <div key={key}>
-                    <div style={{ fontSize:11, color:'var(--text-3)', marginBottom:4 }}>{label}</div>
-                    <input className="form-input" type={type} value={editForm[key]||''}
-                      onChange={e => { setEditForm(f => ({ ...f, [key]: e.target.value })); setSaved(false) }}
-                      style={{ fontSize:13, padding:'7px 10px' }} />
-                  </div>
-                ))}
-              </div>
-              <div style={{ marginTop:12 }}>
-                <div style={{ fontSize:11, color:'var(--text-3)', marginBottom:4 }}>特殊说明</div>
-                <textarea className="form-textarea" value={editForm.note||''}
-                  onChange={e => { setEditForm(f => ({ ...f, note: e.target.value })); setSaved(false) }}
-                  style={{ fontSize:13, height:56 }} />
-              </div>
-            </div>
-
             {/* Course selector */}
             <div style={{ marginBottom:20 }}>
               <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:14 }}>
