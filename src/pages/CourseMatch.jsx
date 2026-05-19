@@ -225,16 +225,11 @@ async function callDeepSeekAPI(prompt) {
 ════════════════════════════════════════════════════════════ */
 export function CourseMatch({ navigate, portalMode = false, user = null }) {
   const [ctx, setCtx]                                   = useState(null)
-  const [tab, setTab]                                   = useState('courses')
   const [editForm, setEditForm]                         = useState({})
   const [editCourseIds, setEditCourseIds]               = useState([])
   const [editOutline, setEditOutline]                   = useState('')
   const [expandedCourses, setExpandedCourses]           = useState(new Set())
   const [selectedInstructors, setSelectedInstructors]   = useState([])
-  const [confirmLink, setConfirmLink]                   = useState('')
-  const [confirmLinkCopied, setConfirmLinkCopied]       = useState(false)
-  const [instructorLink, setInstructorLink]             = useState('')
-  const [instructorLinkCopied, setInstructorLinkCopied] = useState(false)
   const [wordGenerating, setWordGenerating]             = useState(false)
   const [saved, setSaved]                               = useState(false)
 
@@ -436,22 +431,6 @@ ${skuIndex}
     e.target.value = ''
   }
 
-  /* ─── Links ─── */
-  function genConfirmLink() {
-    const link = generateConfirmLink(order, editForm, editCourseIds, editOutline)
-    setConfirmLink(link)
-    navigator.clipboard.writeText(link).then(() => {
-      setConfirmLinkCopied(true); setTimeout(() => setConfirmLinkCopied(false), 3000)
-    })
-  }
-  function genInstructorLink() {
-    const link = generateInstructorLink(order, editForm, editCourseIds, editOutline, supplementText, selectedInstructors)
-    setInstructorLink(link)
-    navigator.clipboard.writeText(link).then(() => {
-      setInstructorLinkCopied(true); setTimeout(() => setInstructorLinkCopied(false), 3000)
-    })
-  }
-
   /* ─── Group COURSE_UNITS by series ─── */
   const courseGroups = []
   for (const u of COURSE_UNITS) {
@@ -473,21 +452,13 @@ ${skuIndex}
 
       <div className="content">
 
-        {/* ─── Tabs ─── */}
-        <div style={{ display:'flex', borderBottom:'1px solid var(--border)', marginBottom:20 }}>
-          {[['courses','📚 课程方案'],['send','📨 发送方案']].map(([id, label]) => (
-            <button key={id} onClick={() => setTab(id)} style={{
-              padding:'10px 20px', fontSize:13, fontWeight: tab===id ? 700 : 400,
-              border:'none', background:'none', cursor:'pointer', fontFamily:'inherit',
-              color: tab===id ? 'var(--accent)' : 'var(--text-3)',
-              borderBottom: tab===id ? '2px solid var(--accent)' : '2px solid transparent',
-              marginBottom:-1,
-            }}>{label}</button>
-          ))}
+        {/* ─── Section title ─── */}
+        <div style={{ borderBottom:'1px solid var(--border)', marginBottom:20, paddingBottom:10 }}>
+          <span style={{ fontSize:14, fontWeight:700, color:'var(--text-1)' }}>课程需求</span>
         </div>
 
-        {/* ══════════════ TAB 1: 课程方案 ══════════════ */}
-        {tab === 'courses' && (
+        {/* ══════════════ 课程需求内容 ══════════════ */}
+        {(
           <>
             {/* ─── AI 需求分析区 ─── */}
             <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, padding:20, marginBottom:20 }}>
@@ -846,107 +817,6 @@ ${skuIndex}
           </>
         )}
 
-        {/* ══════════════ TAB 2: 发送方案 ══════════════ */}
-        {tab === 'send' && (
-          <>
-            {/* Instructor selector */}
-            <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, padding:20, marginBottom:20 }}>
-              <div style={{ fontSize:13, fontWeight:700, color:'var(--text-1)', marginBottom:14 }}>👨‍🏫 讲师匹配（可多选）</div>
-              <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:12 }}>
-                {INSTRUCTORS.map(ins => {
-                  const sel = selectedInstructors.includes(ins.id)
-                  return (
-                    <div key={ins.id} onClick={() => { setSelectedInstructors(prev => sel ? prev.filter(x=>x!==ins.id) : [...prev, ins.id]); setSaved(false) }}
-                      style={{
-                        position:'relative', padding:'16px', borderRadius:12, cursor:'pointer',
-                        border:`2px solid ${sel ? '#2D6A4F' : 'var(--border)'}`,
-                        background: sel ? '#F0F9F4' : 'var(--bg-card)',
-                        transition:'all .15s'
-                      }}>
-                      {sel && (
-                        <div style={{ position:'absolute', top:8, right:8, background:'#2D6A4F',
-                          color:'#fff', borderRadius:'50%', width:18, height:18,
-                          display:'flex', alignItems:'center', justifyContent:'center', fontSize:11 }}>✓</div>
-                      )}
-                      <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:8 }}>
-                        <div style={{ width:36, height:36, borderRadius:'50%', background:'#2D6A4F',
-                          color:'#fff', display:'flex', alignItems:'center', justifyContent:'center',
-                          fontSize:14, fontWeight:700, flexShrink:0 }}>{ins.avatar}</div>
-                        <div>
-                          <div style={{ fontWeight:700, fontSize:14 }}>{ins.name}</div>
-                          <div style={{ fontSize:11, color:'var(--text-3)' }}>{ins.title}</div>
-                        </div>
-                      </div>
-                      <div style={{ fontSize:11, color:'var(--text-2)', marginBottom:6 }}>{ins.edu}</div>
-                      <div style={{ display:'flex', flexWrap:'wrap', gap:4 }}>
-                        {ins.specialties.map(s => (
-                          <span key={s} style={{ fontSize:10, padding:'1px 6px', borderRadius:4,
-                            background:'#EFF6FF', color:'#1D4ED8', border:'1px solid #BFDBFE' }}>{s}</span>
-                        ))}
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-
-            {/* Confirm link */}
-            <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, padding:20, marginBottom:16 }}>
-              <div style={{ fontSize:13, fontWeight:700, color:'var(--text-1)', marginBottom:6 }}>🔗 渠道确认链接</div>
-              <div style={{ fontSize:12, color:'var(--text-2)', marginBottom:12 }}>
-                发给渠道联系人，对方确认后工单自动进入「渠道已确认」
-              </div>
-              {confirmLink && (
-                <div style={{ background:'#F0F9F4', border:'1px solid #6EE7B7', borderRadius:8,
-                  padding:'10px 12px', marginBottom:12, fontSize:11, fontFamily:'monospace',
-                  wordBreak:'break-all', color:'#047857', lineHeight:1.5 }}>
-                  {confirmLink}
-                </div>
-              )}
-              <div style={{ display:'flex', gap:8 }}>
-                <button className="btn btn-primary" onClick={genConfirmLink}>
-                  {confirmLinkCopied ? '✅ 已复制！' : '生成并复制渠道确认链接'}
-                </button>
-                {confirmLink && (
-                  <button className="btn btn-secondary btn-sm"
-                    onClick={() => { navigator.clipboard.writeText(confirmLink); setConfirmLinkCopied(true) }}>
-                    再次复制
-                  </button>
-                )}
-              </div>
-            </div>
-
-            {/* Instructor link */}
-            <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, padding:20, marginBottom:20 }}>
-              <div style={{ fontSize:13, fontWeight:700, color:'var(--text-1)', marginBottom:6 }}>📨 讲师参考方案链接</div>
-              <div style={{ fontSize:12, color:'var(--text-2)', marginBottom:12 }}>
-                包含完整渠道需求、补充信息、已选课程与课纲、参考 SKU 列表。讲师打开后只读查看。
-              </div>
-              {instructorLink && (
-                <div style={{ background:'#EFF6FF', border:'1px solid #BFDBFE', borderRadius:8,
-                  padding:'10px 12px', marginBottom:12, fontSize:11, fontFamily:'monospace',
-                  wordBreak:'break-all', color:'#1D4ED8', lineHeight:1.5 }}>
-                  {instructorLink}
-                </div>
-              )}
-              <div style={{ display:'flex', gap:8 }}>
-                <button className="btn btn-primary" onClick={genInstructorLink}>
-                  {instructorLinkCopied ? '✅ 已复制！' : '生成并复制讲师参考方案链接'}
-                </button>
-                {instructorLink && (
-                  <button className="btn btn-secondary btn-sm"
-                    onClick={() => { navigator.clipboard.writeText(instructorLink); setInstructorLinkCopied(true) }}>
-                    再次复制
-                  </button>
-                )}
-              </div>
-            </div>
-
-            <div style={{ display:'flex', gap:10, justifyContent:'flex-end' }}>
-              <button className="btn btn-primary" onClick={handleSave}>💾 保存草稿</button>
-            </div>
-          </>
-        )}
       </div>
     </>
   )
