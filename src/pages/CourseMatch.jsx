@@ -76,19 +76,21 @@ function generateInstructorLink(order, editForm, courseIds, outline, supplementT
   return `${base}?ref=${encoded}`
 }
 
-async function downloadWordDoc(order, editForm, courseIds, outline) {
-  const matchedSKUs = getMatchedSKUs(courseIds)
+async function downloadWordDoc(order, editForm, courseIds, outline, skuMatches) {
   const borderStyle = { style: BorderStyle.SINGLE, size: 1, color: 'CCCCCC' }
   const borders = { top: borderStyle, bottom: borderStyle, left: borderStyle, right: borderStyle }
   const cellPad = { top: 80, bottom: 80, left: 120, right: 120 }
+  const skuList = Array.isArray(skuMatches) ? skuMatches : []
+  // 列宽：产品名称1400 + 定义2200 + 特点3200 + 匹配逻辑2400 = 9200
+  const colWidths = [1400, 2200, 3200, 2400]
+  const headers   = ['产品名称', '定义', '主要特点和功能', '匹配逻辑说明']
+
   const doc = new Document({
     sections: [{
       properties: { page: { size:{ width:12240, height:15840 }, margin:{ top:1440, right:1440, bottom:1440, left:1440 } } },
       children: [
         new Paragraph({ heading: HeadingLevel.HEADING_1, spacing:{ after:200 },
           children:[new TextRun({ text:'朝曦培训方案资料包', font:'Arial', size:36, bold:true, color:'2D6A4F' })] }),
-        new Paragraph({ spacing:{ after:100 },
-          children:[new TextRun({ text:`工单：${order.id}　渠道：${editForm.channel||order.channel}　联系人：${editForm.contact||order.contact}`, font:'Arial', size:22, color:'444444' })] }),
         new Paragraph({ spacing:{ after:400 },
           children:[new TextRun({ text:`生成时间：${new Date().toLocaleString('zh-CN')}`, font:'Arial', size:20, color:'888888' })] }),
         new Paragraph({ heading: HeadingLevel.HEADING_2, spacing:{ before:240, after:160 },
@@ -99,25 +101,32 @@ async function downloadWordDoc(order, editForm, courseIds, outline) {
               color: line.startsWith('【') ? '2D6A4F' : line.startsWith('▌') ? '18181B' : '71717A' })] })
         ) : [new Paragraph({ children:[new TextRun({ text:'（暂无课纲）', font:'Arial', size:20, color:'A1A1AA' })] })]),
         new Paragraph({ heading: HeadingLevel.HEADING_2, spacing:{ before:400, after:200 },
-          children:[new TextRun({ text:`二、推荐参考 SKU 产品列表（共 ${matchedSKUs.length} 条）`, font:'Arial', size:28, bold:true })] }),
-        ...(matchedSKUs.length === 0
-          ? [new Paragraph({ children:[new TextRun({ text:'请先选择课程以匹配SKU', font:'Arial', size:20, color:'A1A1AA' })] })]
+          children:[new TextRun({ text:`二、客户适配 SKU 列表（共 ${skuList.length} 条）`, font:'Arial', size:28, bold:true })] }),
+        ...(skuList.length === 0
+          ? [new Paragraph({ children:[new TextRun({ text:'暂无 SKU 匹配结果，请在课程匹配页点击「AI 匹配适配 SKU」后再下载。', font:'Arial', size:20, color:'A1A1AA' })] })]
           : [new Table({
-              width:{ size:9200, type:WidthType.DXA }, columnWidths:[1800,3800,1200,1200,1200],
+              width:{ size:9200, type:WidthType.DXA }, columnWidths: colWidths,
               rows:[
                 new TableRow({ tableHeader:true, children:
-                  ['产品编号','产品名称','所属部门','一级分类','匹配程度'].map((h,i) =>
-                    new TableCell({ borders, width:{ size:[1800,3800,1200,1200,1200][i], type:WidthType.DXA },
+                  headers.map((h, i) =>
+                    new TableCell({ borders, width:{ size: colWidths[i], type:WidthType.DXA },
                       margins:cellPad, shading:{ fill:'2D6A4F', type:ShadingType.CLEAR },
-                      children:[new Paragraph({ children:[new TextRun({ text:h, font:'Arial', size:22, bold:true, color:'FFFFFF' })] })] })
+                      children:[new Paragraph({ children:[new TextRun({ text:h, font:'Arial', size:20, bold:true, color:'FFFFFF' })] })] })
                   )
                 }),
-                ...matchedSKUs.map(s => new TableRow({ children: [
-                  new TableCell({ borders, width:{ size:1800, type:WidthType.DXA }, margins:cellPad, children:[new Paragraph({ children:[new TextRun({ text:s.id, font:'Arial', size:20 })] })] }),
-                  new TableCell({ borders, width:{ size:3800, type:WidthType.DXA }, margins:cellPad, children:[new Paragraph({ children:[new TextRun({ text:s.name, font:'Arial', size:20, bold:true })] })] }),
-                  new TableCell({ borders, width:{ size:1200, type:WidthType.DXA }, margins:cellPad, children:[new Paragraph({ children:[new TextRun({ text:s.dept||'', font:'Arial', size:20 })] })] }),
-                  new TableCell({ borders, width:{ size:1200, type:WidthType.DXA }, margins:cellPad, children:[new Paragraph({ children:[new TextRun({ text:s.cat1||'', font:'Arial', size:20 })] })] }),
-                  new TableCell({ borders, width:{ size:1200, type:WidthType.DXA }, margins:cellPad, children:[new Paragraph({ children:[new TextRun({ text: s.match==='exact'?'精确匹配':s.match==='fuzzy'?'模糊匹配':'参考资料', font:'Arial', size:20 })] })] }),
+                ...skuList.map(s => new TableRow({ children: [
+                  new TableCell({ borders, width:{ size:colWidths[0], type:WidthType.DXA }, margins:cellPad,
+                    children:[
+                      new Paragraph({ children:[new TextRun({ text:s.id||'', font:'Arial', size:18, color:'6B7280' })] }),
+                      new Paragraph({ children:[new TextRun({ text:s.name||'', font:'Arial', size:20, bold:true })] }),
+                    ]}),
+                  new TableCell({ borders, width:{ size:colWidths[1], type:WidthType.DXA }, margins:cellPad,
+                    children:[new Paragraph({ children:[new TextRun({ text:s.def||'', font:'Arial', size:19 })] })] }),
+                  new TableCell({ borders, width:{ size:colWidths[2], type:WidthType.DXA }, margins:cellPad,
+                    children:[new Paragraph({ children:[new TextRun({ text:s.features||'', font:'Arial', size:19 })] })] }),
+                  new TableCell({ borders, width:{ size:colWidths[3], type:WidthType.DXA }, margins:cellPad,
+                    shading:{ fill:'F0FDF4', type:ShadingType.CLEAR },
+                    children:[new Paragraph({ children:[new TextRun({ text:s.reason||'—', font:'Arial', size:19, color:'065F46' })] })] }),
                 ]}))
               ]
             })]
@@ -827,7 +836,7 @@ ${skuIndex}
               <button className="btn btn-secondary" disabled={wordGenerating}
                 onClick={async () => {
                   setWordGenerating(true)
-                  try { await downloadWordDoc(order, editForm, editCourseIds, editOutline) }
+                  try { await downloadWordDoc(order, editForm, editCourseIds, editOutline, skuMatches) }
                   finally { setWordGenerating(false) }
                 }}>
                 {wordGenerating ? '⏳ 生成中…' : '⬇️ 下载方案 Word'}
