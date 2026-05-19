@@ -375,23 +375,30 @@ export function CourseMatch({ navigate, portalMode = false, user = null }) {
         `${s.id}|${s.name}|${s.keywords.slice(0, 80)}`
       ).join('\n')
 
-      const prompt = `你是朝曦家族办公室培训产品专家。根据以下客户需求，从知识卡片库中挑选最适合推荐给该客户的 SKU 产品。
+      const prompt = `你是朝曦家族办公室培训产品专家。请仔细阅读以下客户需求全文，深入理解客户的业务背景、核心痛点、关注场景和关键词，然后从知识卡片库中挑选最适合该客户的 SKU 产品，并为每条 SKU 写出针对该客户的具体匹配逻辑。
 
-客户需求／会议纪要：
+客户需求／会议纪要（请完整消化）：
 ${supplementText.trim()}
 
 知识卡片库（格式：编号|产品名称|客户场景关键词）：
 ${skuIndex}
 
-要求：
-1. 严格依据客户需求文本中描述的痛点、场景、关键词来选取 SKU，数量 8-12 个
+选取要求：
+1. 严格依据客户需求中的痛点、场景、关键词选取 SKU，数量 8-12 个
 2. 必须覆盖不同产品类型，不得集中于同一类别
-3. 只返回 JSON：{"ids":["Legal-2603","Tax-2471",...]}`
+3. 每条 SKU 的 reason 字段：结合客户需求原文，用 1-2 句话说明为何该产品适合该客户（引用需求中的具体信息）
+
+只返回合法 JSON，格式如下：
+{"matches":[{"id":"Legal-2603","reason":"客户提到XX痛点，该产品可解决YY问题"},{"id":"Tax-2471","reason":"..."}]}`
 
       const res = await callDeepSeekAPI(prompt)
-      const ids = Array.isArray(res.ids) ? res.ids : []
-      const matched = ids
-        .map(id => SKU_CARDS.find(s => s.id === id))
+      const items = Array.isArray(res.matches) ? res.matches : []
+      const matched = items
+        .map(item => {
+          const card = SKU_CARDS.find(s => s.id === item.id)
+          if (!card) return null
+          return { ...card, reason: item.reason || '' }
+        })
         .filter(Boolean)
         .slice(0, 12)
 
@@ -783,17 +790,18 @@ ${skuIndex}
                 <div style={{ border:'1px solid var(--border)', borderRadius:12, overflow:'hidden' }}>
                   {/* 表头 */}
                   <div style={{
-                    display:'grid', gridTemplateColumns:'120px 1fr 2fr',
+                    display:'grid', gridTemplateColumns:'120px 1fr 2fr 1.5fr',
                     background:'#2D6A4F', padding:'10px 16px',
                     fontSize:11, fontWeight:700, color:'#fff', gap:16,
                   }}>
                     <div>产品名称</div>
                     <div>定义</div>
                     <div>主要特点和功能</div>
+                    <div>匹配逻辑说明</div>
                   </div>
                   {skuMatches.map((s, i) => (
                     <div key={s.id} style={{
-                      display:'grid', gridTemplateColumns:'120px 1fr 2fr',
+                      display:'grid', gridTemplateColumns:'120px 1fr 2fr 1.5fr',
                       gap:16, padding:'12px 16px', fontSize:12,
                       background: i % 2 === 0 ? '#fff' : '#F9FAF9',
                       borderTop:'1px solid var(--border)', alignItems:'start',
@@ -804,6 +812,11 @@ ${skuIndex}
                       </div>
                       <div style={{ color:'var(--text-2)', lineHeight:1.6 }}>{s.def}</div>
                       <div style={{ color:'var(--text-1)', lineHeight:1.6 }}>{s.features}</div>
+                      <div style={{
+                        color:'#065F46', lineHeight:1.6,
+                        background:'#F0FDF4', borderRadius:6,
+                        padding:'6px 8px', fontSize:11,
+                      }}>{s.reason || '—'}</div>
                     </div>
                   ))}
                 </div>
