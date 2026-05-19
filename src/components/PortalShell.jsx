@@ -4,15 +4,20 @@ import { PortalCourseMatch } from '../pages/PortalCourseMatch'
 import { PortalWorkOrder } from '../pages/PortalWorkOrder'
 import { PortalHistory, loadHistory } from '../pages/PortalHistory'
 
-const TABS = [
+// 仅这些账户可见「提交需求」Tab
+const WORKORDER_WHITELIST = ['anna.yu@zxpro.com.cn']
+
+const ALL_TABS = [
   { key: 'coursematch', label: '🎯 课程匹配' },
-  { key: 'workorder',   label: '📋 提交需求' },
+  { key: 'workorder',   label: '📋 提交需求', restricted: true },
   { key: 'learning',    label: '📚 产品学习' },
   { key: 'history',     label: '📂 历史记录' },
 ]
 
 export function PortalShell({ user, onLogout }) {
   const [activeTab, setActiveTab] = useState('coursematch')
+  const canSeeWorkorder = WORKORDER_WHITELIST.includes(user.name)
+  const TABS = ALL_TABS.filter(t => !t.restricted || canSeeWorkorder)
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
@@ -94,7 +99,7 @@ export function PortalShell({ user, onLogout }) {
       {/* Content area */}
       <main style={{ flex: 1, overflow: 'auto', background: 'var(--bg)' }}>
         {activeTab === 'coursematch' && <PortalCourseMatch user={user} />}
-        {activeTab === 'workorder'   && <PortalWorkOrder user={user} />}
+        {activeTab === 'workorder'   && canSeeWorkorder && <PortalWorkOrder user={user} />}
         {activeTab === 'learning'    && <ProductLearning />}
         {activeTab === 'history'     && (
           <PortalHistory
