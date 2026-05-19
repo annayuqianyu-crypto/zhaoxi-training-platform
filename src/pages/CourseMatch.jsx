@@ -425,11 +425,7 @@ ${skuIndex}
     <>
       {/* ─── Topbar ─── */}
       <div className="topbar">
-        <button className="btn btn-ghost btn-sm" onClick={() => navigate('workorders')} style={{ marginRight:4 }}>
-          {portalMode ? '← 重新匹配' : '← 返回需求工单'}
-        </button>
-        <span className="topbar-title" style={{ marginLeft:8 }}>课程匹配</span>
-        <span className="topbar-sub">· {order.id} &nbsp;·&nbsp; {order.channel}</span>
+        <span className="topbar-title">课程匹配</span>
         <div className="topbar-actions">
           {saved && <span style={{ fontSize:12, color:'var(--accent)', fontWeight:600 }}>✅ 已保存</span>}
           <button className="btn btn-secondary btn-sm" onClick={handleSave}>💾 保存草稿</button>
@@ -437,33 +433,6 @@ ${skuIndex}
       </div>
 
       <div className="content">
-
-        {/* ─── Work order summary strip ─── */}
-        <div style={{
-          display:'flex', gap:24, flexWrap:'wrap', alignItems:'center',
-          padding:'12px 18px', background:'var(--bg-card)', border:'1px solid var(--border)',
-          borderRadius:12, marginBottom:20, fontSize:12,
-        }}>
-          {[
-            ['渠道', editForm.channel || order.channel],
-            ['联系人', editForm.contact || order.contact],
-            ['参与类型', editForm.audience || order.audience || '—'],
-            ['人数', (editForm.people || order.people) ? `${editForm.people || order.people}人` : '—'],
-            ['时长', editForm.duration || order.duration || '—'],
-            ['日期', editForm.date || order.date || '—'],
-          ].map(([k, v]) => (
-            <div key={k} style={{ display:'flex', gap:6 }}>
-              <span style={{ color:'var(--text-3)' }}>{k}</span>
-              <span style={{ fontWeight:600, color:'var(--text-1)' }}>{v}</span>
-            </div>
-          ))}
-          {aiResult && (
-            <span style={{ marginLeft:'auto', fontSize:11, background:'#D1FAE5', color:'#065F46',
-              padding:'3px 10px', borderRadius:6, fontWeight:600 }}>
-              🤖 AI已分析
-            </span>
-          )}
-        </div>
 
         {/* ─── Tabs ─── */}
         <div style={{ display:'flex', borderBottom:'1px solid var(--border)', marginBottom:20 }}>
