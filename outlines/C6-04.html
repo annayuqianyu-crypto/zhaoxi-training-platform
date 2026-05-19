@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>心法修炼：投资行为偏差与预防</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Microsoft YaHei",Arial,sans-serif;background:#F4F6F9;color:#2c2c2c;line-height:1.7}
+a{text-decoration:none}
+
+/* Top bar */
+.topbar{background:#04385F;color:#fff;padding:12px 28px;display:flex;align-items:center;
+  justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.logo{font-size:17px;font-weight:700;color:#AC9079;letter-spacing:1px}
+.back-btn{color:#bbb;font-size:13px;transition:color .2s}
+.back-btn:hover{color:#fff}
+
+/* Hero */
+.hero{background:linear-gradient(135deg,#C0784A 0%,#C0784Add 100%);color:#fff;padding:36px 32px 32px}
+.series-tag{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);
+  color:#fff;font-size:11px;padding:3px 12px;border-radius:12px;margin-bottom:12px;letter-spacing:.5px}
+.hero-title{font-size:24px;font-weight:700;line-height:1.4;margin-bottom:14px}
+.hero-meta{display:flex;flex-wrap:wrap;gap:12px;font-size:13px;color:rgba(255,255,255,.85)}
+.meta-chip{background:rgba(255,255,255,.15);border-radius:20px;padding:4px 14px}
+.hours-badge{background:#AC9079;color:#fff;font-size:12px;font-weight:700;
+  padding:4px 14px;border-radius:20px}
+
+/* Content */
+.content{max-width:900px;margin:28px auto;padding:0 20px 60px}
+.section{background:#fff;border-radius:12px;padding:24px 28px;margin-bottom:20px;
+  box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.section-title{font-size:13px;font-weight:700;color:#C0784A;letter-spacing:1px;
+  text-transform:uppercase;margin-bottom:14px;padding-bottom:10px;
+  border-bottom:2px solid #C0784A20;display:flex;align-items:center;gap:8px}
+.section-title::before{content:"";display:block;width:4px;height:16px;
+  background:#C0784A;border-radius:2px}
+.section-body{font-size:14.5px;color:#444;line-height:1.8}
+
+/* Benefits list */
+.benefits-list{list-style:none;padding:0}
+.benefits-list li{padding:8px 0 8px 22px;border-bottom:1px solid #f0f0f0;
+  position:relative;font-size:14px;color:#333;line-height:1.7}
+.benefits-list li:last-child{border-bottom:none}
+.benefits-list li::before{content:counter(benefit);counter-increment:benefit;
+  position:absolute;left:0;top:9px;background:#C0784A;color:#fff;
+  width:16px;height:16px;border-radius:50%;font-size:10px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;line-height:1}
+.benefits-list{counter-reset:benefit}
+
+/* Info row */
+.info-row{display:flex;gap:24px;flex-wrap:wrap}
+.info-item{flex:1;min-width:200px}
+.info-label{font-size:11px;font-weight:700;color:#999;letter-spacing:.5px;
+  text-transform:uppercase;margin-bottom:4px}
+.info-value{font-size:14px;color:#333}
+
+/* Outline */
+.part-title{font-size:15px;font-weight:700;color:#C0784A;margin:20px 0 10px;
+  padding:8px 14px;background:#C0784A10;border-left:4px solid #C0784A;border-radius:0 6px 6px 0}
+.part-items{list-style:none;padding:0;margin:0 0 4px 0}
+.part-items li{padding:6px 0 6px 20px;border-bottom:1px solid #f5f5f5;
+  position:relative;font-size:14px;color:#444;line-height:1.7}
+.part-items li:last-child{border-bottom:none}
+.part-items li::before{content:"▸";position:absolute;left:4px;color:#C0784A;font-size:12px;top:8px}
+.part-items li.sub-item{padding-left:36px;color:#666;font-size:13.5px}
+.part-items li.sub-item::before{content:"–";color:#aaa;left:20px}
+
+/* Progress indicator */
+.unit-nav{background:#fff;border-radius:12px;padding:16px 24px;margin-bottom:20px;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);display:flex;align-items:center;gap:12px}
+.unit-label{font-size:12px;color:#999}
+.unit-num{font-size:18px;font-weight:700;color:#C0784A}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="logo">朝曦家办</div>
+  <a href="../index.html" class="back-btn">← 返回课程目录</a>
+</div>
+
+<div class="hero">
+  <div class="series-tag">课程6 · 财富管理投资</div>
+  <div class="hero-title">心法修炼：投资行为偏差与预防</div>
+  <div class="hero-meta">
+    <span class="meta-chip">单元 4</span>
+    
+    <span class="meta-chip">对象：财富管理顾问、家族办公室服务专员、私人银行客户经理</span>
+    <span class="meta-chip">行为金融学专题讲授 + 经典案例解析 + 情景模拟 + 互动问答</span>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class="section"><div class="section-title">课程背景</div><div class="section-body">知道正确的配置框架，未必能坚守正确的投资行为。过度自信、追涨杀跌、受叙事驱动的非理性决策，是导致企业家投资亏损的深层根源。本课程从行为金融学与叙事经济学双重视角切入，系统解析企业家投资中的典型偏差，讲解逆向思维、均值回归与长期持有的对应策略，并以财富传承的心法收尾——帮助渠道顾问向客户传递尊重周期、敬畏市场、学习规则、严守纪律的投资哲学，完成从知识传授到理念内化的最后一公里。</div></div>
+
+  <div class="section"><div class="section-title">课程收益</div><ol class="benefits-list"><li>1. 识别过度自信、损失厌恶、锚定效应等企业家高频投资行为偏差及其触发机制；</li>
+<li>2. 理解叙事经济学框架，能够识别市场叙事的形成、扩散与破灭规律；</li>
+<li>3. 掌握逆向投资、均值回归与长期持有三种对应策略的适用逻辑与操作要点；</li>
+<li>4. 将财富传承心法转化为向客户传递的长期投资理念，提升服务粘性；</li>
+<li>5. 提升渠道顾问在客户情绪波动时进行专业引导与关系维护的能力。</li>
+</ol></div>
+
+  <div class="section"><div class="section-title">课程大纲</div><div class="part-title">第一部分：企业家投资中的过度自信陷阱与行为偏差解析</div>
+<ul class="part-items">
+  <li>系统梳理行为金融学中与企业家最相关的认知偏差，建立自我诊断能力。</li>
+  <li>过度自信：企业家我比市场更懂的认知根源与实证数据——频繁交易者的收益统计</li>
+  <li>损失厌恶：为什么割肉比浮亏更痛苦——损失厌恶系数与不肯止损的行为机制</li>
+  <li>锚定效应：买入成本价成为决策锚点的认知陷阱与解锁方法</li>
+  <li>可得性偏差：用最近发生的事代替长期概率的决策误区——媒体报道对投资判断的污染</li>
+  <li>从众心理与反从众的矛盾：为什么企业家既容易追涨，又在独立判断时缺乏信心</li>
+</ul>
+<div class="part-title">第二部分：叙事经济学——科技叙事、黄金叙事、新消费叙事的形成与破灭</div>
+<ul class="part-items">
+  <li>以叙事经济学框架解读历史与当下的市场热点，帮助学员识别故事驱动的投资风险。</li>
+  <li>叙事经济学基础：罗伯特·席勒的理论框架——叙事如何像病毒一样传播并驱动资产价格</li>
+  <li>科技叙事的形成与破灭：互联网泡沫（2000年）、元宇宙叙事（2021年）、AI叙事（2023年至今）的规律对比</li>
+  <li>黄金叙事的周期性复苏：通胀恐慌、地缘风险、美元信用质疑三类叙事如何轮番推高金价</li>
+  <li>新消费叙事的兴衰：国潮、新茶饮、预制菜等国内消费叙事的市场定价逻辑与破灭路径</li>
+  <li>识别叙事泡沫的实用工具：P/E离均值程度、散户持仓比例、财经媒体封面效应与机构持仓拥挤度</li>
+</ul>
+<div class="part-title">第三部分：逆向、均值回归、长期持有的对应策略模块应用</div>
+<ul class="part-items">
+  <li>将行为金融学洞察转化为可操作的投资纪律与策略框架。</li>
+  <li>逆向投资策略：在人人悲观时建仓的理论基础、历史胜率与情绪指标的量化辅助</li>
+  <li>均值回归策略：估值均值回归的历史有效性、适用资产类别（宽基指数 vs. 个股）与时间周期</li>
+  <li>长期持有策略：持有期收益分布的历史规律——持有时间越长，亏损概率越低的数学逻辑</li>
+  <li>三种策略的适用场景对比：市场周期不同阶段（高估/低估/震荡）下的策略选择框架</li>
+  <li>纪律执行机制：如何通过投资政策声明（IPS）、定期回顾与顾问约束防止情绪决策</li>
+</ul>
+<div class="part-title">第四部分：财富传承的心法——尊重周期、敬畏市场、学习规则、严守纪律</div>
+<ul class="part-items">
+  <li>以哲学与传承视野收尾，将投资心法升华为家族可代际延续的财富文化。</li>
+  <li>尊重周期：经济周期、资产周期与人生周期的同频共振——顺势而为而非逆势强求</li>
+  <li>敬畏市场：认识市场的信息聚合效率与个人认知局限——谦逊是长期投资者的核心美德</li>
+  <li>学习规则：持续更新投资知识体系——从产业专家到资产管理人的终身学习路径设计</li>
+  <li>严守纪律：在极端市场情绪下坚守配置纪律的心理建设与制度约束——写给二代的投资遗书</li>
+  <li>典型案例复盘：某外贸企业二代进入投资研究领域，为家族建立流动资金管理和二级市场投资体系——从行为偏差识别、投资理念建立到系统性配置框架落地的完整服务路径</li>
+  <li>──────────────────────────────────────────</li>
+  <li>朝曦家族办公室  |  系列培训课程  |  内部参考资料</li>
+</ul>
+</div>
+
+</div>
+</body>
+</html>

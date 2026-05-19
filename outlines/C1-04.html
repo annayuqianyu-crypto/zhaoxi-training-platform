@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>非货币性资产出资——技术入股，如何入股不入坑</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Microsoft YaHei",Arial,sans-serif;background:#F4F6F9;color:#2c2c2c;line-height:1.7}
+a{text-decoration:none}
+
+/* Top bar */
+.topbar{background:#04385F;color:#fff;padding:12px 28px;display:flex;align-items:center;
+  justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.logo{font-size:17px;font-weight:700;color:#AC9079;letter-spacing:1px}
+.back-btn{color:#bbb;font-size:13px;transition:color .2s}
+.back-btn:hover{color:#fff}
+
+/* Hero */
+.hero{background:linear-gradient(135deg,#04385F 0%,#04385Fdd 100%);color:#fff;padding:36px 32px 32px}
+.series-tag{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);
+  color:#fff;font-size:11px;padding:3px 12px;border-radius:12px;margin-bottom:12px;letter-spacing:.5px}
+.hero-title{font-size:24px;font-weight:700;line-height:1.4;margin-bottom:14px}
+.hero-meta{display:flex;flex-wrap:wrap;gap:12px;font-size:13px;color:rgba(255,255,255,.85)}
+.meta-chip{background:rgba(255,255,255,.15);border-radius:20px;padding:4px 14px}
+.hours-badge{background:#AC9079;color:#fff;font-size:12px;font-weight:700;
+  padding:4px 14px;border-radius:20px}
+
+/* Content */
+.content{max-width:900px;margin:28px auto;padding:0 20px 60px}
+.section{background:#fff;border-radius:12px;padding:24px 28px;margin-bottom:20px;
+  box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.section-title{font-size:13px;font-weight:700;color:#04385F;letter-spacing:1px;
+  text-transform:uppercase;margin-bottom:14px;padding-bottom:10px;
+  border-bottom:2px solid #04385F20;display:flex;align-items:center;gap:8px}
+.section-title::before{content:"";display:block;width:4px;height:16px;
+  background:#04385F;border-radius:2px}
+.section-body{font-size:14.5px;color:#444;line-height:1.8}
+
+/* Benefits list */
+.benefits-list{list-style:none;padding:0}
+.benefits-list li{padding:8px 0 8px 22px;border-bottom:1px solid #f0f0f0;
+  position:relative;font-size:14px;color:#333;line-height:1.7}
+.benefits-list li:last-child{border-bottom:none}
+.benefits-list li::before{content:counter(benefit);counter-increment:benefit;
+  position:absolute;left:0;top:9px;background:#04385F;color:#fff;
+  width:16px;height:16px;border-radius:50%;font-size:10px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;line-height:1}
+.benefits-list{counter-reset:benefit}
+
+/* Info row */
+.info-row{display:flex;gap:24px;flex-wrap:wrap}
+.info-item{flex:1;min-width:200px}
+.info-label{font-size:11px;font-weight:700;color:#999;letter-spacing:.5px;
+  text-transform:uppercase;margin-bottom:4px}
+.info-value{font-size:14px;color:#333}
+
+/* Outline */
+.part-title{font-size:15px;font-weight:700;color:#04385F;margin:20px 0 10px;
+  padding:8px 14px;background:#04385F10;border-left:4px solid #04385F;border-radius:0 6px 6px 0}
+.part-items{list-style:none;padding:0;margin:0 0 4px 0}
+.part-items li{padding:6px 0 6px 20px;border-bottom:1px solid #f5f5f5;
+  position:relative;font-size:14px;color:#444;line-height:1.7}
+.part-items li:last-child{border-bottom:none}
+.part-items li::before{content:"▸";position:absolute;left:4px;color:#04385F;font-size:12px;top:8px}
+.part-items li.sub-item{padding-left:36px;color:#666;font-size:13.5px}
+.part-items li.sub-item::before{content:"–";color:#aaa;left:20px}
+
+/* Progress indicator */
+.unit-nav{background:#fff;border-radius:12px;padding:16px 24px;margin-bottom:20px;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);display:flex;align-items:center;gap:12px}
+.unit-label{font-size:12px;color:#999}
+.unit-num{font-size:18px;font-weight:700;color:#04385F}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="logo">朝曦家办</div>
+  <a href="../index.html" class="back-btn">← 返回课程目录</a>
+</div>
+
+<div class="hero">
+  <div class="series-tag">课程1 · 企业初创与成长期</div>
+  <div class="hero-title">非货币性资产出资——技术入股，如何入股不入坑</div>
+  <div class="hero-meta">
+    <span class="meta-chip">单元 4</span>
+    <span class="hours-badge">2.5 课时</span>
+    <span class="meta-chip">对象：银行对公客户经理、私行客户经理；服务高新技术、科技型、生物医药、半导体等行业企业</span>
+    <span class="meta-chip">讲师讲授、案例分析、答疑互动</span>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class="section"><div class="section-title">课程背景</div><div class="section-body">
+拥有技术成果、专利或知识产权的创始人，往往希望以&quot;技术入股&quot;的方式换取股权，实现从创业者到股东的身份跨越。然而，估值争议、税务处理不当与出资合规风险，却让这一过程暗礁密布——轻则补税罚款，重则导致股权架构无法通过后续融资或IPO审核。本课程以银行服务科技型企业家为核心场景，系统讲解非货币性资产出资的法律框架、税务优化路径与合规要点，帮助客户经理成为科技型企业主的专业顾问，并借助持股平台搭建、税务咨询联动等产品打通展业链条。</div></div>
+
+  <div class="section"><div class="section-title">课程收益</div><ol class="benefits-list"><li>1. 了解非货币性资产出资（知识产权、技术成果、专利、股权、不动产）的法律要件与工商登记注意事项，在服务科技型企业客户时展现专业深度，建立信任；</li>
+<li>2. 掌握技术入股的核心税务规则，包括递延纳税政策（财税〔2016〕101号文）的适用条件与申请流程，能为客户提供基础合规建议；</li>
+<li>3. 能精准识别客户在技术入股过程中的常见风险点（估值虚高、代持、后续减持高税负），主动切入专业顾问角色，强化客户对银行服务的信任与依赖；</li>
+<li>4. 将技术入股场景与持股平台搭建、股权信托、税务健康检查等产品有机结合，拓展高净值科技型企业家群体的全周期服务链条。</li>
+</ol></div>
+
+  <div class="section"><div class="section-title">课程大纲</div><div class="part-title">第一部分：非货币性资产出资的法律框架与出资类型</div>
+<ul class="part-items">
+  <li>非货币性出资的法律依据：新《公司法》（2024）对出资方式的规定与实务解读；</li>
+  <li>可用于出资的资产类型详解：知识产权（专利权、商标权、著作权）、非专利技术、股权、不动产；</li>
+  <li>出资的合规流程：资产评估机构的选择标准、评估程序、工商登记的材料准备与常见障碍；</li>
+  <li>股权出资的特殊考量：评估价值与账面价值的差异处理，以及出资后的股权质押限制。</li>
+</ul>
+<div class="part-title">第二部分：技术入股的税务处理与递延纳税政策精讲</div>
+<ul class="part-items">
+  <li>个人以技术成果出资的税务触发：何时缴纳个人所得税，税率如何适用；</li>
+  <li>财税〔2016〕101号文递延纳税政策深度解析：适用条件（非货币性资产、符合条件的居民企业）、递延期限（5年内分期缴纳）、申请材料与备案流程；</li>
+  <li>企业以技术入股的特殊性税务处理：如何适用不确认收入的政策、持股锁定要求；</li>
+  <li>递延政策到期/终止的税务风险：持股转让、公司清算或改制触发税务的处理逻辑；</li>
+  <li>典型案例：某江苏温控行业新三板公司非货币性资产出资方案的全程税务合规安排。</li>
+</ul>
+<div class="part-title">第三部分：技术入股的高频陷阱与风险前置管理</div>
+<ul class="part-items">
+  <li>估值虚高风险：主观高估技术价值导致税基争议，评估机构选择与评估方法的合规边界；</li>
+  <li>代持风险：以他人名义持股的法律效力局限与税务双重风险，信托架构替代代持的优势；</li>
+  <li>后续融资稀释风险：技术股股东缺乏反稀释保护条款，控制权逐渐旁落的典型情形；</li>
+  <li>减持税务成本高企：上市/转让时技术入股的历史成本认定问题，如何提前规划减持税负；</li>
+  <li>信息披露要求：非货币性出资在招股书中的披露义务与潜在审核障碍。</li>
+</ul>
+<div class="part-title">第四部分：银行展业应用——从技术入股到全周期财富服务</div>
+<ul class="part-items">
+  <li>科技型企业客群的特征画像：技术密集、现金流薄、股权价值高——银行介入的最佳时机在融资前；</li>
+  <li>展业话术设计：如何以&quot;技术入股税务体检&quot;为话题，自然切入持股平台与信托服务推介；</li>
+  <li>产品匹配方向：持股平台合规搭建、税务咨询服务、股权信托（待行权/减持前布局）、大额保单；</li>
+  <li>实战演练：模拟拟融资科技企业创始人初次拜访场景，强化行业痛点识别与解决方案输出能力；</li>
+  <li>现场答疑：针对技术入股合规、递延纳税申请与持股平台推介的实操问题解答。</li>
+  <li>[本大纲版权归老师所有，仅供合作伙伴与本机构业务合作使用，未经书面授权及同意，任何机构及个人不得向第三方透露]</li>
+</ul>
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>理论学习：资产价格的运行逻辑与风格周期</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Microsoft YaHei",Arial,sans-serif;background:#F4F6F9;color:#2c2c2c;line-height:1.7}
+a{text-decoration:none}
+
+/* Top bar */
+.topbar{background:#04385F;color:#fff;padding:12px 28px;display:flex;align-items:center;
+  justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.logo{font-size:17px;font-weight:700;color:#AC9079;letter-spacing:1px}
+.back-btn{color:#bbb;font-size:13px;transition:color .2s}
+.back-btn:hover{color:#fff}
+
+/* Hero */
+.hero{background:linear-gradient(135deg,#C0784A 0%,#C0784Add 100%);color:#fff;padding:36px 32px 32px}
+.series-tag{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);
+  color:#fff;font-size:11px;padding:3px 12px;border-radius:12px;margin-bottom:12px;letter-spacing:.5px}
+.hero-title{font-size:24px;font-weight:700;line-height:1.4;margin-bottom:14px}
+.hero-meta{display:flex;flex-wrap:wrap;gap:12px;font-size:13px;color:rgba(255,255,255,.85)}
+.meta-chip{background:rgba(255,255,255,.15);border-radius:20px;padding:4px 14px}
+.hours-badge{background:#AC9079;color:#fff;font-size:12px;font-weight:700;
+  padding:4px 14px;border-radius:20px}
+
+/* Content */
+.content{max-width:900px;margin:28px auto;padding:0 20px 60px}
+.section{background:#fff;border-radius:12px;padding:24px 28px;margin-bottom:20px;
+  box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.section-title{font-size:13px;font-weight:700;color:#C0784A;letter-spacing:1px;
+  text-transform:uppercase;margin-bottom:14px;padding-bottom:10px;
+  border-bottom:2px solid #C0784A20;display:flex;align-items:center;gap:8px}
+.section-title::before{content:"";display:block;width:4px;height:16px;
+  background:#C0784A;border-radius:2px}
+.section-body{font-size:14.5px;color:#444;line-height:1.8}
+
+/* Benefits list */
+.benefits-list{list-style:none;padding:0}
+.benefits-list li{padding:8px 0 8px 22px;border-bottom:1px solid #f0f0f0;
+  position:relative;font-size:14px;color:#333;line-height:1.7}
+.benefits-list li:last-child{border-bottom:none}
+.benefits-list li::before{content:counter(benefit);counter-increment:benefit;
+  position:absolute;left:0;top:9px;background:#C0784A;color:#fff;
+  width:16px;height:16px;border-radius:50%;font-size:10px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;line-height:1}
+.benefits-list{counter-reset:benefit}
+
+/* Info row */
+.info-row{display:flex;gap:24px;flex-wrap:wrap}
+.info-item{flex:1;min-width:200px}
+.info-label{font-size:11px;font-weight:700;color:#999;letter-spacing:.5px;
+  text-transform:uppercase;margin-bottom:4px}
+.info-value{font-size:14px;color:#333}
+
+/* Outline */
+.part-title{font-size:15px;font-weight:700;color:#C0784A;margin:20px 0 10px;
+  padding:8px 14px;background:#C0784A10;border-left:4px solid #C0784A;border-radius:0 6px 6px 0}
+.part-items{list-style:none;padding:0;margin:0 0 4px 0}
+.part-items li{padding:6px 0 6px 20px;border-bottom:1px solid #f5f5f5;
+  position:relative;font-size:14px;color:#444;line-height:1.7}
+.part-items li:last-child{border-bottom:none}
+.part-items li::before{content:"▸";position:absolute;left:4px;color:#C0784A;font-size:12px;top:8px}
+.part-items li.sub-item{padding-left:36px;color:#666;font-size:13.5px}
+.part-items li.sub-item::before{content:"–";color:#aaa;left:20px}
+
+/* Progress indicator */
+.unit-nav{background:#fff;border-radius:12px;padding:16px 24px;margin-bottom:20px;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);display:flex;align-items:center;gap:12px}
+.unit-label{font-size:12px;color:#999}
+.unit-num{font-size:18px;font-weight:700;color:#C0784A}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="logo">朝曦家办</div>
+  <a href="../index.html" class="back-btn">← 返回课程目录</a>
+</div>
+
+<div class="hero">
+  <div class="series-tag">课程6 · 财富管理投资</div>
+  <div class="hero-title">理论学习：资产价格的运行逻辑与风格周期</div>
+  <div class="hero-meta">
+    <span class="meta-chip">单元 2</span>
+    
+    <span class="meta-chip">对象：财富管理顾问、家族办公室服务专员、私人银行客户经理</span>
+    <span class="meta-chip">数据驱动讲授 + 历史案例复盘 + 策略框架演示 + 互动问答</span>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class="section"><div class="section-title">课程背景</div><div class="section-body">投资亏损的背后，往往不是信息不足，而是认知框架的缺失。企业家在主业中磨砺出的努力+判断模式，在面对市场的非线性波动时往往失效。本课程系统讲解大类资产的长期收益规律、风格周期的形成与切换机制，以及企业家思维与市场风格矛盾的根源，帮助渠道顾问向客户传递科学的配置策略框架，让宏观Beta+中观风格+微观选基成为企业家投资决策的理论基石。</div></div>
+
+  <div class="section"><div class="section-title">课程收益</div><ol class="benefits-list"><li>1. 掌握大类资产的长期历史收益规律，建立权益&gt;信用&gt;利率的基本收益认知；</li>
+<li>2. 理解风格周期的形成机制与轮动逻辑，识别核心资产与哑铃策略的适用时机；</li>
+<li>3. 剖析买了就跌现象背后的企业家思维偏差，建立对市场非理性的正确预期；</li>
+<li>4. 掌握宏观Beta+中观风格+微观选基三层资产配置策略框架；</li>
+<li>5. 能够用数据和逻辑向客户解释配置策略，提升顾问的专业说服力。</li>
+</ol></div>
+
+  <div class="section"><div class="section-title">课程大纲</div><div class="part-title">第一部分：大类资产的长期收益表现——权益&gt;信用&gt;利率的历史数据</div>
+<ul class="part-items">
+  <li>用长期数据建立大类资产收益的基本认知，打破保守就安全的错误直觉。</li>
+  <li>全球主要大类资产100年历史收益：股票、债券、现金、商品、REITs的长期实际回报率对比</li>
+  <li>中国资本市场大类资产20年回顾：A股、港股、境内债、黄金、房产的周期性表现与规律</li>
+  <li>权益资产的长期超额收益来源：风险溢价（ERP）的理论基础与历史均值区间</li>
+  <li>通货膨胀的隐性财富侵蚀：为什么持有现金和低收益资产是最确定的财富缩水</li>
+  <li>不同资产的相关性矩阵：如何用低相关资产组合降低整体波动性（分散化的数学逻辑）</li>
+</ul>
+<div class="part-title">第二部分：风格周期的力量——核心资产狂潮 vs. 哑铃策略的轮动逻辑</div>
+<ul class="part-items">
+  <li>深入讲解A股及全球市场风格切换的规律，帮助学员理解时机的系统性意义。</li>
+  <li>成长 vs. 价值风格周期：驱动风格切换的核心因素（利率、盈利预期、风险偏好）</li>
+  <li>大盘 vs. 小盘周期：流动性环境、政策导向与市场情绪如何共同驱动风格轮动</li>
+  <li>核心资产狂潮：2017-2021年抱团行情的形成逻辑、顶峰信号与崩塌路径复盘</li>
+  <li>哑铃策略的应用时机：高质量蓝筹+高弹性小盘的组合逻辑与历史胜率分析</li>
+  <li>海外成熟市场经验借鉴：美股漂亮50、日本90年代泡沫与风格周期的国际规律</li>
+</ul>
+<div class="part-title">第三部分：为什么买了就跌？——企业家思维与市场风格的矛盾点</div>
+<ul class="part-items">
+  <li>以行为金融学为工具，帮助企业家客户理解自身投资决策的系统性偏差来源。</li>
+  <li>企业家的确定性偏好：在主业中追求可控结果的思维方式为何在市场中失效</li>
+  <li>趋势外推的陷阱：高点买入确定性强的行业与低点卖出看不到希望的行为规律</li>
+  <li>人脉信息优势的幻觉：为什么企业家获得的内部消息在A股中往往是反向指标</li>
+  <li>频繁操作 vs. 长期持有：换手率与实际收益的负相关关系——数据告诉你的真相</li>
+  <li>情绪周期与资产价格周期的同步规律：如何识别人人看好就是高点的市场信号</li>
+</ul>
+<div class="part-title">第四部分：资产配置策略框架——宏观Beta+中观风格+微观选基</div>
+<ul class="part-items">
+  <li>提供可落地的三层配置框架，帮助顾问将理论转化为客户可理解的投资逻辑。</li>
+  <li>第一层——宏观Beta：判断经济周期位置（复苏/过热/滞胀/衰退），确定股债大类权重</li>
+  <li>第二层——中观风格：在权益内部判断成长/价值、大盘/小盘、境内/境外的配置比例</li>
+  <li>第三层——微观选基：优质基金管理人的筛选维度（夏普比率、最大回撤、风格一致性）</li>
+  <li>典型案例复盘：某化工行业上市公司从股票与期货投资转向组合投资——从单一押注到系统配置的认知转变与服务路径</li>
+  <li>展业应用：如何向企业家客户用三层框架呈现专业配置逻辑，触发综合服务需求</li>
+  <li>──────────────────────────────────────────</li>
+  <li>朝曦家族办公室  |  系列培训课程  |  内部参考资料</li>
+</ul>
+</div>
+
+</div>
+</body>
+</html>

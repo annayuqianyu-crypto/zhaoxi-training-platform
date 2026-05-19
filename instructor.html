@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>讲师参考方案 · 朝曦家办</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, 'PingFang SC', 'Helvetica Neue', sans-serif;
+      background: #F7F4EF; color: #18181B; min-height: 100vh; padding: 0 0 80px;
+    }
+    .header {
+      background: #18181B; color: #fff;
+      padding: 24px 20px 20px; text-align: center;
+    }
+    .header .logo {
+      width: 44px; height: 44px; background: #2D6A4F;
+      border-radius: 10px; display: flex; align-items: center;
+      justify-content: center; font-size: 20px; font-weight: 700;
+      margin: 0 auto 12px;
+    }
+    .header h1 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+    .header p  { font-size: 12px; color: #A1A1AA; }
+    .badge-notice {
+      display: inline-block; background: #FEF3C7; color: #92400E;
+      border: 1px solid #FDE68A; border-radius: 6px;
+      padding: 3px 10px; font-size: 11px; margin-top: 8px; font-weight: 600;
+    }
+    .card {
+      background: #fff; border-radius: 16px;
+      margin: 16px 16px 0; padding: 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.06);
+    }
+    .section-title {
+      font-size: 11px; font-weight: 700; color: #2D6A4F;
+      letter-spacing: .1em; text-transform: uppercase;
+      margin-bottom: 14px; padding-bottom: 8px;
+      border-bottom: 1px solid #E4E4E7;
+    }
+    .info-row {
+      display: flex; gap: 8px; padding: 7px 0;
+      border-bottom: 1px solid #F4F4F5; font-size: 13px;
+    }
+    .info-label { color: #71717A; min-width: 90px; flex-shrink: 0; }
+    .info-value { color: #18181B; word-break: break-all; }
+    .painpoint-tag {
+      display: inline-block; background: #FEF3C7; color: #92400E;
+      border: 1px solid #FDE68A; border-radius: 6px;
+      padding: 3px 10px; font-size: 12px; margin: 3px 3px 3px 0;
+    }
+    .supplement-box {
+      background: #FAFAF9; border: 1px solid #E4E4E7;
+      border-radius: 10px; padding: 14px; font-size: 13px;
+      line-height: 1.8; white-space: pre-wrap; color: #3F3F46;
+      max-height: 320px; overflow-y: auto;
+    }
+    .outline-box {
+      background: #FAFAF9; border: 1px solid #E4E4E7;
+      border-radius: 10px; padding: 14px; font-size: 13px;
+      line-height: 1.8; white-space: pre-wrap; color: #3F3F46;
+      font-family: 'Courier New', monospace;
+    }
+    .course-tag {
+      display: inline-block; background: #EFF6FF; color: #1D4ED8;
+      border: 1px solid #BFDBFE; border-radius: 6px;
+      padding: 3px 10px; font-size: 12px; margin: 3px 3px 3px 0;
+    }
+    .sku-row {
+      display: flex; align-items: center; gap: 8px; padding: 9px 12px;
+      border: 1px solid #E4E4E7; border-radius: 8px; margin-bottom: 6px;
+      background: #FAFAF9; font-size: 13px;
+    }
+    .sku-id { font-family: monospace; color: #2D6A4F; font-weight: 700; min-width: 90px; flex-shrink: 0; }
+    .sku-name { flex: 1; font-weight: 600; }
+    .sku-badge {
+      font-size: 11px; padding: 2px 8px; border-radius: 6px; font-weight: 600; flex-shrink: 0;
+    }
+    .match-exact   { background: #D1FAE5; color: #065F46; }
+    .match-fuzzy   { background: #FEF3C7; color: #92400E; }
+    .match-overview{ background: #EFF6FF; color: #1D4ED8; }
+    .instructor-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .instructor-chip {
+      display: flex; align-items: center; gap: 8px;
+      background: #F0F9F4; border: 1.5px solid #6EE7B7;
+      border-radius: 10px; padding: 8px 12px;
+    }
+    .instructor-avatar {
+      width: 32px; height: 32px; border-radius: 50%; background: #2D6A4F;
+      color: #fff; display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700; flex-shrink: 0;
+    }
+    .instructor-name { font-size: 13px; font-weight: 700; color: #065F46; }
+    .footer-note {
+      margin: 24px 16px 0; padding: 14px 16px;
+      background: #F4F4F5; border-radius: 10px;
+      font-size: 12px; color: #71717A; line-height: 1.7; text-align: center;
+    }
+    #errorScreen { text-align: center; padding: 80px 20px; display: none; }
+    #errorScreen p { color: #71717A; font-size: 14px; line-height: 1.8; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">曦</div>
+  <h1>朝曦培训参考方案</h1>
+  <p>Family Office Training · 讲师备课参考文件</p>
+  <div class="badge-notice">📋 仅供参考 · 请根据渠道实际需求调整课程内容</div>
+</div>
+
+<div id="mainContent" style="display:none">
+
+  <!-- 讲师信息 -->
+  <div class="card" id="instructorsCard" style="display:none">
+    <div class="section-title">指定讲师</div>
+    <div class="instructor-chips" id="instructorChips"></div>
+  </div>
+
+  <!-- 渠道需求摘要 -->
+  <div class="card">
+    <div class="section-title">渠道需求摘要</div>
+    <div class="info-row"><span class="info-label">工单编号</span><span class="info-value" id="infoId" style="font-family:monospace;font-weight:700;color:#2D6A4F"></span></div>
+    <div class="info-row"><span class="info-label">渠道/机构</span><span class="info-value" id="infoChannel"></span></div>
+    <div class="info-row"><span class="info-label">联系人</span><span class="info-value" id="infoContact"></span></div>
+    <div class="info-row"><span class="info-label">对接销售</span><span class="info-value" id="infoSales"></span></div>
+    <div class="info-row"><span class="info-label">参与人员</span><span class="info-value" id="infoAudience"></span></div>
+    <div class="info-row"><span class="info-label">目标职级</span><span class="info-value" id="infoJobLevel"></span></div>
+    <div class="info-row"><span class="info-label">预计人数</span><span class="info-value" id="infoPeople"></span></div>
+    <div class="info-row"><span class="info-label">培训时长</span><span class="info-value" id="infoDuration"></span></div>
+    <div class="info-row"><span class="info-label">期望日期</span><span class="info-value" id="infoDate"></span></div>
+    <div class="info-row" id="infoNoteRow" style="display:none"><span class="info-label">特殊说明</span><span class="info-value" id="infoNote"></span></div>
+    <div class="info-row"><span class="info-label">生成时间</span><span class="info-value" id="infoGenerated"></span></div>
+  </div>
+
+  <!-- 原始痛点 -->
+  <div class="card" id="painpointsCard" style="display:none">
+    <div class="section-title">原始问卷痛点</div>
+    <div id="painpointTags"></div>
+    <div id="painpointOther" style="font-size:12px;color:#71717A;margin-top:8px;display:none"></div>
+  </div>
+
+  <!-- 补充信息 / 会议纪要 -->
+  <div class="card" id="supplementCard" style="display:none">
+    <div class="section-title">补充信息 / 会议纪要</div>
+    <div class="supplement-box" id="supplementBox"></div>
+  </div>
+
+  <!-- 已选课程 -->
+  <div class="card" id="coursesCard" style="display:none">
+    <div class="section-title">已选课程方向</div>
+    <div id="courseTagsWrap"></div>
+  </div>
+
+  <!-- 课纲目录 -->
+  <div class="card" id="outlineCard" style="display:none">
+    <div class="section-title">课纲目录（产品中心初版，请根据实际情况调整）</div>
+    <div class="outline-box" id="outlineBox"></div>
+  </div>
+
+  <!-- 参考 SKU -->
+  <div class="card" id="skusCard" style="display:none">
+    <div class="section-title">参考 SKU 产品列表</div>
+    <div id="skuList"></div>
+  </div>
+
+</div>
+
+<div id="errorScreen">
+  <p>链接参数无效或已过期<br/>请联系产品中心重新生成参考方案链接</p>
+</div>
+
+<div class="footer-note" id="footerNote" style="display:none">
+  本方案由朝曦培训管理中台产品中心生成，仅供讲师备课参考。<br/>
+  课程名称、课纲结构请根据渠道实际需求及学员背景进行调整，如有疑问请联系产品中心。
+</div>
+
+<script>
+  let ref = null
+
+  try {
+    const params  = new URLSearchParams(location.search)
+    const encoded = params.get('ref')
+    if (!encoded) throw new Error('no ref')
+    ref = JSON.parse(decodeURIComponent(escape(atob(encoded))))
+  } catch(e) {
+    document.getElementById('errorScreen').style.display = 'block'
+    ref = null
+  }
+
+  if (ref) {
+    document.getElementById('mainContent').style.display = 'block'
+    document.getElementById('footerNote').style.display  = 'block'
+
+    // Instructors
+    if (ref.instructors && ref.instructors.length) {
+      document.getElementById('instructorsCard').style.display = 'block'
+      const chips = document.getElementById('instructorChips')
+      ref.instructors.forEach(name => {
+        const chip = document.createElement('div')
+        chip.className = 'instructor-chip'
+        chip.innerHTML = `<div class="instructor-avatar">${name.charAt(0)}</div><div class="instructor-name">${name}</div>`
+        chips.appendChild(chip)
+      })
+    }
+
+    // Basic info
+    document.getElementById('infoId').textContent        = ref.id || '—'
+    document.getElementById('infoChannel').textContent   = ref.channel || '—'
+    document.getElementById('infoContact').textContent   = ref.contact || '—'
+    document.getElementById('infoSales').textContent     = ref.salesName || '—'
+    document.getElementById('infoAudience').textContent  = ref.audience || '—'
+    document.getElementById('infoJobLevel').textContent  = ref.jobLevel || '—'
+    document.getElementById('infoPeople').textContent    = ref.people ? ref.people + ' 人' : '—'
+    document.getElementById('infoDuration').textContent  = ref.duration || '—'
+    document.getElementById('infoDate').textContent      = ref.date || '—'
+    document.getElementById('infoGenerated').textContent = ref.generatedAt ? new Date(ref.generatedAt).toLocaleString('zh-CN') : '—'
+    if (ref.note) {
+      document.getElementById('infoNoteRow').style.display = 'flex'
+      document.getElementById('infoNote').textContent = ref.note
+    }
+
+    // Painpoints
+    if (ref.painpoints?.selected?.length || ref.painpoints?.other) {
+      document.getElementById('painpointsCard').style.display = 'block'
+      const wrap = document.getElementById('painpointTags')
+      ;(ref.painpoints.selected || []).forEach(p => {
+        const tag = document.createElement('span')
+        tag.className = 'painpoint-tag'
+        tag.textContent = p
+        wrap.appendChild(tag)
+      })
+      if (ref.painpoints.other) {
+        const el = document.getElementById('painpointOther')
+        el.style.display = 'block'
+        el.textContent = '其他：' + ref.painpoints.other
+      }
+    }
+
+    // Supplement
+    if (ref.supplementText && ref.supplementText.trim()) {
+      document.getElementById('supplementCard').style.display = 'block'
+      document.getElementById('supplementBox').textContent = ref.supplementText
+    }
+
+    // Courses
+    if (ref.courses && ref.courses.length) {
+      document.getElementById('coursesCard').style.display = 'block'
+      const wrap = document.getElementById('courseTagsWrap')
+      ref.courses.forEach(c => {
+        const tag = document.createElement('span')
+        tag.className = 'course-tag'
+        tag.textContent = c.name + (c.series ? ' · ' + c.series.split('：')[0] : '')
+        wrap.appendChild(tag)
+      })
+    }
+
+    // Outline
+    if (ref.outline && ref.outline.trim()) {
+      document.getElementById('outlineCard').style.display = 'block'
+      document.getElementById('outlineBox').textContent = ref.outline
+    }
+
+    // SKUs
+    if (ref.skus && ref.skus.length) {
+      document.getElementById('skusCard').style.display = 'block'
+      const list = document.getElementById('skuList')
+      ref.skus.forEach(s => {
+        const row = document.createElement('div')
+        row.className = 'sku-row'
+        const matchClass = s.match === 'exact' ? 'match-exact' : s.match === 'fuzzy' ? 'match-fuzzy' : 'match-overview'
+        const matchLabel = s.match === 'exact' ? '精确匹配' : s.match === 'fuzzy' ? '模糊匹配' : '参考资料'
+        const nameHtml = s.pageUrl
+          ? `<a href="${s.pageUrl}" target="_blank" style="color:#1D4ED8;text-decoration:none;font-weight:600">${s.name} ↗</a>`
+          : `<span class="sku-name">${s.name}</span>`
+        row.innerHTML = `<span class="sku-id">${s.id}</span>${nameHtml}<span class="sku-badge ${matchClass}">${matchLabel}</span>`
+        list.appendChild(row)
+      })
+    }
+  }
+</script>
+</body>
+</html>
