@@ -214,7 +214,7 @@ async function callDeepSeekAPI(prompt) {
 /* ════════════════════════════════════════════════════════════
    Main component
 ════════════════════════════════════════════════════════════ */
-export function CourseMatch({ navigate, portalMode = false }) {
+export function CourseMatch({ navigate, portalMode = false, user = null }) {
   const [ctx, setCtx]                                   = useState(null)
   const [tab, setTab]                                   = useState('courses')
   const [editForm, setEditForm]                         = useState({})
@@ -306,6 +306,29 @@ export function CourseMatch({ navigate, portalMode = false }) {
     })
     const updated = { ...ctx, editForm, editCourseIds, editOutline, selectedInstructors, supplementText, aiResult, skuMatches }
     localStorage.setItem(CONTEXT_KEY, JSON.stringify(updated))
+
+    // ─── 写入用户历史记录 ───
+    if (user?.name) {
+      const histKey = `zx_history_${user.name}`
+      let hist = []
+      try { hist = JSON.parse(localStorage.getItem(histKey) || '[]') } catch {}
+      const record = {
+        id: order.id,
+        savedAt: new Date().toISOString(),
+        company: editForm.company || order.company || '',
+        channel: editForm.channel || order.channel || '',
+        contact: editForm.contact || order.contact || '',
+        courseCount: editCourseIds.length,
+        supplementText, aiResult, skuMatches,
+        editForm, editCourseIds, editOutline, selectedInstructors,
+        order,
+      }
+      const idx = hist.findIndex(h => h.id === order.id)
+      if (idx >= 0) hist[idx] = record
+      else hist.unshift(record)
+      localStorage.setItem(histKey, JSON.stringify(hist.slice(0, 50)))
+    }
+
     setSaved(true)
     setTimeout(() => setSaved(false), 2500)
   }

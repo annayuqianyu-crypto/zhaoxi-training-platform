@@ -45,8 +45,126 @@ function makePortalCtx(form) {
   }
 }
 
+function loadHistory(userName) {
+  try { return JSON.parse(localStorage.getItem(`zx_history_${userName}`) || '[]') } catch { return [] }
+}
+
+function deleteHistoryRecord(userName, id) {
+  const hist = loadHistory(userName).filter(h => h.id !== id)
+  localStorage.setItem(`zx_history_${userName}`, JSON.stringify(hist))
+}
+
+function fmt(isoStr) {
+  if (!isoStr) return ''
+  const d = new Date(isoStr)
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`
+}
+
+/* ── 历史记录列表页 ── */
+function HistoryView({ user, onBack, onLoad }) {
+  const [list, setList] = useState(() => loadHistory(user.name))
+
+  function handleDelete(id) {
+    deleteHistoryRecord(user.name, id)
+    setList(loadHistory(user.name))
+  }
+
+  return (
+    <div style={{ maxWidth: 700, margin: '0 auto', padding: '40px 24px' }}>
+      <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:28 }}>
+        <button
+          onClick={onBack}
+          style={{
+            background:'none', border:'1px solid var(--border)', borderRadius:8,
+            padding:'6px 14px', fontSize:13, color:'var(--text-2)', cursor:'pointer',
+          }}
+        >← 返回</button>
+        <h2 style={{ fontSize:20, fontWeight:700, fontFamily:"'Noto Serif SC', serif", margin:0 }}>
+          📂 历史记录
+        </h2>
+        <span style={{ fontSize:12, color:'var(--text-3)', marginLeft:4 }}>
+          {user.name} · 共 {list.length} 条
+        </span>
+      </div>
+
+      {list.length === 0 ? (
+        <div style={{
+          textAlign:'center', padding:'60px 0',
+          color:'var(--text-3)', fontSize:14,
+        }}>
+          <div style={{ fontSize:36, marginBottom:12 }}>📭</div>
+          暂无历史记录，点击「保存草稿」后自动生成
+        </div>
+      ) : (
+        <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
+          {list.map(rec => {
+            const title = rec.company || rec.channel || '未命名'
+            const courseNames = (rec.editCourseIds || []).length
+            const hasAI = !!rec.aiResult
+            const hasSKU = !!(rec.skuMatches?.length)
+            return (
+              <div key={rec.id} style={{
+                background:'var(--bg-card)', border:'1px solid var(--border)',
+                borderRadius:14, padding:'18px 20px',
+              }}>
+                <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:12 }}>
+                  <div style={{ flex:1, minWidth:0 }}>
+                    {/* 标题行 */}
+                    <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:6, flexWrap:'wrap' }}>
+                      <span style={{ fontSize:15, fontWeight:700, color:'var(--text-1)' }}>{title}</span>
+                      {rec.contact && (
+                        <span style={{ fontSize:12, color:'var(--text-3)' }}>· {rec.contact}</span>
+                      )}
+                      {hasAI && (
+                        <span style={{ fontSize:10, fontWeight:700, background:'#D1FAE5', color:'#065F46',
+                          padding:'2px 8px', borderRadius:99 }}>🤖 AI已分析</span>
+                      )}
+                      {hasSKU && (
+                        <span style={{ fontSize:10, fontWeight:700, background:'#EFF6FF', color:'#1D4ED8',
+                          padding:'2px 8px', borderRadius:99 }}>SKU {rec.skuMatches.length}条</span>
+                      )}
+                    </div>
+                    {/* 详情行 */}
+                    <div style={{ display:'flex', gap:16, fontSize:12, color:'var(--text-3)', flexWrap:'wrap' }}>
+                      <span>🕐 {fmt(rec.savedAt)}</span>
+                      {rec.channel && rec.channel !== title && <span>渠道：{rec.channel}</span>}
+                      <span>已选课程：{courseNames} 门</span>
+                      {rec.supplementText && (
+                        <span style={{ maxWidth:220, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
+                          📝 {rec.supplementText.slice(0,40)}{rec.supplementText.length>40?'…':''}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  {/* 操作按钮 */}
+                  <div style={{ display:'flex', gap:8, flexShrink:0 }}>
+                    <button
+                      className="btn btn-primary btn-sm"
+                      onClick={() => onLoad(rec)}
+                    >继续编辑</button>
+                    <button
+                      onClick={() => handleDelete(rec.id)}
+                      style={{
+                        background:'none', border:'1px solid #FCA5A5', borderRadius:8,
+                        padding:'5px 10px', fontSize:12, color:'#DC2626', cursor:'pointer',
+                      }}
+                      title="删除此记录"
+                    >删除</button>
+                  </div>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      )}
+    </div>
+  )
+}
+
+/* ── 主组件 ── */
 export function PortalCourseMatch({ user }) {
-  const [started, setStarted] = useState(false)
+  // view: 'form' | 'match' | 'history'
+  const [view, setView] = useState('form')
   const [form, setForm] = useState({
     channel: CHANNELS[0],
     audience: AUDIENCES[0],
@@ -61,17 +179,45 @@ export function PortalCourseMatch({ user }) {
     e.preventDefault()
     const ctx = makePortalCtx(form)
     localStorage.setItem(CONTEXT_KEY, JSON.stringify(ctx))
-    setStarted(true)
+    setView('match')
   }
 
   function handleBack() {
     localStorage.removeItem(CONTEXT_KEY)
-    setStarted(false)
+    setView('form')
   }
 
-  if (started) {
+  function handleLoadHistory(rec) {
+    // 从历史记录恢复 context
+    const ctx = {
+      orderId: rec.id,
+      order: rec.order || { id: rec.id, company: rec.company, channel: rec.channel, contact: rec.contact },
+      editForm: rec.editForm || {},
+      supplementText: rec.supplementText || '',
+      aiResult: rec.aiResult || null,
+      skuMatches: rec.skuMatches || null,
+      editCourseIds: rec.editCourseIds || [],
+      editOutline: rec.editOutline || '',
+      selectedInstructors: rec.selectedInstructors || [],
+    }
+    localStorage.setItem(CONTEXT_KEY, JSON.stringify(ctx))
+    setView('match')
+  }
+
+  if (view === 'history') {
+    return (
+      <HistoryView
+        user={user}
+        onBack={() => setView('form')}
+        onLoad={handleLoadHistory}
+      />
+    )
+  }
+
+  if (view === 'match') {
     return (
       <CourseMatch
+        user={user}
         navigate={dest => {
           if (dest === 'workorders' || dest === 'back') handleBack()
         }}
@@ -80,12 +226,38 @@ export function PortalCourseMatch({ user }) {
     )
   }
 
+  // ── 表单页 ──
+  const histCount = loadHistory(user.name).length
+
   return (
     <div style={{ maxWidth: 620, margin: '0 auto', padding: '40px 24px' }}>
-      <h2 style={{ fontSize: 22, fontWeight: 700, marginBottom: 6, fontFamily: "'Noto Serif SC', serif" }}>
-        🎯 课程匹配
-      </h2>
-      <p style={{ fontSize: 13, color: 'var(--text-3)', marginBottom: 28 }}>
+      <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:6 }}>
+        <h2 style={{ fontSize:22, fontWeight:700, fontFamily:"'Noto Serif SC', serif", margin:0 }}>
+          🎯 课程匹配
+        </h2>
+        <button
+          onClick={() => setView('history')}
+          style={{
+            display:'flex', alignItems:'center', gap:6,
+            background:'var(--bg-card)', border:'1px solid var(--border)',
+            borderRadius:10, padding:'7px 14px', cursor:'pointer',
+            fontSize:13, fontWeight:600, color:'var(--text-2)',
+            transition:'all .15s',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor='var(--accent)'; e.currentTarget.style.color='var(--accent)' }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor='var(--border)'; e.currentTarget.style.color='var(--text-2)' }}
+        >
+          📂 历史记录
+          {histCount > 0 && (
+            <span style={{
+              background:'var(--accent)', color:'#fff',
+              borderRadius:99, fontSize:11, fontWeight:700,
+              padding:'1px 7px', marginLeft:2,
+            }}>{histCount}</span>
+          )}
+        </button>
+      </div>
+      <p style={{ fontSize:13, color:'var(--text-3)', marginBottom:28 }}>
         填写客户基本信息，AI 将为您推荐最匹配的朝曦课程。
       </p>
 
