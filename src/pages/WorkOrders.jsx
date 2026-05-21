@@ -2,12 +2,17 @@ import { useState, useEffect, useCallback } from 'react'
 import { WORK_ORDERS, STATUS_COLOR, COURSE_CATALOG } from '../data/mock'
 import { CONTEXT_KEY } from './CourseMatch'
 
-const FILTERS     = ['全部','待处理','课程匹配','渠道已确认','合同签署','讲师排期','通关进行中','已归档']
+const FILTERS     = ['全部','未读','已读']
 const STORAGE_KEY = 'zx_pending_orders'
 const PORTAL_ORDER_KEY = 'zx_portal_submitted_orders'
 const OVERRIDE_KEY = 'zx_order_overrides'
+const READ_KEY    = 'zx_order_read'
 const TOKEN_KEY   = 'zx_github_token'
 const GITHUB_REPO = 'annayuqianyu-crypto/zhaoxi-training-platform'
+
+/* ─── 已读标记（仅存本地） ─── */
+function loadReadSet() { try { return new Set(JSON.parse(localStorage.getItem(READ_KEY) || '[]')) } catch { return new Set() } }
+function saveReadSet(s) { localStorage.setItem(READ_KEY, JSON.stringify([...s])) }
 
 /* ─── localStorage helpers ─── */
 function loadLocal()  { try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]') } catch { return [] } }
@@ -64,6 +69,16 @@ export function WorkOrders({ navigate }) {
   const [submitted, setSubmitted]   = useState(null)
 
   const [selectedOrder, setSelectedOrder] = useState(null)
+  const [readSet, setReadSet]             = useState(() => loadReadSet())
+
+  /* 打开工单 → 标记已读 */
+  function openOrder(w) {
+    setSelectedOrder(w)
+    if (!readSet.has(w.id)) {
+      const s = new Set(readSet); s.add(w.id)
+      setReadSet(s); saveReadSet(s)
+    }
+  }
 
   /* ─── Load orders ─── */
   const loadAll = useCallback(async () => {
@@ -155,12 +170,11 @@ export function WorkOrders({ navigate }) {
   }
 
   /* ─── Misc ─── */
-  const allOrders    = [...external, ...WORK_ORDERS]
-  const list         = filter === '全部' ? allOrders : allOrders.filter(w => w.status === filter)
-  const pendingCount = external.filter(w => w.status === '待处理').length
-  const H5_URL       = `${location.origin}${location.pathname.replace(/\/[^/]*$/, '')}/apply.html`
-
-  function copyLink() { navigator.clipboard.writeText(H5_URL).then(() => alert('H5链接已复制')) }
+  const allOrders   = [...external, ...WORK_ORDERS]
+  const list        = filter === '全部' ? allOrders
+    : filter === '未读' ? allOrders.filter(w => !readSet.has(w.id))
+    : allOrders.filter(w => readSet.has(w.id))
+  const unreadCount = allOrders.filter(w => !readSet.has(w.id)).length
 
   function submitOrder(e) {
     e.preventDefault()
@@ -186,7 +200,6 @@ export function WorkOrders({ navigate }) {
         <div className="topbar-actions">
           <button className="btn btn-secondary btn-sm" onClick={loadAll}>↻ 刷新</button>
           <button className="btn btn-secondary btn-sm" onClick={() => setShowTokenSetup(true)}>⚙ Token</button>
-          <button className="btn btn-secondary btn-sm" onClick={copyLink}>📋 复制H5链接</button>
           <button className="btn btn-primary btn-sm" onClick={() => setShowForm(true)}>+ 内部新建工单</button>
         </div>
       </div>
@@ -194,35 +207,15 @@ export function WorkOrders({ navigate }) {
       <div className="content">
         <div className="page-hero">
           <h1>需求工单</h1>
-          <p>渠道联系人通过H5链接提交培训需求，系统自动生成工单并编号</p>
-        </div>
-
-        <div className="alert alert-info" style={{ marginBottom:20 }}>
-          <span>🔗</span>
-          <div style={{ flex:1 }}>
-            <strong>渠道问卷H5链接：</strong>
-            <div style={{ display:'flex', alignItems:'center', gap:8, marginTop:4, flexWrap:'wrap' }}>
-              <a href={H5_URL} target="_blank" rel="noreferrer"
-                style={{ fontFamily:'monospace', fontSize:12, color:'var(--blue)', wordBreak:'break-all' }}>{H5_URL}</a>
-              <button className="btn btn-ghost btn-sm" onClick={copyLink}>复制</button>
-            </div>
-          </div>
+          <p>查看与管理渠道提交的培训需求工单</p>
         </div>
 
         {loading && <div style={{ textAlign:'center', padding:16, color:'var(--text-3)', fontSize:13 }}>正在加载最新工单…</div>}
 
-        {!loading && pendingCount > 0 && (
-          <div className="alert" style={{ background:'#FFF7ED', border:'1px solid #FED7AA', marginBottom:20, color:'#92400E' }}>
-            <span>🔔</span>
-            <span>有 <strong>{pendingCount}</strong> 条新的渠道问卷待处理</span>
-            <button className="btn btn-ghost btn-sm" style={{ marginLeft:'auto' }} onClick={() => setFilter('待处理')}>查看</button>
-          </div>
-        )}
-
         <div className="chip-tabs">
           {FILTERS.map(f => (
             <div key={f} className={`chip-tab${filter===f?' active':''}`} onClick={() => setFilter(f)}>
-              {f}{f==='待处理' && pendingCount > 0 ? ` (${pendingCount})` : ''}
+              {f}{f==='未读' && unreadCount > 0 ? ` (${unreadCount})` : ''}
             </div>
           ))}
         </div>
@@ -237,9 +230,14 @@ export function WorkOrders({ navigate }) {
               {list.length === 0 && !loading && (
                 <tr><td colSpan={10} style={{ textAlign:'center', color:'var(--text-3)', padding:32 }}>暂无工单</td></tr>
               )}
-              {list.map(w => (
-                <tr key={w.id} style={{ cursor:'pointer' }} onClick={() => setSelectedOrder(w)}>
-                  <td><span style={{ fontFamily:'monospace', fontSize:12, fontWeight:600, color:'var(--accent)' }}>{w.id}</span></td>
+              {list.map(w => {
+                const unread = !readSet.has(w.id)
+                return (
+                <tr key={w.id} style={{ cursor:'pointer', fontWeight: unread ? 600 : 400 }} onClick={() => openOrder(w)}>
+                  <td>
+                    {unread && <span style={{ display:'inline-block', width:7, height:7, borderRadius:'50%', background:'#2563EB', marginRight:6, verticalAlign:'middle' }} />}
+                    <span style={{ fontFamily:'monospace', fontSize:12, fontWeight:600, color:'var(--accent)' }}>{w.id}</span>
+                  </td>
                   <td style={{ fontWeight:500 }}>{w.channel}</td>
                   <td style={{ color:'var(--text-2)' }}>{w.contact}</td>
                   <td style={{ color:'var(--text-2)', fontSize:12 }}>{w.salesName || '—'}</td>
@@ -260,7 +258,7 @@ export function WorkOrders({ navigate }) {
                   </td>
                   <td style={{ textAlign:'center', color:w.score?'var(--accent)':'var(--text-3)', fontWeight:w.score?700:400 }}>{w.score||'—'}</td>
                 </tr>
-              ))}
+              )})}
             </tbody>
           </table>
         </div>
