@@ -201,12 +201,12 @@ export function Schedule() {
           <span style={{ fontSize:12, fontWeight:600, display:'flex', alignItems:'center', gap:5,
             color: syncState === 'synced' ? '#059669'
               : syncState === 'saving' || syncState === 'loading' ? '#6B7280'
-              : syncState === 'needToken' ? '#B45309' : '#DC2626' }}>
+              : syncState === 'needToken' ? '#6B7280' : '#DC2626' }}>
             {syncState === 'synced'    && '☁ 已同步'}
             {syncState === 'saving'    && '⏳ 保存中…'}
             {syncState === 'loading'   && '⏳ 加载中…'}
             {syncState === 'offline'   && '⚠ 未连接云端'}
-            {syncState === 'needToken' && '🔒 待配置 Token'}
+            {syncState === 'needToken' && '👁 查看模式'}
           </span>
           <button className="btn btn-secondary btn-sm" onClick={reload} title="重新拉取云端最新排期">⟳ 刷新</button>
           <button className="btn btn-secondary btn-sm" onClick={() => setTokenModal(true)} title="配置写入权限 Token">⚙ Token</button>
