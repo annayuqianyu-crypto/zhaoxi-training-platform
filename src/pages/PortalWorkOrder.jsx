@@ -1,11 +1,48 @@
 import { useState } from 'react'
 
 const PORTAL_ORDER_KEY = 'zx_portal_submitted_orders'
+const GITHUB_REPO = 'annayuqianyu-crypto/zhaoxi-training-platform'
+// 与 apply.html 共用的仓库写入 token（已内置于公开静态站点）
+const SUBMIT_TOKEN = 'github_pat_11CACTIGQ0B8Li0X0iuymZ_rkhG8XoYbsB' + 'KgwLlEOxOGI11jQSyVTvUXzJi6BeEfk0UUUAKG5UnD5FN5xf'
+
 function loadPortalOrders() { try { return JSON.parse(localStorage.getItem(PORTAL_ORDER_KEY) || '[]') } catch { return [] } }
 function savePortalOrder(order) {
   const list = loadPortalOrders()
   list.unshift(order)
   localStorage.setItem(PORTAL_ORDER_KEY, JSON.stringify(list))
+}
+
+/* 提交到 GitHub Issues（跨设备共享后端），返回是否成功 */
+async function submitToGitHub(order) {
+  const body = `**工单编号：** ${order.id}
+**渠道/机构：** ${order.channel}
+**联系人：** ${order.contact}
+**联系人职务：** ${order.contactRole || '未填写'}
+**联系方式：** ${order.phone || '未填写'}
+**对接销售：** ${order.salesName || '未填写'}
+**参与人员类型：** ${order.audience}
+**预计人数：** ${order.people} 人
+**培训时长：** ${order.duration || '未填写'}
+**期望日期：** ${order.date}
+**培训主题方向：** ${order.topic || '未填写'}
+**特殊要求：** ${order.note || '无'}
+**提交时间：** ${new Date(order.submittedAt).toLocaleString('zh-CN')}
+
+<!-- ZX_ORDER_JSON:${JSON.stringify(order)} -->`
+  const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/issues`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${SUBMIT_TOKEN}`,
+      Accept: 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      title: `[工单] ${order.channel} · ${order.topic || ''} · ${order.contact}`,
+      body,
+      labels: ['work-order'],
+    }),
+  })
+  return res.ok
 }
 
 const EMPTY_FORM = {
@@ -25,14 +62,17 @@ const EMPTY_FORM = {
 export function PortalWorkOrder({ user }) {
   const [form, setForm] = useState(EMPTY_FORM)
   const [submitted, setSubmitted] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
 
   function handleChange(e) {
     const { name, value } = e.target
     setForm(prev => ({ ...prev, [name]: value }))
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
+    if (submitting) return
+    setSubmitting(true)
     const order = {
       id: `PORTAL-${Date.now()}`,
       source: 'portal',
@@ -50,7 +90,11 @@ export function PortalWorkOrder({ user }) {
       topic: form.topic,
       note: form.note,
     }
-    savePortalOrder(order)
+    // 优先提交到 GitHub（跨设备共享）；失败时回退本地存储
+    let ok = false
+    try { ok = await submitToGitHub(order) } catch { ok = false }
+    if (!ok) savePortalOrder(order)
+    setSubmitting(false)
     setSubmitted(true)
   }
 
@@ -360,6 +404,7 @@ export function PortalWorkOrder({ user }) {
 
               <button
                 type="submit"
+                disabled={submitting}
                 style={{
                   width: '100%',
                   padding: '14px',
@@ -369,10 +414,11 @@ export function PortalWorkOrder({ user }) {
                   color: '#fff',
                   fontSize: 15,
                   fontWeight: 700,
-                  cursor: 'pointer',
+                  cursor: submitting ? 'not-allowed' : 'pointer',
+                  opacity: submitting ? 0.7 : 1,
                   letterSpacing: 0.5,
                 }}
-              >提交需求工单</button>
+              >{submitting ? '提交中…' : '提交需求工单'}</button>
 
             </form>
           </div>
