@@ -176,6 +176,8 @@ export function WorkOrders({ navigate }) {
     : filter === '未读' ? allOrders.filter(w => !readSet.has(w.id))
     : allOrders.filter(w => readSet.has(w.id))
   const unreadCount = allOrders.filter(w => !readSet.has(w.id)).length
+  const readCount   = allOrders.filter(w => readSet.has(w.id)).length
+  const tabCount    = { '全部': allOrders.length, '未读': unreadCount, '已读': readCount }
 
   function submitOrder(e) {
     e.preventDefault()
@@ -216,7 +218,7 @@ export function WorkOrders({ navigate }) {
         <div className="chip-tabs">
           {FILTERS.map(f => (
             <div key={f} className={`chip-tab${filter===f?' active':''}`} onClick={() => setFilter(f)}>
-              {f}{f==='未读' && unreadCount > 0 ? ` (${unreadCount})` : ''}
+              {f} ({tabCount[f]})
             </div>
           ))}
         </div>
