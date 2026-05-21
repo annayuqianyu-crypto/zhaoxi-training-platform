@@ -695,8 +695,6 @@ ${skuIndex}
                                   </div>
                                   <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:4 }}>
                                     {u.skus.map(s => {
-                                      const pageUrl = SKU_PAGE_MAP[s.id]
-                                      const href = pageUrl ? base + pageUrl : null
                                       const idColor = s.id.startsWith('Tax') || s.id.startsWith('TAX') ? '#7C3AED'
                                         : s.id.startsWith('Legal') ? '#1D4ED8' : '#C2410C'
                                       return (
@@ -705,15 +703,8 @@ ${skuIndex}
                                           background:'var(--bg-card)', border:'1px solid var(--border)',
                                           borderRadius:6, padding:'6px 10px',
                                         }}>
-                                          {href
-                                            ? <a href={href} target="_blank" rel="noreferrer"
-                                                style={{ fontFamily:'monospace', fontSize:10, fontWeight:700,
-                                                  color: idColor, textDecoration:'none', flexShrink:0, paddingTop:1 }}>
-                                                {s.id} ↗
-                                              </a>
-                                            : <span style={{ fontFamily:'monospace', fontSize:10, fontWeight:700,
-                                                color: idColor, flexShrink:0, paddingTop:1 }}>{s.id}</span>
-                                          }
+                                          <span style={{ fontFamily:'monospace', fontSize:10, fontWeight:700,
+                                            color: idColor, flexShrink:0, paddingTop:1 }}>{s.id}</span>
                                           <span style={{ fontSize:11, color:'var(--text-1)', lineHeight:1.4 }}>{s.name}</span>
                                         </div>
                                       )
