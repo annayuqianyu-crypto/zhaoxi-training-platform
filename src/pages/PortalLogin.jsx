@@ -102,7 +102,7 @@ export function PortalLogin({ onLogin }) {
 
         <div style={{ textAlign: 'center', marginTop: 20 }}>
           <button
-            onClick={() => { window.location.hash = ''; window.location.reload() }}
+            onClick={() => { window.location.hash = '#admin'; window.location.reload() }}
             style={{
               background: 'none', border: 'none', cursor: 'pointer',
               fontSize: 12, color: 'var(--text-3)',
