@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { WORK_ORDERS, STATUS_COLOR, COURSE_CATALOG } from '../data/mock'
+import { STATUS_COLOR, COURSE_CATALOG } from '../data/mock'
 import { CONTEXT_KEY } from './CourseMatch'
 
 const FILTERS     = ['全部','未读','已读']
@@ -170,7 +170,8 @@ export function WorkOrders({ navigate }) {
   }
 
   /* ─── Misc ─── */
-  const allOrders   = [...external, ...WORK_ORDERS]
+  // 仅展示真实数据（GitHub Issues + 提交记录），不再混入虚拟示例工单
+  const allOrders   = external
   const list        = filter === '全部' ? allOrders
     : filter === '未读' ? allOrders.filter(w => !readSet.has(w.id))
     : allOrders.filter(w => readSet.has(w.id))
