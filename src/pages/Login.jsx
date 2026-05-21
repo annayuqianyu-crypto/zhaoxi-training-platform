@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 export function LoginPage({ onLogin }) {
-  const [email, setEmail] = useState('anna.yu@zxpro.com.cn')
+  const [email, setEmail] = useState('')
   const [pass, setPass] = useState('')
   const [err, setErr] = useState('')
 
