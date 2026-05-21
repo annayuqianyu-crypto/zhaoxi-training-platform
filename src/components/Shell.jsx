@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { TrainingSystem }  from '../pages/TrainingSystem'
-import { CourseMatch }     from '../pages/CourseMatch'
-import { Schedule }        from '../pages/Schedule'
-import { WorkOrders }      from '../pages/WorkOrders'
-import { PortalWorkOrder } from '../pages/PortalWorkOrder'
+import { TrainingSystem }    from '../pages/TrainingSystem'
+import { PortalCourseMatch } from '../pages/PortalCourseMatch'
+import { Schedule }          from '../pages/Schedule'
+import { WorkOrders }        from '../pages/WorkOrders'
+import { PortalWorkOrder }   from '../pages/PortalWorkOrder'
 
 /* ─── Navigation structure ───
    type: 'group'  → module section header (not clickable)
@@ -26,7 +26,7 @@ const PAGE_MAP = {
   trainingsystem: TrainingSystem,
   submit:         PortalWorkOrder,
   workorders:     WorkOrders,
-  coursematch:    CourseMatch,
+  coursematch:    PortalCourseMatch,
   schedule:       Schedule,
 }
 

@@ -4,10 +4,10 @@ import { PortalApp } from './pages/PortalApp'
 import { AdminApp } from './pages/AdminApp'
 import './index.css'
 
-// 默认进入 Portal；管理端需手动加 #admin
-const isAdmin = window.location.hash.startsWith('#admin')
+// 默认进入 Admin（主界面）；Portal 通过 #portal 访问
+const isPortal = window.location.hash.startsWith('#portal')
 
 export default function App() {
-  if (isAdmin) return <AdminApp />
-  return <PortalApp />
+  if (isPortal) return <PortalApp />
+  return <AdminApp />
 }
