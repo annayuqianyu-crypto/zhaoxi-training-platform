@@ -25,7 +25,7 @@ export function LoginPage({ onLogin }) {
         <form onSubmit={submit}>
           <div className="form-group">
             <label className="form-label">邮箱账号</label>
-            <input className="form-input" value={email} onChange={e=>setEmail(e.target.value)} placeholder="your@zxpro.com.cn" />
+            <input className="form-input" value={email} onChange={e=>setEmail(e.target.value)} placeholder="请输入邮箱" />
           </div>
           <div className="form-group">
             <label className="form-label">密码</label>
@@ -35,7 +35,7 @@ export function LoginPage({ onLogin }) {
         </form>
         <div className="divider" />
         <p style={{fontSize:11,color:'var(--text-3)',textAlign:'center',lineHeight:1.8}}>
-          使用 @zxpro.com.cn 邮箱登录
+          请使用公司邮箱账号登录
         </p>
       </div>
     </div>
