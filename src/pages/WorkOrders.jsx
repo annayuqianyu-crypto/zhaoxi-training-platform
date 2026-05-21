@@ -140,6 +140,31 @@ export function WorkOrders({ navigate }) {
     setSelectedOrder(prev => prev ? { ...prev, status: newStatus } : null)
   }
 
+  /* ─── 删除工单 ─── */
+  async function deleteOrder(order, e) {
+    if (e) e.stopPropagation()
+    if (!window.confirm(`确定删除工单「${order.channel || order.id}」吗？此操作不可恢复。`)) return
+    // GitHub 来源 → 关闭对应 issue（fetch 只取 open，关闭后即不再显示）
+    if (order._issueNumber) {
+      const token = getToken()
+      if (!token) { setShowTokenSetup(true); return }
+      try {
+        const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/issues/${order._issueNumber}`, {
+          method: 'PATCH',
+          headers: { Authorization:`Bearer ${token}`, Accept:'application/vnd.github.v3+json', 'Content-Type':'application/json' },
+          body: JSON.stringify({ state: 'closed' }),
+        })
+        if (!res.ok) { alert(`删除失败 (${res.status})，请检查 Token 是否具备写权限`); return }
+      } catch { alert('删除失败：网络错误'); return }
+    } else {
+      // 本地来源 → 从 localStorage 移除
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(loadLocal().filter(o => o.id !== order.id)))
+      localStorage.setItem(PORTAL_ORDER_KEY, JSON.stringify(loadPortalOrders().filter(o => o.id !== order.id)))
+    }
+    setExternal(prev => prev.filter(o => o.id !== order.id))
+    setSelectedOrder(prev => (prev && prev.id === order.id) ? null : prev)
+  }
+
   /* ─── Navigate to CourseMatch with full context ─── */
   function goToCourseMatch(order) {
     const ov = loadOverrides()[order.id] || {}
@@ -227,11 +252,11 @@ export function WorkOrders({ navigate }) {
           <table className="data-table">
             <thead><tr>
               <th>工单编号</th><th>渠道机构</th><th>联系人</th><th>对接销售</th>
-              <th>参与类型</th><th>培训日期</th><th>人数</th><th>来源</th><th>状态</th><th>评分</th>
+              <th>参与类型</th><th>培训日期</th><th>人数</th><th>来源</th><th>状态</th><th>评分</th><th>操作</th>
             </tr></thead>
             <tbody>
               {list.length === 0 && !loading && (
-                <tr><td colSpan={10} style={{ textAlign:'center', color:'var(--text-3)', padding:32 }}>暂无工单</td></tr>
+                <tr><td colSpan={11} style={{ textAlign:'center', color:'var(--text-3)', padding:32 }}>暂无工单</td></tr>
               )}
               {list.map(w => {
                 const unread = !readSet.has(w.id)
@@ -260,6 +285,17 @@ export function WorkOrders({ navigate }) {
                     )}
                   </td>
                   <td style={{ textAlign:'center', color:w.score?'var(--accent)':'var(--text-3)', fontWeight:w.score?700:400 }}>{w.score||'—'}</td>
+                  <td style={{ textAlign:'center' }}>
+                    {!unread && (
+                      <button
+                        onClick={e => deleteOrder(w, e)}
+                        title="删除工单"
+                        style={{ background:'none', border:'1px solid #FECACA', color:'#DC2626',
+                          borderRadius:6, padding:'3px 8px', fontSize:12, cursor:'pointer' }}>
+                        🗑 删除
+                      </button>
+                    )}
+                  </td>
                 </tr>
               )})}
             </tbody>
@@ -274,7 +310,7 @@ export function WorkOrders({ navigate }) {
         <div className="modal-overlay" onClick={() => setShowTokenSetup(false)}>
           <div className="modal" onClick={e => e.stopPropagation()}>
             <h2 className="modal-title">配置 GitHub Token</h2>
-            <p className="modal-sub">用于读取渠道问卷提交，仅存储在本浏览器</p>
+            <p className="modal-sub">用于读取与删除工单，仅存储在本浏览器。删除工单需写权限（public_repo）</p>
             <div className="form-group" style={{ marginTop:16 }}>
               <label className="form-label">GitHub Personal Access Token</label>
               <input className="form-input" type="password" value={tokenInput}
