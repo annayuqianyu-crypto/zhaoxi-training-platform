@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useMobile } from '../MobileContext'
 
 const PORTAL_ORDER_KEY = 'zx_portal_submitted_orders'
 const GITHUB_REPO = 'annayuqianyu-crypto/zhaoxi-training-platform'
@@ -62,6 +63,7 @@ const EMPTY_FORM = {
 }
 
 export function PortalWorkOrder({ user }) {
+  const isMobile = useMobile()
   const [form, setForm] = useState(EMPTY_FORM)
   const [submitted, setSubmitted] = useState(false)
   const [submitting, setSubmitting] = useState(false)
@@ -116,7 +118,7 @@ export function PortalWorkOrder({ user }) {
   }
 
   return (
-    <div style={{ ...css, minHeight: '100%', background: 'var(--bg)', padding: '32px 16px' }}>
+    <div style={{ ...css, minHeight: '100%', background: 'var(--bg)', padding: isMobile ? '16px 12px' : '32px 16px' }}>
       <div style={{ maxWidth: 640, margin: '0 auto' }}>
 
         {submitted ? (
@@ -160,7 +162,7 @@ export function PortalWorkOrder({ user }) {
             background: 'var(--bg-card)',
             border: '1px solid var(--border)',
             borderRadius: 16,
-            padding: '36px 40px',
+            padding: isMobile ? '20px 16px' : '36px 40px',
             boxShadow: '0 2px 16px rgba(0,0,0,.06)',
           }}>
             <div style={{ marginBottom: 28 }}>

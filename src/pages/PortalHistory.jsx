@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { CONTEXT_KEY } from './CourseMatch'
+import { useMobile } from '../MobileContext'
 
 export function loadHistory(userName) {
   try { return JSON.parse(localStorage.getItem(`zx_history_${userName}`) || '[]') } catch { return [] }
@@ -17,6 +18,7 @@ function fmt(isoStr) {
 }
 
 export function PortalHistory({ user, onLoad }) {
+  const isMobile = useMobile()
   const [list, setList] = useState(() => loadHistory(user.name))
 
   function handleDelete(id) {
@@ -41,10 +43,10 @@ export function PortalHistory({ user, onLoad }) {
   }
 
   return (
-    <div style={{ maxWidth: 720, margin: '0 auto', padding: '40px 24px' }}>
+    <div style={{ maxWidth: 720, margin: '0 auto', padding: isMobile ? '20px 16px' : '40px 24px' }}>
       <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:28 }}>
         <h2 style={{ fontSize:20, fontWeight:700, fontFamily:"'Noto Serif SC', serif", margin:0 }}>
-          📂 历史记录
+          历史记录
         </h2>
         <span style={{ fontSize:12, color:'var(--text-3)' }}>
           {user.name} · 共 {list.length} 条
@@ -53,7 +55,6 @@ export function PortalHistory({ user, onLoad }) {
 
       {list.length === 0 ? (
         <div style={{ textAlign:'center', padding:'60px 0', color:'var(--text-3)', fontSize:14 }}>
-          <div style={{ fontSize:36, marginBottom:12 }}>📭</div>
           暂无历史记录，在「课程匹配」页点击「保存草稿」后自动生成
         </div>
       ) : (
@@ -63,9 +64,9 @@ export function PortalHistory({ user, onLoad }) {
             return (
               <div key={rec.id} style={{
                 background:'var(--bg-card)', border:'1px solid var(--border)',
-                borderRadius:14, padding:'18px 20px',
+                borderRadius:14, padding: isMobile ? '14px 14px' : '18px 20px',
               }}>
-                <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:12 }}>
+                <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:12, flexWrap: isMobile ? 'wrap' : 'nowrap' }}>
                   <div style={{ flex:1, minWidth:0 }}>
                     <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:6, flexWrap:'wrap' }}>
                       <span style={{ fontSize:15, fontWeight:700, color:'var(--text-1)' }}>{title}</span>
@@ -90,8 +91,10 @@ export function PortalHistory({ user, onLoad }) {
                       )}
                     </div>
                   </div>
-                  <div style={{ display:'flex', gap:8, flexShrink:0 }}>
-                    <button className="btn btn-primary btn-sm" onClick={() => handleLoad(rec)}>
+                  <div style={{ display:'flex', gap:8, flexShrink:0, width: isMobile ? '100%' : 'auto' }}>
+                    <button className="btn btn-primary btn-sm"
+                      style={{ flex: isMobile ? 1 : 'unset' }}
+                      onClick={() => handleLoad(rec)}>
                       继续编辑
                     </button>
                     <button

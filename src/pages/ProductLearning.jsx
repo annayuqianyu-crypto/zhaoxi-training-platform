@@ -1,9 +1,11 @@
 import { useState, useMemo } from 'react'
 import { SKU_FULL } from '../data/skuFull'
+import { useMobile } from '../MobileContext'
 
 const DEPTS = ['法律', '税务', '资本市场']
 
 export function ProductLearning() {
+  const isMobile = useMobile()
   const [activeDept, setActiveDept] = useState('法律')
   const [search, setSearch]         = useState('')
   const [openL1, setOpenL1]         = useState({})
@@ -51,16 +53,16 @@ export function ProductLearning() {
   const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '')
 
   return (
-    <div style={{ padding: '28px', minHeight: '100%', boxSizing: 'border-box' }}>
+    <div style={{ padding: isMobile ? '16px' : '28px', minHeight: '100%', boxSizing: 'border-box' }}>
       {/* Header */}
-      <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', marginBottom:24, flexWrap:'wrap', gap:12 }}>
+      <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', marginBottom:16, flexWrap:'wrap', gap:10 }}>
         <div>
-          <h1 style={{ fontSize:22, fontWeight:700, color:'var(--text-1)', marginBottom:4 }}>产品学习</h1>
+          <h1 style={{ fontSize: isMobile ? 18 : 22, fontWeight:700, color:'var(--text-1)', marginBottom:4 }}>产品学习</h1>
           <p style={{ fontSize:13, color:'var(--text-3)' }}>全量 SKU 知识卡片 · 共 {SKU_FULL.length} 个产品</p>
         </div>
         <input
           className="form-input"
-          style={{ width:280, margin:0 }}
+          style={{ width: isMobile ? '100%' : 280, margin:0 }}
           placeholder="搜索编号 / 名称 / 分类 / 关键词…"
           value={search}
           onChange={e => setSearch(e.target.value)}
@@ -68,7 +70,13 @@ export function ProductLearning() {
       </div>
 
       {/* BU tabs */}
-      <div style={{ display:'flex', gap:8, marginBottom:24, borderBottom:'1px solid var(--border)', paddingBottom:0 }}>
+      <div style={{
+        display:'flex', gap:8, marginBottom:20,
+        borderBottom:'1px solid var(--border)', paddingBottom:0,
+        overflowX: isMobile ? 'auto' : 'visible',
+        WebkitOverflowScrolling: 'touch',
+        flexWrap: isMobile ? 'nowrap' : 'wrap',
+      }}>
         {deptCounts.map(({ dept, count }) => {
           const active = dept === activeDept
           return (
@@ -185,7 +193,40 @@ const FIELD_LABELS = [
 ]
 
 function SkuCard({ sku, expanded, onToggle, base }) {
+  const isMobile = useMobile()
   const href = sku.pageUrl ? base + sku.pageUrl : null
+
+  const btnKnowledge = (
+    <button onClick={onToggle} style={{
+      flexShrink:0, display:'inline-flex', alignItems:'center', gap:4,
+      padding:'5px 12px', borderRadius:6, cursor:'pointer',
+      border:'1px solid var(--border)',
+      background: expanded ? 'var(--bg)' : 'var(--bg-card)',
+      color: expanded ? 'var(--text-1)' : 'var(--text-2)',
+      fontSize:12, fontWeight:600,
+    }}>
+      {expanded ? '▾ 知识卡片' : '▸ 知识卡片'}
+    </button>
+  )
+
+  const btnMaterial = href ? (
+    <a href={href} target="_blank" rel="noopener noreferrer" style={{
+      flexShrink:0, display:'inline-flex', alignItems:'center', gap:4,
+      padding:'5px 12px', borderRadius:6,
+      background:'var(--accent)', color:'#fff',
+      fontSize:12, fontWeight:600, textDecoration:'none',
+      border:'1px solid transparent',
+    }}
+      onMouseEnter={e => e.currentTarget.style.opacity='.85'}
+      onMouseLeave={e => e.currentTarget.style.opacity='1'}
+    >产品资料 ↗</a>
+  ) : (
+    <span style={{
+      flexShrink:0, padding:'5px 12px', borderRadius:6,
+      border:'1px solid var(--border)', color:'var(--text-3)',
+      fontSize:12, fontWeight:600, cursor:'not-allowed',
+    }}>产品资料</span>
+  )
 
   return (
     <div style={{
@@ -194,76 +235,41 @@ function SkuCard({ sku, expanded, onToggle, base }) {
       borderRadius:8,
       overflow:'hidden',
     }}>
-      {/* Card header row — always visible */}
+      {/* Card header */}
       <div style={{
-        display:'flex', alignItems:'center', gap:10,
         padding:'9px 12px',
         borderBottom: expanded ? '1px solid var(--border)' : 'none',
       }}>
-        {/* ID badge */}
-        <span style={{
-          fontFamily:'monospace', fontSize:10, fontWeight:700,
-          color:'var(--text-2)', background:'var(--bg)',
-          border:'1px solid var(--border)',
-          padding:'2px 6px', borderRadius:4, flexShrink:0,
-        }}>{sku.id}</span>
-
-        {/* Name */}
-        <span style={{ flex:1, fontSize:13, fontWeight:600, color:'var(--text-1)', lineHeight:1.4 }}>
-          {sku.name}
-        </span>
-
-        {/* English name — hidden on narrow */}
-        {sku.engName && (
+        {/* Row 1: ID + Name + (desktop: English + buttons) */}
+        <div style={{ display:'flex', alignItems:'center', gap:8 }}>
           <span style={{
-            fontSize:11, color:'var(--text-3)', flexShrink:0,
-            maxWidth:180, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap',
-          }}>
-            {sku.engName}
-          </span>
-        )}
-
-        {/* 知识卡片 button — toggle expand */}
-        <button
-          onClick={onToggle}
-          style={{
-            flexShrink:0, display:'inline-flex', alignItems:'center', gap:4,
-            padding:'5px 12px', borderRadius:6, cursor:'pointer',
+            fontFamily:'monospace', fontSize:10, fontWeight:700,
+            color:'var(--text-2)', background:'var(--bg)',
             border:'1px solid var(--border)',
-            background: expanded ? 'var(--bg)' : 'var(--bg-card)',
-            color: expanded ? 'var(--text-1)' : 'var(--text-2)',
-            fontSize:12, fontWeight:600,
-          }}
-        >
-          {expanded ? '▾ 知识卡片' : '▸ 知识卡片'}
-        </button>
+            padding:'2px 6px', borderRadius:4, flexShrink:0,
+          }}>{sku.id}</span>
 
-        {/* 产品资料 button — open HTML page */}
-        {href ? (
-          <a
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              flexShrink:0, display:'inline-flex', alignItems:'center', gap:4,
-              padding:'5px 12px', borderRadius:6,
-              background:'var(--accent)', color:'#fff',
-              fontSize:12, fontWeight:600, textDecoration:'none',
-              border:'1px solid transparent',
-            }}
-            onMouseEnter={e => e.currentTarget.style.opacity='.85'}
-            onMouseLeave={e => e.currentTarget.style.opacity='1'}
-          >
-            产品资料 ↗
-          </a>
-        ) : (
-          <span style={{
-            flexShrink:0, padding:'5px 12px', borderRadius:6,
-            border:'1px solid var(--border)', color:'var(--text-3)',
-            fontSize:12, fontWeight:600, cursor:'not-allowed',
-          }}>
-            产品资料
+          <span style={{ flex:1, fontSize:13, fontWeight:600, color:'var(--text-1)', lineHeight:1.4 }}>
+            {sku.name}
           </span>
+
+          {!isMobile && sku.engName && (
+            <span style={{
+              fontSize:11, color:'var(--text-3)', flexShrink:0,
+              maxWidth:180, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap',
+            }}>{sku.engName}</span>
+          )}
+
+          {!isMobile && btnKnowledge}
+          {!isMobile && btnMaterial}
+        </div>
+
+        {/* Row 2 (mobile only): buttons full width */}
+        {isMobile && (
+          <div style={{ display:'flex', gap:8, marginTop:8 }}>
+            <div style={{ flex:1 }}>{btnKnowledge}</div>
+            <div style={{ flex:1 }}>{btnMaterial}</div>
+          </div>
         )}
       </div>
 

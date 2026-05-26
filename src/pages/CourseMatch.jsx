@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useMobile } from '../MobileContext'
 import mammoth from 'mammoth'
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, Table, TableRow, TableCell, WidthType, BorderStyle, ShadingType } from 'docx'
 import { COURSE_CATALOG, SKU_LIST, INSTRUCTORS } from '../data/mock'
@@ -226,6 +227,7 @@ async function callDeepSeekAPI(prompt) {
    Main component
 ════════════════════════════════════════════════════════════ */
 export function CourseMatch({ navigate, portalMode = false, user = null }) {
+  const isMobile = useMobile()
   const [ctx, setCtx]                                   = useState(null)
   const [editForm, setEditForm]                         = useState({})
   const [editCourseIds, setEditCourseIds]               = useState([])
@@ -479,22 +481,23 @@ ${skuIndex}
                 }}
                 placeholder="粘贴会议纪要或补充说明…"
               />
-              <div style={{ display:'flex', alignItems:'center', gap:10, marginTop:10, flexWrap:'wrap' }}>
+              <div style={{ display:'flex', alignItems:'center', gap:10, marginTop:10, flexWrap:'wrap', flexDirection: isMobile ? 'column' : 'row' }}>
                 <label style={{
                   display:'inline-flex', alignItems:'center', gap:6, fontSize:12,
                   color:'var(--text-2)', cursor:'pointer', padding:'6px 12px',
                   border:'1px solid var(--border)', borderRadius:8, background:'var(--bg)',
+                  width: isMobile ? '100%' : 'auto', justifyContent: isMobile ? 'center' : 'flex-start',
                 }}>
-                  📎 上传 Word 文件（.docx）
+                  上传 Word 文件（.docx）
                   <input type="file" accept=".docx" style={{ display:'none' }} onChange={handleFileUpload} />
                 </label>
                 <button
                   className="btn btn-primary"
                   onClick={analyzeWithAI}
                   disabled={aiLoading}
-                  style={{ flex:1, justifyContent:'center', minWidth:200 }}
+                  style={{ flex:1, justifyContent:'center', minWidth: isMobile ? 'unset' : 200, width: isMobile ? '100%' : 'auto' }}
                 >
-                  {aiLoading ? '⏳ AI 分析中，请稍候…' : '🤖 AI 分析需求 · 匹配 Top 3 课程'}
+                  {aiLoading ? 'AI 分析中，请稍候…' : 'AI 分析需求 · 匹配 Top 3 课程'}
                 </button>
               </div>
               {aiError && (

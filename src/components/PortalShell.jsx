@@ -8,10 +8,10 @@ import { PortalHistory, loadHistory } from '../pages/PortalHistory'
 const WORKORDER_WHITELIST = ['anna.yu@zxpro.com.cn']
 
 const ALL_TABS = [
-  { key: 'coursematch', label: '🎯 课程匹配' },
-  { key: 'workorder',   label: '📋 提交需求', restricted: true },
-  { key: 'learning',    label: '📚 产品学习' },
-  { key: 'history',     label: '📂 历史记录' },
+  { key: 'coursematch', label: '课程匹配' },
+  { key: 'workorder',   label: '提交需求', restricted: true },
+  { key: 'learning',    label: '产品学习' },
+  { key: 'history',     label: '历史记录' },
 ]
 
 export function PortalShell({ user, onLogout }) {
