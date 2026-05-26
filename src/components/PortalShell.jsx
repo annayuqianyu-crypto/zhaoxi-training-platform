@@ -4,8 +4,8 @@ import { PortalCourseMatch } from '../pages/PortalCourseMatch'
 import { PortalWorkOrder } from '../pages/PortalWorkOrder'
 import { PortalHistory, loadHistory } from '../pages/PortalHistory'
 
-// 仅这些账户可见「提交需求」Tab
-const WORKORDER_WHITELIST = ['anna.yu@zxpro.com.cn']
+// 仅这些账户可见「提交需求」Tab（匹配邮箱前缀 name）
+const WORKORDER_WHITELIST = ['anna.yu']
 
 const ALL_TABS = [
   { key: 'coursematch', label: '课程匹配' },

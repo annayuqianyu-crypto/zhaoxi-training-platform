@@ -1,35 +1,35 @@
 import { useState } from 'react'
 
-const ROLES = ['销售顾问', '讲师', 'BU 成员', '其他']
-const ACCESS_CODE = 'zx2026'
-
 export function PortalLogin({ onLogin }) {
-  const [name, setName]       = useState('')
-  const [role, setRole]       = useState(ROLES[0])
-  const [code, setCode]       = useState('')
-  const [error, setError]     = useState('')
-  const [loading, setLoading] = useState(false)
+  const [email, setEmail] = useState('')
+  const [pass,  setPass]  = useState('')
+  const [error, setError] = useState('')
 
   function handleSubmit(e) {
     e.preventDefault()
-    if (!name.trim()) { setError('请输入您的姓名'); return }
-    if (code !== ACCESS_CODE) { setError('访问码不正确，请联系管理员获取'); return }
-    setLoading(true)
-    setTimeout(() => {
-      setLoading(false)
-      onLogin({ name: name.trim(), role })
-    }, 400)
+    if (!email.endsWith('@zxpro.com.cn')) {
+      setError('请使用 @zxpro.com.cn 邮箱登录')
+      return
+    }
+    if (pass !== 'ZXpro@2026') {
+      setError('密码错误，请重试')
+      return
+    }
+    onLogin({ email, name: email.split('@')[0], role: 'staff' })
   }
 
   return (
     <div style={{
       minHeight: '100vh', background: 'var(--bg)',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
+      padding: '24px',
     }}>
       <div style={{
-        width: 400, background: 'var(--bg-card)',
+        width: '100%', maxWidth: 400,
+        background: 'var(--bg-card)',
         border: '1px solid var(--border)', borderRadius: 20,
-        padding: 40, boxShadow: '0 4px 24px rgba(0,0,0,.10)',
+        padding: '36px 32px',
+        boxShadow: '0 4px 24px rgba(0,0,0,.10)',
       }}>
         {/* Logo */}
         <div style={{
@@ -41,44 +41,36 @@ export function PortalLogin({ onLogin }) {
           margin: '0 auto 20px',
         }}>朝</div>
 
-        <h1 style={{ textAlign: 'center', fontSize: 22, marginBottom: 4, fontFamily: "'Noto Serif SC', serif" }}>
+        <h1 style={{ textAlign: 'center', fontSize: 20, marginBottom: 4, fontFamily: "'Noto Serif SC', serif" }}>
           朝曦知识中心
         </h1>
         <p style={{ textAlign: 'center', color: 'var(--text-3)', fontSize: 13, marginBottom: 28 }}>
-          课程匹配 · 产品学习 · 内部知识库
+          课程匹配 · 产品学习 · 培训资料
         </p>
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label className="form-label">您的姓名</label>
+            <label className="form-label">邮箱账号</label>
             <input
               className="form-input"
-              placeholder="请输入真实姓名"
-              value={name}
-              onChange={e => { setName(e.target.value); setError('') }}
+              type="email"
+              placeholder="your@zxpro.com.cn"
+              value={email}
+              autoComplete="username"
+              onChange={e => { setEmail(e.target.value); setError('') }}
               autoFocus
             />
           </div>
 
           <div className="form-group">
-            <label className="form-label">角色</label>
-            <select
-              className="form-select"
-              value={role}
-              onChange={e => setRole(e.target.value)}
-            >
-              {ROLES.map(r => <option key={r} value={r}>{r}</option>)}
-            </select>
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">访问码</label>
+            <label className="form-label">密码</label>
             <input
               className="form-input"
               type="password"
-              placeholder="请输入访问码"
-              value={code}
-              onChange={e => { setCode(e.target.value); setError('') }}
+              placeholder="请输入密码"
+              value={pass}
+              autoComplete="current-password"
+              onChange={e => { setPass(e.target.value); setError('') }}
             />
           </div>
 
@@ -94,22 +86,15 @@ export function PortalLogin({ onLogin }) {
             type="submit"
             className="btn btn-primary"
             style={{ width: '100%', justifyContent: 'center', padding: '11px 0', fontSize: 14 }}
-            disabled={loading}
           >
-            {loading ? '登录中…' : '进入知识中心'}
+            登录
           </button>
         </form>
 
         <div style={{ textAlign: 'center', marginTop: 20 }}>
-          <button
-            onClick={() => { window.location.hash = '#admin'; window.location.reload() }}
-            style={{
-              background: 'none', border: 'none', cursor: 'pointer',
-              fontSize: 12, color: 'var(--text-3)',
-            }}
-          >
-            返回管理后台
-          </button>
+          <span style={{ fontSize: 11, color: 'var(--text-3)' }}>
+            使用 @zxpro.com.cn 邮箱登录
+          </span>
         </div>
       </div>
     </div>
