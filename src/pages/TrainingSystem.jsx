@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
+import { useMobile } from '../MobileContext'
 
 const SERIES = [
   {
@@ -235,6 +236,7 @@ async function buildPoster(canvas, shareUrl) {
 }
 
 export function TrainingSystem() {
+  const isMobile = useMobile()
   const [current, setCurrent] = useState(0)
   const sliderRef = useRef(null)
   const [shareOpen, setShareOpen] = useState(false)
@@ -293,14 +295,14 @@ export function TrainingSystem() {
 
   return (
     <>
-    <div style={{ padding: '32px 36px', maxWidth: 1100, margin: '0 auto' }}>
+    <div style={{ padding: isMobile ? '16px 14px' : '32px 36px', maxWidth: 1100, margin: '0 auto' }}>
 
       {/* ── Hero ── */}
       <div style={{
         background: 'linear-gradient(135deg, #18181B 0%, #27272A 60%, #2D6A4F22 100%)',
         borderRadius: 16,
-        padding: '48px 52px',
-        marginBottom: 36,
+        padding: isMobile ? '24px 20px' : '48px 52px',
+        marginBottom: isMobile ? 20 : 36,
         position: 'relative',
         overflow: 'hidden',
       }}>
@@ -326,7 +328,7 @@ export function TrainingSystem() {
             </div>
           </div>
           <h1 style={{
-            fontSize: 32, fontWeight: 700, color: '#F4F4F5',
+            fontSize: isMobile ? 22 : 32, fontWeight: 700, color: '#F4F4F5',
             margin: '0 0 10px',
             fontFamily: 'Noto Serif SC, serif',
             lineHeight: 1.35,
@@ -334,12 +336,12 @@ export function TrainingSystem() {
             懂企业的成长<br />
             <span style={{ color: '#4ADE80' }}>更懂企业家的心事</span>
           </h1>
-          <p style={{ fontSize: 14, color: '#A1A1AA', margin: '16px 0 0', lineHeight: 1.8, maxWidth: 560 }}>
+          <p style={{ fontSize: isMobile ? 13 : 14, color: '#A1A1AA', margin: '12px 0 0', lineHeight: 1.8, maxWidth: 560 }}>
             六大系列课程，覆盖企业从初创到传承的完整生命周期。不讲大道理，只聊真问题。
             每个主题均源自真实服务案例，陪伴企业家在关键节点找到答案。
           </p>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16, marginTop: 28 }}>
-            <div style={{ display: 'flex', gap: 28 }}>
+          <div style={{ display: 'flex', alignItems: isMobile ? 'flex-start' : 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 14, marginTop: isMobile ? 18 : 28, flexDirection: isMobile ? 'column' : 'row' }}>
+            <div style={{ display: 'flex', gap: isMobile ? 20 : 28 }}>
               {[
                 { num: '6', label: '核心系列' },
                 { num: totalUnits, label: '课程单元' },
@@ -355,7 +357,10 @@ export function TrainingSystem() {
               onClick={() => setShareOpen(true)}
               style={{
                 display: 'inline-flex', alignItems: 'center', gap: 7,
-                padding: '10px 20px', borderRadius: 10, cursor: 'pointer',
+                padding: isMobile ? '11px 0' : '10px 20px',
+                width: isMobile ? '100%' : 'auto',
+                justifyContent: 'center',
+                borderRadius: 10, cursor: 'pointer',
                 background: 'linear-gradient(135deg, #2D6A4F, #40916C)',
                 border: 'none', color: '#fff',
                 fontSize: 13, fontWeight: 700,
@@ -365,7 +370,7 @@ export function TrainingSystem() {
               onMouseEnter={e => e.currentTarget.style.opacity = '.88'}
               onMouseLeave={e => e.currentTarget.style.opacity = '1'}
             >
-              <span style={{ fontSize: 15 }}>📤</span> 分享给客户
+              生成海报 · 分享给客户
             </button>
           </div>
         </div>
@@ -433,7 +438,7 @@ export function TrainingSystem() {
             <div style={{
               background: `linear-gradient(135deg, ${s.color}10 0%, ${s.bg} 100%)`,
               borderBottom: `1.5px solid ${s.border}`,
-              padding: '28px 32px 24px',
+              padding: isMobile ? '16px 16px 14px' : '28px 32px 24px',
             }}>
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
                 <div>
@@ -463,10 +468,10 @@ export function TrainingSystem() {
             </div>
 
             {/* Units List — scrollable */}
-            <div style={{ overflowY: 'auto', maxHeight: 480 }}>
+            <div style={{ overflowY: 'auto', maxHeight: isMobile ? 380 : 480 }}>
               {s.units.map((u, i) => (
                 <div key={i} style={{
-                  padding: '16px 32px',
+                  padding: isMobile ? '12px 14px' : '16px 32px',
                   borderBottom: i < s.units.length - 1 ? `1px solid ${s.border}66` : 'none',
                   background: i % 2 === 0 ? '#fff' : s.bg + '55',
                   display: 'flex', gap: 14, alignItems: 'flex-start',
@@ -507,7 +512,7 @@ export function TrainingSystem() {
 
             {/* Card Footer */}
             <div style={{
-              padding: '14px 32px',
+              padding: isMobile ? '10px 14px' : '14px 32px',
               background: s.bg + '88',
               borderTop: `1px solid ${s.border}`,
               fontSize: 11, color: '#A1A1AA',
