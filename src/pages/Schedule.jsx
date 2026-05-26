@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { INSTRUCTORS } from '../data/mock'
 import { fetchSchedule, saveSchedule, loadCache, getToken, setToken, verifyWriteToken } from '../data/scheduleStore'
+import { useMobile } from '../MobileContext'
 
 /* ─── Event type colours (individual view) ─── */
 const EVENT_TYPES = [
@@ -54,6 +55,7 @@ const TABS = [
    Component
 ════════════════════════════════════════════ */
 export function Schedule() {
+  const isMobile = useMobile()
   const now = new Date()
   const [year,  setYear]  = useState(now.getFullYear())
   const [month, setMonth] = useState(now.getMonth())
@@ -193,58 +195,92 @@ export function Schedule() {
   return (
     <>
       {/* ── Topbar ── */}
-      <div className="topbar">
-        <span className="topbar-title">讲师排期</span>
-        <span className="topbar-sub">· M4</span>
-        <div className="topbar-actions" style={{ display:'flex', alignItems:'center', gap:10 }}>
-          {/* 同步状态 */}
-          <span style={{ fontSize:12, fontWeight:600, display:'flex', alignItems:'center', gap:5,
+      {isMobile ? (
+        <div style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '10px 14px',
+          background: 'var(--bg-card)',
+          borderBottom: '1px solid var(--border)',
+        }}>
+          <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-1)' }}>讲师排期</span>
+          <span style={{
+            fontSize: 11, fontWeight: 600,
             color: syncState === 'synced' ? '#059669'
               : syncState === 'saving' || syncState === 'loading' ? '#6B7280'
-              : syncState === 'needToken' ? '#6B7280' : '#DC2626' }}>
-            {syncState === 'synced'    && '☁ 已同步'}
-            {syncState === 'saving'    && '⏳ 保存中…'}
-            {syncState === 'loading'   && '⏳ 加载中…'}
-            {syncState === 'offline'   && '⚠ 未连接云端'}
-            {syncState === 'needToken' && '👁 查看模式'}
+              : syncState === 'needToken' ? '#6B7280' : '#DC2626',
+          }}>
+            {syncState === 'synced'    && '已同步'}
+            {syncState === 'saving'    && '保存中…'}
+            {syncState === 'loading'   && '加载中…'}
+            {syncState === 'offline'   && '未连接'}
+            {syncState === 'needToken' && '查看模式'}
           </span>
-          <button className="btn btn-secondary btn-sm" onClick={reload} title="重新拉取云端最新排期">⟳ 刷新</button>
-          <button className="btn btn-secondary btn-sm" onClick={() => setTokenModal(true)} title="配置写入权限 Token">⚙ Token</button>
-          <button className="btn btn-primary btn-sm" onClick={() => {
-            const date = dateFmt(year, month, now.getDate())
-            setForm({ date, title: '', instructorId: tab === 'all' ? '' : tab, type: '外部培训', location: '', note: '' })
-            setModal({ mode: 'add' })
-          }}>＋ 添加排期</button>
         </div>
-      </div>
+      ) : (
+        <div className="topbar">
+          <span className="topbar-title">讲师排期</span>
+          <span className="topbar-sub">· M4</span>
+          <div className="topbar-actions" style={{ display:'flex', alignItems:'center', gap:10 }}>
+            {/* 同步状态 */}
+            <span style={{ fontSize:12, fontWeight:600, display:'flex', alignItems:'center', gap:5,
+              color: syncState === 'synced' ? '#059669'
+                : syncState === 'saving' || syncState === 'loading' ? '#6B7280'
+                : syncState === 'needToken' ? '#6B7280' : '#DC2626' }}>
+              {syncState === 'synced'    && '☁ 已同步'}
+              {syncState === 'saving'    && '⏳ 保存中…'}
+              {syncState === 'loading'   && '⏳ 加载中…'}
+              {syncState === 'offline'   && '⚠ 未连接云端'}
+              {syncState === 'needToken' && '👁 查看模式'}
+            </span>
+            <button className="btn btn-secondary btn-sm" onClick={reload} title="重新拉取云端最新排期">⟳ 刷新</button>
+            <button className="btn btn-secondary btn-sm" onClick={() => setTokenModal(true)} title="配置写入权限 Token">⚙ Token</button>
+            <button className="btn btn-primary btn-sm" onClick={() => {
+              const date = dateFmt(year, month, now.getDate())
+              setForm({ date, title: '', instructorId: tab === 'all' ? '' : tab, type: '外部培训', location: '', note: '' })
+              setModal({ mode: 'add' })
+            }}>＋ 添加排期</button>
+          </div>
+        </div>
+      )}
 
-      <div className="content">
+      <div className={isMobile ? '' : 'content'} style={isMobile ? { padding: '12px 12px 20px' } : undefined}>
 
         {/* ── Tab bar ── */}
-        <div style={{ display: 'flex', gap: 4, marginBottom: 20, borderBottom: '1px solid var(--border)' }}>
+        <div style={{
+          display: 'flex', gap: 4,
+          marginBottom: isMobile ? 14 : 20,
+          borderBottom: '1px solid var(--border)',
+          overflowX: isMobile ? 'auto' : 'visible',
+          WebkitOverflowScrolling: 'touch',
+          msOverflowStyle: 'none',
+          scrollbarWidth: 'none',
+        }}>
           {TABS.map(t => {
             const active = tab === t.key
             const inst = t.key !== 'all' ? INSTRUCTORS.find(i => i.id === t.key) : null
             return (
               <button key={t.key} onClick={() => setTab(t.key)} style={{
-                padding: '9px 18px', borderRadius: '8px 8px 0 0', cursor: 'pointer',
-                fontSize: 13, fontWeight: active ? 700 : 500,
+                padding: isMobile ? '7px 10px' : '9px 18px',
+                borderRadius: '8px 8px 0 0', cursor: 'pointer',
+                fontSize: isMobile ? 12 : 13, fontWeight: active ? 700 : 500,
                 border: '1px solid var(--border)',
                 borderBottom: active ? '1px solid var(--bg-card)' : '1px solid var(--border)',
                 marginBottom: active ? -1 : 0,
                 background: active ? 'var(--bg-card)' : 'transparent',
                 color: active ? (t.color || 'var(--text-1)') : 'var(--text-3)',
-                display: 'flex', alignItems: 'center', gap: 7,
+                display: 'flex', alignItems: 'center', gap: isMobile ? 5 : 7,
                 transition: 'all .15s',
+                whiteSpace: 'nowrap', flexShrink: 0,
+                minHeight: 'unset',
               }}>
                 {t.key === 'all'
                   ? <span style={{ fontSize: 14 }}>📅</span>
                   : (
                     <span style={{
-                      width: 20, height: 20, borderRadius: '50%', flexShrink: 0,
+                      width: isMobile ? 18 : 20, height: isMobile ? 18 : 20, borderRadius: '50%', flexShrink: 0,
                       background: active ? t.color : '#D4D4D8',
                       display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: 10, fontWeight: 700, color: '#fff',
+                      fontSize: isMobile ? 9 : 10, fontWeight: 700, color: '#fff',
                     }}>{inst?.avatar}</span>
                   )
                 }
@@ -334,29 +370,54 @@ export function Schedule() {
         )}
 
         {/* ── Calendar nav + legend ── */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <button onClick={prev} style={{ width: 32, height: 32, borderRadius: '50%', border: '1.5px solid var(--border)', background: 'var(--bg-card)', cursor: 'pointer', fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>‹</button>
-            <h2 style={{ fontSize: 18, fontWeight: 700, margin: 0, minWidth: 110, textAlign: 'center' }}>
+        <div style={{
+          display: 'flex', alignItems: isMobile ? 'flex-start' : 'center',
+          justifyContent: 'space-between', marginBottom: 14,
+          flexDirection: isMobile ? 'column' : 'row', gap: isMobile ? 8 : 0,
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 6 : 10 }}>
+            <button onClick={prev} style={{
+              width: isMobile ? 30 : 32, height: isMobile ? 30 : 32, borderRadius: '50%',
+              border: '1.5px solid var(--border)', background: 'var(--bg-card)', cursor: 'pointer',
+              fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center',
+              minHeight: 'unset', padding: 0,
+            }}>‹</button>
+            <h2 style={{
+              fontSize: isMobile ? 15 : 18, fontWeight: 700, margin: 0,
+              minWidth: isMobile ? 90 : 110, textAlign: 'center',
+            }}>
               {year} 年 {month + 1} 月
             </h2>
-            <button onClick={next} style={{ width: 32, height: 32, borderRadius: '50%', border: '1.5px solid var(--border)', background: 'var(--bg-card)', cursor: 'pointer', fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>›</button>
+            <button onClick={next} style={{
+              width: isMobile ? 30 : 32, height: isMobile ? 30 : 32, borderRadius: '50%',
+              border: '1.5px solid var(--border)', background: 'var(--bg-card)', cursor: 'pointer',
+              fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center',
+              minHeight: 'unset', padding: 0,
+            }}>›</button>
             <button onClick={() => { setYear(now.getFullYear()); setMonth(now.getMonth()) }}
-              style={{ fontSize: 12, color: 'var(--accent)', background: 'none', border: '1px solid var(--accent)', borderRadius: 6, padding: '4px 12px', cursor: 'pointer', fontWeight: 600 }}>今天</button>
+              style={{
+                fontSize: 12, color: 'var(--accent)', background: 'none',
+                border: '1px solid var(--accent)', borderRadius: 6,
+                padding: isMobile ? '3px 10px' : '4px 12px',
+                cursor: 'pointer', fontWeight: 600, minHeight: 'unset',
+              }}>今天</button>
           </div>
 
           {/* Legend */}
-          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+          <div style={{
+            display: 'flex', gap: isMobile ? 8 : 10, flexWrap: 'wrap',
+            justifyContent: isMobile ? 'flex-start' : 'flex-end',
+          }}>
             {tab === 'all'
               ? INSTRUCTORS.map((inst, i) => (
-                  <div key={inst.id} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, color: 'var(--text-2)' }}>
-                    <span style={{ width: 10, height: 10, borderRadius: '50%', background: INST_COLORS[i].color, display: 'inline-block', flexShrink: 0 }} />
+                  <div key={inst.id} style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: isMobile ? 10 : 11, color: 'var(--text-2)' }}>
+                    <span style={{ width: 8, height: 8, borderRadius: '50%', background: INST_COLORS[i].color, display: 'inline-block', flexShrink: 0 }} />
                     {inst.name}
                   </div>
                 ))
               : EVENT_TYPES.map(t => (
-                  <div key={t.label} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, color: 'var(--text-2)' }}>
-                    <span style={{ width: 10, height: 10, borderRadius: 3, background: t.color, display: 'inline-block', flexShrink: 0 }} />
+                  <div key={t.label} style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: isMobile ? 10 : 11, color: 'var(--text-2)' }}>
+                    <span style={{ width: 8, height: 8, borderRadius: 3, background: t.color, display: 'inline-block', flexShrink: 0 }} />
                     {t.label}
                   </div>
                 ))
@@ -381,7 +442,7 @@ export function Schedule() {
             {cells.map((day, idx) => {
               if (!day) return (
                 <div key={`e${idx}`} style={{
-                  minHeight: 110, background: '#FAFAF9',
+                  minHeight: isMobile ? 56 : 110, background: '#FAFAF9',
                   borderRight: (idx + 1) % 7 === 0 ? 'none' : '1px solid var(--border)',
                   borderBottom: '1px solid var(--border)',
                 }} />
@@ -392,49 +453,57 @@ export function Schedule() {
               const weekPos  = (startDOW + day - 1) % 7
               const isWeekend = weekPos === 0 || weekPos === 6
               const isLastCol = weekPos === 6
+              const maxEvents = isMobile ? 2 : 3
 
               return (
                 <div key={day} onClick={() => openAdd(day)} style={{
-                  minHeight: 110, padding: '8px 8px 6px',
+                  minHeight: isMobile ? 56 : 110,
+                  padding: isMobile ? '3px 3px 2px' : '8px 8px 6px',
                   background: isToday ? '#F0FDF4' : 'var(--bg-card)',
                   borderRight: isLastCol ? 'none' : '1px solid var(--border)',
                   borderBottom: '1px solid var(--border)',
                   cursor: 'pointer', transition: 'background .12s',
+                  overflow: 'hidden',
                 }}
                   onMouseEnter={e => { if (!isToday) e.currentTarget.style.background = '#F7F7F7' }}
                   onMouseLeave={e => { e.currentTarget.style.background = isToday ? '#F0FDF4' : 'var(--bg-card)' }}
                 >
                   <div style={{
-                    width: 26, height: 26, borderRadius: '50%', marginBottom: 5,
+                    width: isMobile ? 20 : 26, height: isMobile ? 20 : 26, borderRadius: '50%',
+                    marginBottom: isMobile ? 2 : 5,
                     background: isToday ? 'var(--accent)' : 'transparent',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: 13, fontWeight: isToday ? 700 : 400,
+                    fontSize: isMobile ? 11 : 13, fontWeight: isToday ? 700 : 400,
                     color: isToday ? '#fff' : isWeekend ? '#EF4444' : 'var(--text-1)',
                   }}>{day}</div>
 
-                  {evs.slice(0, 3).map(ev => {
+                  {evs.slice(0, maxEvents).map(ev => {
                     const c = tab === 'all' ? instColorOf(ev.instructorId) : typeColorOf(ev.type)
                     const instName = INSTRUCTORS.find(i => i.id === ev.instructorId)
                     return (
                       <div key={ev.id} onClick={e => openEdit(ev, e)}
                         title={`${ev.title}${instName ? ' · ' + instName.name : ''}${ev.location ? ' · ' + ev.location : ''}`}
                         style={{
-                          fontSize: 11, padding: '2px 6px', borderRadius: 4,
+                          fontSize: isMobile ? 9 : 11,
+                          padding: isMobile ? '1px 3px' : '2px 6px',
+                          borderRadius: 4,
                           background: c.bg, color: c.color, fontWeight: 600,
-                          marginBottom: 3, whiteSpace: 'nowrap', overflow: 'hidden',
+                          marginBottom: isMobile ? 1 : 3,
+                          whiteSpace: 'nowrap', overflow: 'hidden',
                           textOverflow: 'ellipsis', cursor: 'pointer',
                           border: `1px solid ${c.color}33`,
                           display: 'flex', alignItems: 'center', gap: 3,
+                          lineHeight: 1.3,
                         }}>
-                        {tab === 'all' && instName && (
+                        {tab === 'all' && instName && !isMobile && (
                           <span style={{ flexShrink: 0, fontSize: 9, opacity: .85 }}>{instName.avatar}</span>
                         )}
                         <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{ev.title}</span>
                       </div>
                     )
                   })}
-                  {evs.length > 3 && (
-                    <div style={{ fontSize: 10, color: 'var(--text-3)', paddingLeft: 4 }}>+{evs.length - 3} 项</div>
+                  {evs.length > maxEvents && (
+                    <div style={{ fontSize: isMobile ? 9 : 10, color: 'var(--text-3)', paddingLeft: isMobile ? 2 : 4 }}>+{evs.length - maxEvents}</div>
                   )}
                 </div>
               )
