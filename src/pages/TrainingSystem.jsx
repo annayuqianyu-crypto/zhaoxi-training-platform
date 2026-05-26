@@ -405,55 +405,154 @@ export function TrainingSystem() {
       {/* ════════ Share Modal ════════ */}
       {shareOpen && (
         <div
-          style={{ position: 'fixed', inset: 0, background: '#00000066', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 20 }}
+          style={{ position: 'fixed', inset: 0, background: '#000000AA', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 16, overflowY: 'auto' }}
           onClick={() => setShareOpen(false)}
         >
           <div
-            style={{ background: 'var(--bg-card)', borderRadius: 20, padding: '24px 24px 20px', width: '100%', maxWidth: 340, boxShadow: '0 24px 64px #00000040' }}
+            style={{ width: '100%', maxWidth: 340, position: 'relative' }}
             onClick={e => e.stopPropagation()}
           >
-            {/* Header */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 }}>
-              <div>
-                <div style={{ fontSize: 16, fontWeight: 700 }}>分享给客户</div>
-                <div style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 3 }}>客户扫码查看课程体系</div>
-              </div>
-              <button
-                onClick={() => setShareOpen(false)}
-                style={{ width: 28, height: 28, borderRadius: '50%', border: 'none', background: 'var(--border)', cursor: 'pointer', fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-2)', flexShrink: 0 }}
-              >×</button>
-            </div>
+            {/* 关闭按钮 */}
+            <button
+              onClick={() => setShareOpen(false)}
+              style={{
+                position: 'absolute', top: -10, right: -10, zIndex: 2,
+                width: 32, height: 32, borderRadius: '50%', border: 'none',
+                background: '#fff', cursor: 'pointer', fontSize: 18,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: '#52525B', boxShadow: '0 2px 8px #00000040',
+              }}
+            >×</button>
 
-            {/* Static QR code */}
+            {/* ── 海报本体 ── */}
             <div style={{
-              display: 'flex', flexDirection: 'column', alignItems: 'center',
-              background: '#F2FBF5', borderRadius: 14, padding: '20px 16px 16px',
-              marginBottom: 16, border: '1px solid #D8F3DC',
+              background: 'linear-gradient(180deg, #FFFFFF 0%, #F2FBF5 45%, #EAF6EF 100%)',
+              borderRadius: 16, overflow: 'hidden',
+              boxShadow: '0 24px 64px #00000050',
+              position: 'relative',
             }}>
-              <img
-                src={QR_DATA_URL}
-                alt="朝曦家办课程体系二维码"
-                style={{ width: 200, height: 200, borderRadius: 8, display: 'block' }}
-              />
-              <div style={{ fontSize: 12, color: '#52525B', marginTop: 12, textAlign: 'center', lineHeight: 1.6 }}>
-                微信扫一扫 · 查看朝曦家办课程体系<br />
-                <span style={{ fontSize: 11, color: '#A1A1AA' }}>截图发给客户，长按识别二维码</span>
+              {/* 顶部绿色装饰条 */}
+              <div style={{ height: 6, background: '#2D6A4F' }} />
+
+              {/* 顶部 Logo 区 */}
+              <div style={{ padding: '20px 22px 0', display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div style={{
+                  width: 44, height: 44, borderRadius: 10,
+                  background: '#2D6A4F', display: 'flex',
+                  alignItems: 'center', justifyContent: 'center',
+                  fontSize: 22, fontWeight: 700, color: '#fff',
+                  fontFamily: "'Noto Serif SC', serif", flexShrink: 0,
+                }}>曦</div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: '#1A1A2E', fontFamily: "'Noto Serif SC', serif", lineHeight: 1.2 }}>朝曦家办</div>
+                  <div style={{ fontSize: 11, color: '#71717A', marginTop: 2 }}>知识工坊 · 企业家专属培训</div>
+                </div>
+              </div>
+
+              {/* 标题区 */}
+              <div style={{ padding: '18px 22px 14px', textAlign: 'center' }}>
+                <h2 style={{
+                  fontSize: 22, fontWeight: 800, color: '#1A1A2E', margin: 0,
+                  fontFamily: "'Noto Serif SC', serif", lineHeight: 1.3,
+                }}>六大系列课程体系</h2>
+                <p style={{ fontSize: 12, color: '#2D6A4F', margin: '6px 0 0', fontWeight: 600 }}>
+                  懂企业的成长，更懂企业家的心事
+                </p>
+              </div>
+
+              {/* 数据卡片 */}
+              <div style={{ display: 'flex', gap: 8, padding: '0 22px 16px' }}>
+                {[
+                  { num: '6', label: '核心系列' },
+                  { num: '44', label: '课程单元' },
+                  { num: '3', label: '专业领域' },
+                ].map(({ num, label }) => (
+                  <div key={label} style={{
+                    flex: 1, textAlign: 'center', padding: '10px 4px',
+                    background: '#D8F3DC', borderRadius: 10,
+                  }}>
+                    <div style={{ fontSize: 22, fontWeight: 800, color: '#2D6A4F', lineHeight: 1 }}>{num}</div>
+                    <div style={{ fontSize: 10, color: '#52525B', marginTop: 3 }}>{label}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* 六大系列标签 */}
+              <div style={{ padding: '0 22px 16px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
+                {[
+                  { tag: 'S01', name: '股权架构顶层设计', color: '#B45309', bg: '#FFFBEB' },
+                  { tag: 'S02', name: '跨境业务与税务', color: '#1D4ED8', bg: '#EFF6FF' },
+                  { tag: 'S03', name: '股东减持合规', color: '#065F46', bg: '#ECFDF5' },
+                  { tag: 'S04', name: '境外上市路径', color: '#6D28D9', bg: '#F5F3FF' },
+                  { tag: 'S05', name: '家族信托治理', color: '#0E7490', bg: '#ECFEFF' },
+                  { tag: 'S06', name: '企业家投资思维', color: '#B91C1C', bg: '#FFF1F2' },
+                ].map(s => (
+                  <div key={s.tag} style={{
+                    display: 'flex', alignItems: 'center', gap: 6,
+                    padding: '6px 8px', borderRadius: 7,
+                    background: s.bg, border: `1px solid ${s.color}33`,
+                  }}>
+                    <span style={{
+                      fontSize: 9, fontWeight: 800, color: '#fff',
+                      background: s.color, padding: '2px 5px', borderRadius: 4,
+                      flexShrink: 0, letterSpacing: '.02em',
+                    }}>{s.tag}</span>
+                    <span style={{ fontSize: 10.5, color: '#1A1A2E', fontWeight: 600, lineHeight: 1.2 }}>{s.name}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* 分隔线 */}
+              <div style={{ margin: '0 22px', borderTop: '1px dashed #D4D4D8' }} />
+
+              {/* 二维码区 */}
+              <div style={{ padding: '16px 22px 14px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <div style={{ fontSize: 11, color: '#52525B', marginBottom: 10, fontWeight: 600 }}>
+                  扫码查看完整课程体系
+                </div>
+                <div style={{
+                  padding: 8, background: '#fff', borderRadius: 10,
+                  border: '1px solid #E4E4E7', boxShadow: '0 2px 8px #00000010',
+                }}>
+                  <img
+                    src={QR_DATA_URL}
+                    alt="朝曦家办课程体系二维码"
+                    style={{ width: 140, height: 140, display: 'block' }}
+                  />
+                </div>
+              </div>
+
+              {/* 底部品牌条 */}
+              <div style={{
+                background: '#2D6A4F', padding: '12px 22px',
+                color: '#fff', textAlign: 'center',
+              }}>
+                <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.05em' }}>朝曦家办 · 知识工坊</div>
+                <div style={{ fontSize: 10, opacity: .75, marginTop: 2 }}>
+                  课程定制 · 量身组合 · 沙龙与系列培训
+                </div>
               </div>
             </div>
 
-            {/* Copy link */}
+            {/* 提示 + 复制链接 */}
+            <div style={{
+              marginTop: 12, padding: '10px 14px',
+              background: '#FFFFFFEE', borderRadius: 10,
+              fontSize: 11, color: '#52525B', textAlign: 'center', lineHeight: 1.6,
+            }}>
+              长按或截图保存海报 → 发送给客户 → 微信扫码识别
+            </div>
             <button
               onClick={handleCopy}
               style={{
-                width: '100%', padding: '11px', borderRadius: 10,
-                border: '1px solid var(--border)', background: 'var(--bg)',
-                color: copied ? '#2D6A4F' : 'var(--text-3)',
-                fontSize: 13, fontWeight: 600, cursor: 'pointer',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-                transition: 'color .15s',
+                marginTop: 8, width: '100%', padding: '10px', borderRadius: 10,
+                border: 'none', background: copied ? '#2D6A4F' : '#FFFFFF',
+                color: copied ? '#fff' : '#52525B',
+                fontSize: 12, fontWeight: 600, cursor: 'pointer',
+                transition: 'all .15s',
               }}
             >
-              {copied ? '已复制链接' : '复制链接'}
+              {copied ? '链接已复制' : '复制链接'}
             </button>
           </div>
         </div>
