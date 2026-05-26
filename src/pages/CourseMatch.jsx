@@ -763,39 +763,79 @@ ${skuIndex}
               )}
 
               {skuMatches && skuMatches.length > 0 && (
-                <div style={{ border:'1px solid var(--border)', borderRadius:12, overflow:'hidden' }}>
-                  {/* 表头 */}
-                  <div style={{
-                    display:'grid', gridTemplateColumns:'120px 1fr 2fr 1.5fr',
-                    background:'#2D6A4F', padding:'10px 16px',
-                    fontSize:11, fontWeight:700, color:'#fff', gap:16,
-                  }}>
-                    <div>产品名称</div>
-                    <div>定义</div>
-                    <div>主要特点和功能</div>
-                    <div>匹配逻辑说明</div>
-                  </div>
-                  {skuMatches.map((s, i) => (
-                    <div key={s.id} style={{
-                      display:'grid', gridTemplateColumns:'120px 1fr 2fr 1.5fr',
-                      gap:16, padding:'12px 16px', fontSize:12,
-                      background: i % 2 === 0 ? '#fff' : '#F9FAF9',
-                      borderTop:'1px solid var(--border)', alignItems:'start',
-                    }}>
-                      <div>
-                        <div style={{ fontFamily:'monospace', fontSize:10, color:'#6B7280', marginBottom:3 }}>{s.id}</div>
-                        <div style={{ fontWeight:700, color:'var(--text-1)', lineHeight:1.4 }}>{s.name}</div>
+                isMobile ? (
+                  /* ── 手机端：纵向堆叠卡片，每条 SKU 一张卡 ── */
+                  <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+                    {skuMatches.map((s, i) => (
+                      <div key={s.id} style={{
+                        background:'#fff', border:'1px solid var(--border)', borderRadius:10,
+                        padding:'12px 14px', fontSize:12,
+                      }}>
+                        {/* 顶部：ID + 名称 */}
+                        <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:10, paddingBottom:8, borderBottom:'1px solid var(--border)' }}>
+                          <span style={{
+                            fontFamily:'monospace', fontSize:10, fontWeight:700,
+                            background:'#2D6A4F', color:'#fff',
+                            padding:'2px 7px', borderRadius:4, flexShrink:0,
+                          }}>{s.id}</span>
+                          <span style={{ fontWeight:700, color:'var(--text-1)', lineHeight:1.4, flex:1, minWidth:0 }}>{s.name}</span>
+                        </div>
+                        {/* 字段：标签 + 内容横向排列 */}
+                        <div style={{ display:'flex', gap:8, marginBottom:8, lineHeight:1.6 }}>
+                          <span style={{ flexShrink:0, fontSize:11, fontWeight:700, color:'#71717A', minWidth:52 }}>定义</span>
+                          <span style={{ color:'var(--text-2)', flex:1 }}>{s.def}</span>
+                        </div>
+                        <div style={{ display:'flex', gap:8, marginBottom:8, lineHeight:1.6 }}>
+                          <span style={{ flexShrink:0, fontSize:11, fontWeight:700, color:'#71717A', minWidth:52 }}>特点功能</span>
+                          <span style={{ color:'var(--text-1)', flex:1 }}>{s.features}</span>
+                        </div>
+                        <div style={{ display:'flex', gap:8, lineHeight:1.6 }}>
+                          <span style={{ flexShrink:0, fontSize:11, fontWeight:700, color:'#065F46', minWidth:52 }}>匹配说明</span>
+                          <span style={{
+                            color:'#065F46', flex:1,
+                            background:'#F0FDF4', borderRadius:6,
+                            padding:'6px 8px', fontSize:11,
+                          }}>{s.reason || '—'}</span>
+                        </div>
                       </div>
-                      <div style={{ color:'var(--text-2)', lineHeight:1.6 }}>{s.def}</div>
-                      <div style={{ color:'var(--text-1)', lineHeight:1.6 }}>{s.features}</div>
-                      <div style={{
-                        color:'#065F46', lineHeight:1.6,
-                        background:'#F0FDF4', borderRadius:6,
-                        padding:'6px 8px', fontSize:11,
-                      }}>{s.reason || '—'}</div>
+                    ))}
+                  </div>
+                ) : (
+                  /* ── PC 端：四列表格 ── */
+                  <div style={{ border:'1px solid var(--border)', borderRadius:12, overflow:'hidden' }}>
+                    {/* 表头 */}
+                    <div style={{
+                      display:'grid', gridTemplateColumns:'120px 1fr 2fr 1.5fr',
+                      background:'#2D6A4F', padding:'10px 16px',
+                      fontSize:11, fontWeight:700, color:'#fff', gap:16,
+                    }}>
+                      <div>产品名称</div>
+                      <div>定义</div>
+                      <div>主要特点和功能</div>
+                      <div>匹配逻辑说明</div>
                     </div>
-                  ))}
-                </div>
+                    {skuMatches.map((s, i) => (
+                      <div key={s.id} style={{
+                        display:'grid', gridTemplateColumns:'120px 1fr 2fr 1.5fr',
+                        gap:16, padding:'12px 16px', fontSize:12,
+                        background: i % 2 === 0 ? '#fff' : '#F9FAF9',
+                        borderTop:'1px solid var(--border)', alignItems:'start',
+                      }}>
+                        <div>
+                          <div style={{ fontFamily:'monospace', fontSize:10, color:'#6B7280', marginBottom:3 }}>{s.id}</div>
+                          <div style={{ fontWeight:700, color:'var(--text-1)', lineHeight:1.4 }}>{s.name}</div>
+                        </div>
+                        <div style={{ color:'var(--text-2)', lineHeight:1.6 }}>{s.def}</div>
+                        <div style={{ color:'var(--text-1)', lineHeight:1.6 }}>{s.features}</div>
+                        <div style={{
+                          color:'#065F46', lineHeight:1.6,
+                          background:'#F0FDF4', borderRadius:6,
+                          padding:'6px 8px', fontSize:11,
+                        }}>{s.reason || '—'}</div>
+                      </div>
+                    ))}
+                  </div>
+                )
               )}
             </div>
 
