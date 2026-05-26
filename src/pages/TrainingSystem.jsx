@@ -1,4 +1,5 @@
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
+import { toPng } from 'html-to-image'
 import { useMobile } from '../MobileContext'
 
 /* ── 静态二维码（指向客户门户 #portal） ── */
@@ -125,6 +126,36 @@ export function TrainingSystem() {
   const sliderRef = useRef(null)
   const [shareOpen, setShareOpen] = useState(false)
   const [copied, setCopied] = useState(false)
+  const posterSrcRef = useRef(null)
+  const [posterImg, setPosterImg] = useState(null)
+  const [posterErr, setPosterErr] = useState(false)
+
+  /* 弹窗打开 → 将 HTML 海报转成 PNG（可长按保存） */
+  useEffect(() => {
+    if (!shareOpen) { setPosterImg(null); setPosterErr(false); return }
+    setPosterImg(null); setPosterErr(false)
+    const t = setTimeout(async () => {
+      if (!posterSrcRef.current) return
+      try {
+        const dataUrl = await toPng(posterSrcRef.current, {
+          pixelRatio: 2, cacheBust: true, backgroundColor: '#ffffff',
+        })
+        setPosterImg(dataUrl)
+      } catch (e) {
+        console.error('poster render failed', e)
+        setPosterErr(true)
+      }
+    }, 80)
+    return () => clearTimeout(t)
+  }, [shareOpen])
+
+  const handleDownload = useCallback(() => {
+    if (!posterImg) return
+    const a = document.createElement('a')
+    a.href = posterImg
+    a.download = '朝曦家办-课程体系海报.png'
+    document.body.appendChild(a); a.click(); document.body.removeChild(a)
+  }, [posterImg])
 
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(PORTAL_URL).then(() => {
@@ -424,13 +455,30 @@ export function TrainingSystem() {
               }}
             >×</button>
 
-            {/* ── 海报本体 ── */}
-            <div style={{
-              background: 'linear-gradient(180deg, #FFFFFF 0%, #F2FBF5 45%, #EAF6EF 100%)',
-              borderRadius: 16, overflow: 'hidden',
-              boxShadow: '0 24px 64px #00000050',
-              position: 'relative',
-            }}>
+            {/* ── 已生成的 PNG 海报（可长按保存）── */}
+            {posterImg && (
+              <img
+                src={posterImg}
+                alt="朝曦家办课程体系海报"
+                style={{
+                  width: '100%', display: 'block',
+                  borderRadius: 16, boxShadow: '0 24px 64px #00000050',
+                }}
+              />
+            )}
+
+            {/* ── 海报源 DOM（PNG 生成前可见，生成后隐藏到屏幕外）── */}
+            <div
+              ref={posterSrcRef}
+              style={{
+                ...(posterImg
+                  ? { position: 'absolute', left: -99999, top: 0, width: 340, pointerEvents: 'none' }
+                  : { width: '100%' }),
+                background: 'linear-gradient(180deg, #FFFFFF 0%, #F2FBF5 45%, #EAF6EF 100%)',
+                borderRadius: 16, overflow: 'hidden',
+                boxShadow: posterImg ? 'none' : '0 24px 64px #00000050',
+                position: posterImg ? 'absolute' : 'relative',
+              }}>
               {/* 顶部绿色装饰条 */}
               <div style={{ height: 6, background: '#2D6A4F' }} />
 
@@ -534,26 +582,69 @@ export function TrainingSystem() {
               </div>
             </div>
 
-            {/* 提示 + 复制链接 */}
+            {/* 海报生成中的占位（仅 PNG 未生成且没出错时显示） */}
+            {!posterImg && !posterErr && (
+              <div style={{
+                position: 'absolute', inset: 0,
+                background: '#FFFFFFCC', borderRadius: 16,
+                display: 'flex', flexDirection: 'column',
+                alignItems: 'center', justifyContent: 'center', gap: 10,
+                zIndex: 1,
+              }}>
+                <div style={{
+                  width: 32, height: 32, border: '3px solid #D8F3DC',
+                  borderTopColor: '#2D6A4F', borderRadius: '50%',
+                  animation: 'spin 0.8s linear infinite',
+                }} />
+                <span style={{ fontSize: 12, color: '#52525B' }}>海报生成中…</span>
+                <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
+              </div>
+            )}
+
+            {/* 操作提示 */}
             <div style={{
               marginTop: 12, padding: '10px 14px',
               background: '#FFFFFFEE', borderRadius: 10,
-              fontSize: 11, color: '#52525B', textAlign: 'center', lineHeight: 1.6,
+              fontSize: 11, color: '#52525B', textAlign: 'center', lineHeight: 1.7,
             }}>
-              长按或截图保存海报 → 发送给客户 → 微信扫码识别
+              {isMobile
+                ? '长按海报保存图片 → 微信发送给客户 → 客户扫码识别'
+                : '点击下方按钮保存图片 → 微信发送给客户 → 客户扫码识别'}
             </div>
-            <button
-              onClick={handleCopy}
-              style={{
-                marginTop: 8, width: '100%', padding: '10px', borderRadius: 10,
-                border: 'none', background: copied ? '#2D6A4F' : '#FFFFFF',
-                color: copied ? '#fff' : '#52525B',
-                fontSize: 12, fontWeight: 600, cursor: 'pointer',
-                transition: 'all .15s',
-              }}
-            >
-              {copied ? '链接已复制' : '复制链接'}
-            </button>
+
+            {/* 操作按钮 */}
+            <div style={{ marginTop: 10, display: 'flex', gap: 8 }}>
+              {!isMobile && (
+                <button
+                  onClick={handleDownload}
+                  disabled={!posterImg}
+                  style={{
+                    flex: 1, padding: '11px', borderRadius: 10, border: 'none',
+                    background: posterImg ? 'linear-gradient(135deg, #2D6A4F, #40916C)' : '#D4D4D8',
+                    color: '#fff', fontSize: 13, fontWeight: 700,
+                    cursor: posterImg ? 'pointer' : 'default',
+                    boxShadow: posterImg ? '0 4px 16px #2D6A4F44' : 'none',
+                    transition: 'all .2s',
+                  }}
+                >
+                  ⬇ 保存海报图片
+                </button>
+              )}
+              <button
+                onClick={handleCopy}
+                style={{
+                  flex: isMobile ? 1 : 'unset',
+                  minWidth: isMobile ? undefined : 120,
+                  padding: '11px', borderRadius: 10,
+                  border: 'none', background: copied ? '#2D6A4F' : '#FFFFFF',
+                  color: copied ? '#fff' : '#52525B',
+                  fontSize: 12, fontWeight: 600, cursor: 'pointer',
+                  transition: 'all .15s',
+                }}
+              >
+                {copied ? '链接已复制' : '复制链接'}
+              </button>
+            </div>
           </div>
         </div>
       )}
