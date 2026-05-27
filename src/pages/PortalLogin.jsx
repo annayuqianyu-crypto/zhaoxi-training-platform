@@ -1,7 +1,10 @@
 import { useState } from 'react'
 
+const EMAIL_KEY = 'zx_portal_last_email'
+
 export function PortalLogin({ onLogin }) {
-  const [email, setEmail] = useState('')
+  // 记住上次登录的邮箱，退出后再登录时直接预填，省得每次手机端再输一遍
+  const [email, setEmail] = useState(() => localStorage.getItem(EMAIL_KEY) || '')
   const [pass,  setPass]  = useState('')
   const [error, setError] = useState('')
 
@@ -15,6 +18,7 @@ export function PortalLogin({ onLogin }) {
       setError('密码错误，请重试')
       return
     }
+    localStorage.setItem(EMAIL_KEY, email)
     onLogin({ email, name: email.split('@')[0], role: 'staff' })
   }
 
