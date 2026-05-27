@@ -5,10 +5,10 @@ import { Schedule }          from '../pages/Schedule'
 import { PortalWorkOrder }   from '../pages/PortalWorkOrder'
 
 const TABS = [
-  { key: 'trainingsystem', label: '课程体系', icon: '📚' },
-  { key: 'coursematch',    label: '课程匹配', icon: '🎯' },
-  { key: 'schedule',       label: '讲师排期', icon: '📅' },
-  { key: 'workorder',      label: '提交需求', icon: '📝' },
+  { key: 'trainingsystem', label: '课程体系' },
+  { key: 'coursematch',    label: '课程匹配' },
+  { key: 'schedule',       label: '讲师排期' },
+  { key: 'workorder',      label: '提交需求' },
 ]
 
 export function PortalShell({ user, onLogout, onSwitchMode }) {
@@ -67,7 +67,6 @@ export function PortalShell({ user, onLogout, onSwitchMode }) {
                 onMouseEnter={e => { if (!active) { e.currentTarget.style.background = 'rgba(255,255,255,.06)'; e.currentTarget.style.color = '#D4D4D8' } }}
                 onMouseLeave={e => { if (!active) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#A1A1AA' } }}
               >
-                <span style={{ fontSize: 15, lineHeight: 1 }}>{t.icon}</span>
                 <span>{t.label}</span>
                 {active && (
                   <span style={{
