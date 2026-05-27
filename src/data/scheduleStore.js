@@ -157,12 +157,34 @@ export async function uploadProposalDocx(blob, filename) {
       body: JSON.stringify(body),
     })
     if (!res.ok) return { ok: false, error: `HTTP ${res.status}` }
-    // 用 statically.io CDN —— 比 jsdelivr 更宽容（jsdelivr 对 public/ 路径下的二进制
-    // 文件返回 403），且能正确发送 application/vnd.openxmlformats-... 的 MIME，
-    // 浏览器会触发原生下载对话框
-    const url = `https://cdn.statically.io/gh/${GITHUB_REPO}/${BRANCH}/${path}`
+    // 用 GitHub Pages 同域名 URL —— 跟讲师介绍 docx 行为完全一致：
+    //   - 同源（避开 download 属性的跨域限制）
+    //   - 真实 .docx 后缀（微信识别 → 调起浏览器原生下载）
+    //   - Content-Type 是 application/vnd...wordprocessingml.document
+    // 唯一代价：Pages 部署需要 ~30-90 秒；上层需要轮询 readiness。
+    const url = `https://annayuqianyu-crypto.github.io/zhaoxi-training-platform/proposals/${encodeURIComponent(filename)}`
     return { ok: true, url }
   } catch (e) {
     return { ok: false, error: e.message || 'network' }
   }
+}
+
+/* ─── 轮询 Pages 部署完成 ───
+   上传到仓库后，Pages 需要 30-90s 才能服务这个新文件。
+   返回 Promise，resolve 时表示 URL 已可下载。
+*/
+export async function waitForPagesReady(url, { timeoutMs = 5 * 60 * 1000, intervalMs = 5000 } = {}) {
+  const start = Date.now()
+  while (Date.now() - start < timeoutMs) {
+    try {
+      const r = await fetch(url, { method: 'HEAD', cache: 'no-store' })
+      // 200 + 非 html → 部署完成；text/html 说明命中 Pages 的 404 页
+      if (r.ok) {
+        const ct = r.headers.get('content-type') || ''
+        if (!ct.includes('text/html')) return { ok: true }
+      }
+    } catch { /* 网络抖动，继续轮询 */ }
+    await new Promise(r => setTimeout(r, intervalMs))
+  }
+  return { ok: false, error: 'timeout' }
 }

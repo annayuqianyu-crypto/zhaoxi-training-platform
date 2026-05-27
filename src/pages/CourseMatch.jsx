@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useMobile } from '../MobileContext'
-import { uploadProposalDocx } from '../data/scheduleStore'
+import { uploadProposalDocx, waitForPagesReady } from '../data/scheduleStore'
 import mammoth from 'mammoth'
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, Table, TableRow, TableCell, WidthType, BorderStyle, ShadingType } from 'docx'
 import { COURSE_CATALOG, SKU_LIST, INSTRUCTORS } from '../data/mock'
@@ -233,7 +233,8 @@ export function CourseMatch({ navigate, portalMode = false, user = null }) {
   const [selectedInstructors, setSelectedInstructors]   = useState([])
   const [wordGenerating, setWordGenerating]             = useState(false)
   const [downloadError, setDownloadError]               = useState('')
-  const [wordReady, setWordReady]                       = useState(null)  // { url, filename }
+  const [wordReady, setWordReady]                       = useState(null)  // { url, filename, ready }
+  const [wordStatus, setWordStatus]                     = useState('')   // 进度文案
   const [saved, setSaved]                               = useState(false)
 
   /* ─── AI state ─── */
@@ -876,12 +877,11 @@ ${skuIndex}
               flexDirection: isMobile ? 'column' : 'row',
             }}>
               {/* 还没生成 → 显示生成按钮；已生成 → 显示真链接 <a> 由用户点击下载 */}
-              {wordReady ? (
+              {wordReady?.ready ? (
+                /* Pages 部署完成 → 同源 .docx 真链接，跟讲师介绍下载一样 */
                 <a
                   href={wordReady.url}
                   download={wordReady.filename}
-                  target="_blank"
-                  rel="noopener noreferrer"
                   className="btn btn-secondary"
                   style={{
                     ...(isMobile ? { width:'100%' } : undefined),
@@ -899,37 +899,48 @@ ${skuIndex}
                   onClick={async () => {
                     setWordGenerating(true)
                     setDownloadError('')
+                    setWordReady(null)
                     try {
                       // 1) 生成 docx
+                      setWordStatus('生成方案中…')
                       const { blob, filename } = await downloadWordDoc(order, editForm, editCourseIds, editOutline, skuMatches)
-                      // 2) 上传到 GitHub → 拿到一个真实 https URL（短，以 .docx 结尾，
-                      //    和讲师介绍 docx 的行为完全一致，能跨越微信→浏览器）
+                      // 2) 上传到 GitHub
+                      setWordStatus('上传到云端…')
                       const r = await uploadProposalDocx(blob, filename)
                       if (!r.ok) {
                         setDownloadError('上传失败：' + (r.error || '未知错误'))
                         return
                       }
-                      setWordReady({ url: r.url, filename })
+                      // 3) 轮询 Pages 部署完成
+                      setWordReady({ url: r.url, filename, ready: false })
+                      setWordStatus('等待 CDN 部署（约 30-90 秒）…')
+                      const w = await waitForPagesReady(r.url)
+                      if (!w.ok) {
+                        setDownloadError('CDN 部署超时，请稍后刷新页面重试')
+                        return
+                      }
+                      setWordReady(prev => prev ? { ...prev, ready: true } : null)
+                      setWordStatus('')
                     } catch (e) {
                       console.error('生成方案失败', e)
                       setDownloadError(e.message || '生成失败，请重试')
                     } finally { setWordGenerating(false) }
                   }}>
-                  {wordGenerating ? '⏳ 生成上传中…' : '📄 生成方案 Word'}
+                  {wordGenerating ? `⏳ ${wordStatus || '生成中…'}` : '📄 生成方案 Word'}
                 </button>
               )}
               <button className="btn btn-primary" onClick={handleSave}
                 style={isMobile ? { width:'100%' } : undefined}>💾 保存草稿</button>
             </div>
 
-            {/* 文件已生成 + 上传成功 */}
-            {wordReady && (
+            {/* 文件已生成 + 上传成功 + 部署就绪 */}
+            {wordReady?.ready && (
               <div style={{
                 marginTop: 10, padding:'10px 14px', borderRadius:10,
                 background:'#F0FDF4', border:'1px solid #BBF7D0',
                 fontSize:12, color:'#065F46', lineHeight:1.7,
               }}>
-                ✓ 方案已生成并上传。点击上方绿色按钮即可下载到手机（链接也可直接转发给客户）。
+                ✓ 方案已部署完成。点击上方绿色按钮即可下载到手机（此链接也可直接转发给客户，对方扫码下载）。
               </div>
             )}
 
