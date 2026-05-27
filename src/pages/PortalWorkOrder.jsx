@@ -80,6 +80,7 @@ export function PortalWorkOrder({ user }) {
     const order = {
       id: `PORTAL-${Date.now()}`,
       source: 'portal',
+      submittedBy: user?.email || user?.name || '',
       status: '待处理',
       submittedAt: new Date().toISOString(),
       channel: form.channel,

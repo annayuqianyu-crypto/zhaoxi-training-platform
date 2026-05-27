@@ -275,14 +275,14 @@ export function WorkOrders({ navigate }) {
                   <td>
                     {w.source==='h5' ? <span className="badge badge-blue">H5问卷</span>
                       : w.source==='internal' ? <span className="badge badge-gray">内部</span>
-                      : w.source==='portal' ? <span className="badge badge-blue">渠道提交</span>
+                      : w.source==='portal'
+                        ? <span title={w.submittedBy} style={{ fontSize:12, color:'var(--text-1)', fontFamily:'monospace' }}>
+                            {w.submittedBy || '渠道提交'}
+                          </span>
                       : <span className="badge badge-gray">系统</span>}
                   </td>
                   <td>
                     <span className={`badge ${STATUS_COLOR[w.status]||'badge-gray'}`}>{w.status}</span>
-                    {w.source==='portal' && (
-                      <span style={{ marginLeft:6, display:'inline-block', fontSize:10, fontWeight:700, color:'#1D4ED8', background:'#EFF6FF', border:'1px solid #BFDBFE', borderRadius:4, padding:'1px 5px', verticalAlign:'middle' }}>渠道提交</span>
-                    )}
                   </td>
                   <td style={{ textAlign:'center', color:w.score?'var(--accent)':'var(--text-3)', fontWeight:w.score?700:400 }}>{w.score||'—'}</td>
                   <td style={{ textAlign:'center' }}>
@@ -345,11 +345,11 @@ export function WorkOrders({ navigate }) {
               <span className={`badge ${STATUS_COLOR[selectedOrder.status]||'badge-gray'}`}>{selectedOrder.status}</span>
               {selectedOrder.source==='h5' && <span className="badge badge-blue">H5问卷</span>}
               {selectedOrder.source==='internal' && <span className="badge badge-gray">内部录入</span>}
-              {selectedOrder.source==='portal' && <span style={{ fontSize:11, fontWeight:700, color:'#1D4ED8', background:'#EFF6FF', border:'1px solid #BFDBFE', borderRadius:4, padding:'2px 7px' }}>渠道提交</span>}
+              {selectedOrder.source==='portal' && <span className="badge badge-blue">渠道提交</span>}
               {selectedOrder.score && <span className="badge badge-green">质量评分 {selectedOrder.score}</span>}
             </div>
 
-            {[['渠道 / 机构', selectedOrder.channel],['联系人', selectedOrder.contact],
+            {[['提交账户', selectedOrder.submittedBy||'—'],['渠道 / 机构', selectedOrder.channel],['联系人', selectedOrder.contact],
               ['对接销售', selectedOrder.salesName||'—'],['参与人员类型', selectedOrder.audience||'—'],
               ['目标受众职级', selectedOrder.jobLevel||'—'],['预计人数', selectedOrder.people ? `${selectedOrder.people} 人` : '—'],
               ['培训时长', selectedOrder.duration||'—'],['期望日期', selectedOrder.date||'—'],
