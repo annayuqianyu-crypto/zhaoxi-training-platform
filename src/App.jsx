@@ -1,13 +1,13 @@
-import { LoginPage } from './pages/Login'
-import { Shell } from './components/Shell'
 import { PortalApp } from './pages/PortalApp'
 import { AdminApp } from './pages/AdminApp'
 import './index.css'
 
-// 默认进入 Admin（主界面）；Portal 通过 #portal 访问
-const isPortal = window.location.hash.startsWith('#portal')
+// 默认进入客户门户（主分发链接对应的入口）；
+// 管理后台通过 #admin 访问；保留 #portal 作为门户的显式别名。
+const hash = window.location.hash
+const isAdmin  = hash.startsWith('#admin')
 
 export default function App() {
-  if (isPortal) return <PortalApp />
-  return <AdminApp />
+  if (isAdmin)  return <AdminApp />
+  return <PortalApp />
 }
