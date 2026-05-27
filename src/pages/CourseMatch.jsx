@@ -258,8 +258,9 @@ export function CourseMatch({ navigate, portalMode = false, user = null }) {
     setSelectedInstructors(c.selectedInstructors || [])
     setSupplementText(c.supplementText || '')
     setAiResult(c.aiResult || null)
-    setSkuMatches(c.skuMatches || null)
-  }, [])
+    // 手机端：每次进入页面都重置 SKU 匹配结果，先显示初始提示
+    setSkuMatches(isMobile ? null : (c.skuMatches || null))
+  }, [isMobile])
 
   /* ─── No context ─── */
   if (!ctx) {
@@ -756,10 +757,41 @@ ${skuIndex}
               )}
 
               {!skuMatches && !skuLoading && (
-                <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:10,
-                  padding:'24px', textAlign:'center', color:'var(--text-3)', fontSize:12 }}>
-                  在上方填写客户需求或会议纪要后，点击「AI 匹配适配 SKU」，系统将从 337 条知识卡片中筛选最匹配的产品
-                </div>
+                isMobile ? (
+                  <div style={{
+                    background:'#F2FBF5', border:'1.5px dashed #2D6A4F55', borderRadius:12,
+                    padding:'24px 20px', textAlign:'center',
+                  }}>
+                    <div style={{ fontSize:13, color:'#2D6A4F', fontWeight:700, marginBottom:14 }}>
+                      请点击按钮进行匹配
+                    </div>
+                    <button
+                      onClick={matchSKUs}
+                      disabled={skuLoading || !supplementText.trim()}
+                      style={{
+                        padding:'10px 22px', borderRadius:10, border:'none',
+                        background: supplementText.trim()
+                          ? 'linear-gradient(135deg, #2D6A4F, #40916C)'
+                          : '#D4D4D8',
+                        color:'#fff', fontSize:13, fontWeight:700,
+                        cursor: supplementText.trim() ? 'pointer' : 'default',
+                        boxShadow: supplementText.trim() ? '0 4px 14px #2D6A4F44' : 'none',
+                      }}
+                    >
+                      🤖 AI 匹配适配 SKU
+                    </button>
+                    {!supplementText.trim() && (
+                      <div style={{ fontSize:11, color:'var(--text-3)', marginTop:12, lineHeight:1.6 }}>
+                        请先在上方填写客户需求或会议纪要
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:10,
+                    padding:'24px', textAlign:'center', color:'var(--text-3)', fontSize:12 }}>
+                    在上方填写客户需求或会议纪要后，点击「AI 匹配适配 SKU」，系统将从 337 条知识卡片中筛选最匹配的产品
+                  </div>
+                )
               )}
 
               {skuMatches && skuMatches.length > 0 && (
