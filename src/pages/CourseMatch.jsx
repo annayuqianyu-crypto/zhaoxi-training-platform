@@ -937,35 +937,16 @@ ${skuIndex}
               </div>
             )}
 
-            {/* 缺少 Token */}
-            {downloadError === 'NEED_TOKEN' && (
-              <div style={{
-                marginTop: 12, padding: '14px 16px', borderRadius: 10,
-                background: '#FEF3C7', border: '1px solid #FCD34D',
-                fontSize: 12.5, color: '#92400E', lineHeight: 1.7,
-              }}>
-                <div style={{ fontWeight: 700, marginBottom: 6 }}>⚠️ 需要配置 GitHub Token</div>
-                方案下载需要先配置 Token（用于上传文件到云端）。请到「讲师排期」页面，点击「⚙ Token」按钮配置一次即可，往后所有下载都通过。
-                <button
-                  onClick={() => setDownloadError('')}
-                  style={{
-                    marginTop: 10, width: '100%', padding: '7px',
-                    border: '1px solid #FCD34D', background: '#FFFBEB',
-                    color: '#92400E', borderRadius: 7, fontSize: 12,
-                    fontWeight: 600, cursor: 'pointer',
-                  }}
-                >我知道了</button>
-              </div>
-            )}
-
-            {/* 其他错误 */}
-            {downloadError && downloadError !== 'NEED_TOKEN' && (
+            {/* 上传/生成错误 */}
+            {downloadError && (
               <div style={{
                 marginTop: 12, padding: '12px 14px', borderRadius: 10,
                 background: '#FEF2F2', border: '1px solid #FCA5A5',
                 fontSize: 12.5, color: '#DC2626', lineHeight: 1.6,
               }}>
-                ⚠️ {downloadError}
+                ⚠️ {downloadError === 'NEED_TOKEN'
+                  ? '云端写入凭证已失效，请联系管理员更新内置 Token'
+                  : downloadError}
               </div>
             )}
           </>
