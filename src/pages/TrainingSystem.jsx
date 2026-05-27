@@ -530,9 +530,9 @@ export function TrainingSystem() {
                 {[
                   { tag: 'S01', name: '股权架构顶层设计', color: '#B45309', bg: '#FFFBEB' },
                   { tag: 'S02', name: '跨境业务与税务', color: '#1D4ED8', bg: '#EFF6FF' },
-                  { tag: 'S03', name: '股东减持合规', color: '#065F46', bg: '#ECFDF5' },
-                  { tag: 'S04', name: '境外上市路径', color: '#6D28D9', bg: '#F5F3FF' },
-                  { tag: 'S05', name: '家族信托治理', color: '#0E7490', bg: '#ECFEFF' },
+                  { tag: 'S03', name: '股东合规减持', color: '#065F46', bg: '#ECFDF5' },
+                  { tag: 'S04', name: '跨境资本路径', color: '#6D28D9', bg: '#F5F3FF' },
+                  { tag: 'S05', name: '家族永续治理', color: '#0E7490', bg: '#ECFEFF' },
                   { tag: 'S06', name: '企业家投资思维', color: '#B91C1C', bg: '#FFF1F2' },
                 ].map(s => (
                   <div key={s.tag} style={{
