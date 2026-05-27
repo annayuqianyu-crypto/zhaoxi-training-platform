@@ -157,11 +157,10 @@ export async function uploadProposalDocx(blob, filename) {
       body: JSON.stringify(body),
     })
     if (!res.ok) return { ok: false, error: `HTTP ${res.status}` }
-    const data = await res.json()
-    // 用 jsdelivr CDN（commit SHA 锁定 → 立即可用，不必等 Pages 构建）
-    const commitSha = data?.commit?.sha
-    if (!commitSha) return { ok: false, error: 'no commit sha' }
-    const url = `https://cdn.jsdelivr.net/gh/${GITHUB_REPO}@${commitSha}/${path}`
+    // 用 statically.io CDN —— 比 jsdelivr 更宽容（jsdelivr 对 public/ 路径下的二进制
+    // 文件返回 403），且能正确发送 application/vnd.openxmlformats-... 的 MIME，
+    // 浏览器会触发原生下载对话框
+    const url = `https://cdn.statically.io/gh/${GITHUB_REPO}/${BRANCH}/${path}`
     return { ok: true, url }
   } catch (e) {
     return { ok: false, error: e.message || 'network' }
