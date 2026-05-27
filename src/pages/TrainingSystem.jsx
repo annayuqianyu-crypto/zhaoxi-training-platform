@@ -536,16 +536,20 @@ export function TrainingSystem() {
                   { tag: 'S06', name: '企业家投资思维', color: '#B91C1C', bg: '#FFF1F2' },
                 ].map(s => (
                   <div key={s.tag} style={{
-                    display: 'flex', alignItems: 'center', gap: 6,
-                    padding: '6px 8px', borderRadius: 7,
+                    display: 'flex', alignItems: 'center', gap: 5,
+                    padding: '7px 7px', borderRadius: 7,
                     background: s.bg, border: `1px solid ${s.color}33`,
+                    overflow: 'hidden',
                   }}>
                     <span style={{
                       fontSize: 9, fontWeight: 800, color: '#fff',
-                      background: s.color, padding: '2px 5px', borderRadius: 4,
+                      background: s.color, padding: '2px 4px', borderRadius: 4,
                       flexShrink: 0, letterSpacing: '.02em',
                     }}>{s.tag}</span>
-                    <span style={{ fontSize: 10.5, color: '#1A1A2E', fontWeight: 600, lineHeight: 1.2 }}>{s.name}</span>
+                    <span style={{
+                      fontSize: 10, color: '#1A1A2E', fontWeight: 600, lineHeight: 1.2,
+                      whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                    }}>{s.name}</span>
                   </div>
                 ))}
               </div>
