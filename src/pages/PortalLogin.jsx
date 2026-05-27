@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 const EMAIL_KEY = 'zx_portal_last_email'
 
-export function PortalLogin({ onLogin }) {
+export function PortalLogin({ onLogin, onSwitchMode, mode }) {
   // 记住上次登录的邮箱，退出后再登录时直接预填，省得每次手机端再输一遍
   const [email, setEmail] = useState(() => localStorage.getItem(EMAIL_KEY) || '')
   const [pass,  setPass]  = useState('')
@@ -100,6 +100,22 @@ export function PortalLogin({ onLogin }) {
             使用 @zxpro.com.cn 邮箱登录
           </span>
         </div>
+
+        {onSwitchMode && (
+          <div style={{ textAlign: 'center', marginTop: 14, paddingTop: 14, borderTop: '1px solid var(--border)' }}>
+            <button
+              type="button"
+              onClick={onSwitchMode}
+              style={{
+                background: 'none', border: 'none',
+                color: 'var(--text-3)', fontSize: 11,
+                cursor: 'pointer', padding: 0,
+                textDecoration: 'underline', textDecorationStyle: 'dotted',
+                textUnderlineOffset: 3,
+              }}
+            >当前为{mode === 'mobile' ? '手机版' : '电脑版'}，点此切换到{mode === 'mobile' ? '电脑版' : '手机版'}</button>
+          </div>
+        )}
       </div>
     </div>
   )

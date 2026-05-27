@@ -49,15 +49,22 @@ export function PortalApp() {
     setMode(null)
   }
 
+  // 在登录页或主界面顶栏点击，切换到另一端的同时不丢登录态
+  function handleSwitchMode() {
+    const next = mode === 'mobile' ? 'desktop' : 'mobile'
+    localStorage.setItem(MODE_KEY, next)
+    setMode(next)
+  }
+
   // 1. 未选模式 → 入口选择
   if (!mode) return <PortalModeSelect onSelect={handleSelectMode} />
 
   // 2. 已选模式但未登录 → 登录
-  if (!user) return <PortalLogin onLogin={handleLogin} />
+  if (!user) return <PortalLogin onLogin={handleLogin} onSwitchMode={handleSwitchMode} mode={mode} />
 
   // 3. 已登录 → 按模式渲染 Shell
   if (mode === 'mobile') {
-    return <MobilePortalShell user={user} onLogout={handleLogout} />
+    return <MobilePortalShell user={user} onLogout={handleLogout} onSwitchMode={handleSwitchMode} />
   }
-  return <PortalShell user={user} onLogout={handleLogout} />
+  return <PortalShell user={user} onLogout={handleLogout} onSwitchMode={handleSwitchMode} />
 }

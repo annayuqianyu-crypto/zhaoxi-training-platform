@@ -12,7 +12,7 @@ const TABS = [
   { key: 'workorder',      label: '提交需求' },
 ]
 
-export function MobilePortalShell({ user, onLogout }) {
+export function MobilePortalShell({ user, onLogout, onSwitchMode }) {
   const [activeTab, setActiveTab] = useState('trainingsystem')
 
   return (
@@ -44,13 +44,25 @@ export function MobilePortalShell({ user, onLogout }) {
             }}>朝曦知识中心</span>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
             <span style={{ fontSize: 12, color: '#A1A1AA' }}>{user.name}</span>
+            {onSwitchMode && (
+              <button
+                onClick={onSwitchMode}
+                title="切换到电脑版"
+                style={{
+                  background: 'none', border: '1px solid #3F3F46',
+                  borderRadius: 6, padding: '4px 8px',
+                  cursor: 'pointer', fontSize: 11, color: '#A1A1AA',
+                  minHeight: 'unset',
+                }}
+              >电脑版</button>
+            )}
             <button
               onClick={onLogout}
               style={{
                 background: 'none', border: '1px solid #3F3F46',
-                borderRadius: 6, padding: '4px 10px',
+                borderRadius: 6, padding: '4px 8px',
                 cursor: 'pointer', fontSize: 11, color: '#A1A1AA',
                 minHeight: 'unset',
               }}

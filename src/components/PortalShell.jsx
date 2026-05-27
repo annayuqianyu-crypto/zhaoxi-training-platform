@@ -14,7 +14,7 @@ const ALL_TABS = [
   { key: 'history',     label: '历史记录' },
 ]
 
-export function PortalShell({ user, onLogout }) {
+export function PortalShell({ user, onLogout, onSwitchMode }) {
   const [activeTab, setActiveTab] = useState('coursematch')
   const canSeeWorkorder = WORKORDER_WHITELIST.includes(user.name)
   const TABS = ALL_TABS.filter(t => !t.restricted || canSeeWorkorder)
@@ -82,6 +82,20 @@ export function PortalShell({ user, onLogout }) {
             alignItems: 'center', justifyContent: 'center',
             fontSize: 12, fontWeight: 700, color: '#fff',
           }}>{user.name[0]}</div>
+          {onSwitchMode && (
+            <button
+              onClick={onSwitchMode}
+              title="切换到手机版"
+              style={{
+                background: 'none', border: '1px solid #3F3F46',
+                borderRadius: 7, padding: '5px 12px',
+                cursor: 'pointer', fontSize: 12, color: '#A1A1AA',
+                transition: 'all .15s',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'var(--bg-sidebar-hover)'; e.currentTarget.style.color = '#fff' }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = '#A1A1AA' }}
+            >手机版</button>
+          )}
           <button
             onClick={onLogout}
             style={{
