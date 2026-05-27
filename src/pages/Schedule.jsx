@@ -198,23 +198,34 @@ export function Schedule() {
       {isMobile ? (
         <div style={{
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          padding: '10px 14px',
+          padding: '10px 14px', gap: 10,
           background: 'var(--bg-card)',
           borderBottom: '1px solid var(--border)',
         }}>
-          <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-1)' }}>讲师排期</span>
-          <span style={{
-            fontSize: 11, fontWeight: 600,
-            color: syncState === 'synced' ? '#059669'
-              : syncState === 'saving' || syncState === 'loading' ? '#6B7280'
-              : syncState === 'needToken' ? '#6B7280' : '#DC2626',
-          }}>
-            {syncState === 'synced'    && '已同步'}
-            {syncState === 'saving'    && '保存中…'}
-            {syncState === 'loading'   && '加载中…'}
-            {syncState === 'offline'   && '未连接'}
-            {syncState === 'needToken' && '查看模式'}
-          </span>
+          <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-1)', flexShrink: 0 }}>讲师排期</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{
+              fontSize: 11, fontWeight: 600,
+              color: syncState === 'synced' ? '#059669'
+                : syncState === 'saving' || syncState === 'loading' ? '#6B7280'
+                : syncState === 'needToken' ? '#6B7280' : '#DC2626',
+            }}>
+              {syncState === 'synced'    && '已同步'}
+              {syncState === 'saving'    && '保存中…'}
+              {syncState === 'loading'   && '加载中…'}
+              {syncState === 'offline'   && '未连接'}
+              {syncState === 'needToken' && '查看模式'}
+            </span>
+            <button
+              onClick={() => setTokenModal(true)}
+              style={{
+                fontSize: 11, padding: '4px 10px',
+                background: 'transparent', border: '1px solid var(--border)',
+                borderRadius: 6, color: 'var(--text-2)',
+                cursor: 'pointer', minHeight: 'unset',
+              }}
+            >⚙ Token</button>
+          </div>
         </div>
       ) : (
         <div className="topbar">

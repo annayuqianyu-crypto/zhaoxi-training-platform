@@ -109,6 +109,67 @@ export async function saveSchedule(events) {
   }
 }
 
+/* ─── 上传方案 .docx 到仓库 ───
+   把 blob 提交到 public/proposals/{filename}，返回 jsdelivr CDN 的真实下载 URL。
+   返回 { ok, url } | { ok:false, needToken } | { ok:false, error }
+*/
+export async function uploadProposalDocx(blob, filename) {
+  const token = getToken()
+  if (!token) return { ok: false, needToken: true }
+
+  // blob → base64（不带 data: 前缀）
+  const buf = await blob.arrayBuffer()
+  const bytes = new Uint8Array(buf)
+  let binary = ''
+  for (let i = 0; i < bytes.length; i += 8192) {
+    binary += String.fromCharCode.apply(null, bytes.subarray(i, i + 8192))
+  }
+  const b64 = btoa(binary)
+
+  // 用一个稳定的文件名前缀 + 时间戳，避免冲突；公开 repo 已用于 GitHub Pages，路径在 public/proposals/
+  const path = `public/proposals/${filename}`
+  const apiUrl = `https://api.github.com/repos/${GITHUB_REPO}/contents/${encodeURI(path)}`
+
+  // 查询是否已存在（需要 sha 覆盖）
+  let sha = null
+  try {
+    const r = await fetch(`${apiUrl}?ref=${BRANCH}&_=${Date.now()}`, {
+      headers: { Accept: 'application/vnd.github.v3+json', Authorization: `Bearer ${token}` },
+      cache: 'no-store',
+    })
+    if (r.ok) sha = (await r.json()).sha
+  } catch { /* ignore */ }
+
+  const body = {
+    message: `chore: upload proposal ${filename}`,
+    content: b64,
+    branch: BRANCH,
+  }
+  if (sha) body.sha = sha
+
+  try {
+    const res = await fetch(apiUrl, {
+      method: 'PUT',
+      headers: {
+        Accept: 'application/vnd.github.v3+json',
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    })
+    if (res.status === 401 || res.status === 403) return { ok: false, needToken: true }
+    if (!res.ok) return { ok: false, error: `HTTP ${res.status}` }
+    const data = await res.json()
+    // 用 jsdelivr CDN（commit SHA 锁定 → 立即可用，不必等 Pages 构建）
+    const commitSha = data?.commit?.sha
+    if (!commitSha) return { ok: false, error: 'no commit sha' }
+    const url = `https://cdn.jsdelivr.net/gh/${GITHUB_REPO}@${commitSha}/${path}`
+    return { ok: true, url }
+  } catch (e) {
+    return { ok: false, error: e.message || 'network' }
+  }
+}
+
 /* 校验 token 是否对本仓库有写权限 */
 export async function verifyWriteToken(t) {
   try {

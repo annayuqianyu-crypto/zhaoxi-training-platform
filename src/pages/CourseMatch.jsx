@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useMobile } from '../MobileContext'
+import { uploadProposalDocx } from '../data/scheduleStore'
 import mammoth from 'mammoth'
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, Table, TableRow, TableCell, WidthType, BorderStyle, ShadingType } from 'docx'
 import { COURSE_CATALOG, SKU_LIST, INSTRUCTORS } from '../data/mock'
@@ -141,25 +142,7 @@ async function downloadWordDoc(order, editForm, courseIds, outline, skuMatches) 
   })
   const blob = await Packer.toBlob(doc)
   const filename = `朝曦培训方案_${order.id}_${new Date().toLocaleDateString('zh-CN').replace(/\//g,'')}.docx`
-
-  // 把文件内容 base64 编码后塞进同域名静态页的 #hash —— 这是一个真正的 https URL，
-  // 微信「在浏览器中打开」时浏览器能正确加载页面，页面 JS 在浏览器自己的上下文里
-  // 解码 base64 → 创建 blob → 触发下载。
-  // （blob:、data: 都不能跨浏览器上下文，所以前两次方案都失败了）
-  const b64 = await new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onload  = () => {
-      // readAsDataURL 给出 "data:....;base64,xxx" → 取后半段
-      const result = reader.result
-      const i = result.indexOf(',')
-      resolve(i >= 0 ? result.slice(i + 1) : result)
-    }
-    reader.onerror = () => reject(new Error('文件编码失败'))
-    reader.readAsDataURL(blob)
-  })
-  const base = `${location.origin}${location.pathname.replace(/\/[^/]*$/, '')}/proposal-download.html`
-  const url  = `${base}#${b64}|${encodeURIComponent(filename)}`
-  return { url, filename }
+  return { blob, filename }
 }
 
 /* ─── AI helpers ─── */
@@ -896,6 +879,7 @@ ${skuIndex}
               {wordReady ? (
                 <a
                   href={wordReady.url}
+                  download={wordReady.filename}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn btn-secondary"
@@ -906,10 +890,8 @@ ${skuIndex}
                     textDecoration:'none',
                     display:'inline-flex', alignItems:'center', justifyContent:'center', gap:6,
                   }}
-                  /* 不加 download 属性 —— 让链接打开同域名下的下载页，
-                     用户在那个页面里点按钮，blob 在浏览器自己的上下文里创建，可以正常下载 */
                 >
-                  ⬇️ 打开下载页保存 Word
+                  ⬇️ 点击下载方案 Word
                 </a>
               ) : (
                 <button className="btn btn-secondary" disabled={wordGenerating}
@@ -918,33 +900,66 @@ ${skuIndex}
                     setWordGenerating(true)
                     setDownloadError('')
                     try {
-                      const r = await downloadWordDoc(order, editForm, editCourseIds, editOutline, skuMatches)
-                      setWordReady(r)
+                      // 1) 生成 docx
+                      const { blob, filename } = await downloadWordDoc(order, editForm, editCourseIds, editOutline, skuMatches)
+                      // 2) 上传到 GitHub → 拿到一个真实 https URL（短，以 .docx 结尾，
+                      //    和讲师介绍 docx 的行为完全一致，能跨越微信→浏览器）
+                      const r = await uploadProposalDocx(blob, filename)
+                      if (r.needToken) {
+                        setDownloadError('NEED_TOKEN')
+                        return
+                      }
+                      if (!r.ok) {
+                        setDownloadError('上传失败：' + (r.error || '未知错误'))
+                        return
+                      }
+                      setWordReady({ url: r.url, filename })
                     } catch (e) {
                       console.error('生成方案失败', e)
                       setDownloadError(e.message || '生成失败，请重试')
                     } finally { setWordGenerating(false) }
                   }}>
-                  {wordGenerating ? '⏳ 生成中…' : '📄 生成方案 Word'}
+                  {wordGenerating ? '⏳ 生成上传中…' : '📄 生成方案 Word'}
                 </button>
               )}
               <button className="btn btn-primary" onClick={handleSave}
                 style={isMobile ? { width:'100%' } : undefined}>💾 保存草稿</button>
             </div>
 
-            {/* 文件已生成后的提示 */}
+            {/* 文件已生成 + 上传成功 */}
             {wordReady && (
               <div style={{
                 marginTop: 10, padding:'10px 14px', borderRadius:10,
                 background:'#F0FDF4', border:'1px solid #BBF7D0',
                 fontSize:12, color:'#065F46', lineHeight:1.7,
               }}>
-                方案已生成。点击上方「保存方案 Word」即可下载到手机。
+                ✓ 方案已生成并上传。点击上方绿色按钮即可下载到手机（链接也可直接转发给客户）。
               </div>
             )}
 
-            {/* 错误提示 */}
-            {downloadError && (
+            {/* 缺少 Token */}
+            {downloadError === 'NEED_TOKEN' && (
+              <div style={{
+                marginTop: 12, padding: '14px 16px', borderRadius: 10,
+                background: '#FEF3C7', border: '1px solid #FCD34D',
+                fontSize: 12.5, color: '#92400E', lineHeight: 1.7,
+              }}>
+                <div style={{ fontWeight: 700, marginBottom: 6 }}>⚠️ 需要配置 GitHub Token</div>
+                方案下载需要先配置 Token（用于上传文件到云端）。请到「讲师排期」页面，点击「⚙ Token」按钮配置一次即可，往后所有下载都通过。
+                <button
+                  onClick={() => setDownloadError('')}
+                  style={{
+                    marginTop: 10, width: '100%', padding: '7px',
+                    border: '1px solid #FCD34D', background: '#FFFBEB',
+                    color: '#92400E', borderRadius: 7, fontSize: 12,
+                    fontWeight: 600, cursor: 'pointer',
+                  }}
+                >我知道了</button>
+              </div>
+            )}
+
+            {/* 其他错误 */}
+            {downloadError && downloadError !== 'NEED_TOKEN' && (
               <div style={{
                 marginTop: 12, padding: '12px 14px', borderRadius: 10,
                 background: '#FEF2F2', border: '1px solid #FCA5A5',
