@@ -141,15 +141,24 @@ async function downloadWordDoc(order, editForm, courseIds, outline, skuMatches) 
   })
   const blob = await Packer.toBlob(doc)
   const filename = `朝曦培训方案_${order.id}_${new Date().toLocaleDateString('zh-CN').replace(/\//g,'')}.docx`
-  // 用 data: URL 而非 blob: URL —— blob URL 是浏览器上下文私有的，
-  // 微信"在浏览器中打开"切换上下文后会失效（显示 about:blank）。
-  // data URL 自包含整个文件内容，跨浏览器上下文都能用。
-  const url = await new Promise((resolve, reject) => {
+
+  // 把文件内容 base64 编码后塞进同域名静态页的 #hash —— 这是一个真正的 https URL，
+  // 微信「在浏览器中打开」时浏览器能正确加载页面，页面 JS 在浏览器自己的上下文里
+  // 解码 base64 → 创建 blob → 触发下载。
+  // （blob:、data: 都不能跨浏览器上下文，所以前两次方案都失败了）
+  const b64 = await new Promise((resolve, reject) => {
     const reader = new FileReader()
-    reader.onload  = () => resolve(reader.result)
+    reader.onload  = () => {
+      // readAsDataURL 给出 "data:....;base64,xxx" → 取后半段
+      const result = reader.result
+      const i = result.indexOf(',')
+      resolve(i >= 0 ? result.slice(i + 1) : result)
+    }
     reader.onerror = () => reject(new Error('文件编码失败'))
     reader.readAsDataURL(blob)
   })
+  const base = `${location.origin}${location.pathname.replace(/\/[^/]*$/, '')}/proposal-download.html`
+  const url  = `${base}#${b64}|${encodeURIComponent(filename)}`
   return { url, filename }
 }
 
@@ -887,7 +896,8 @@ ${skuIndex}
               {wordReady ? (
                 <a
                   href={wordReady.url}
-                  download={wordReady.filename}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="btn btn-secondary"
                   style={{
                     ...(isMobile ? { width:'100%' } : undefined),
@@ -896,9 +906,10 @@ ${skuIndex}
                     textDecoration:'none',
                     display:'inline-flex', alignItems:'center', justifyContent:'center', gap:6,
                   }}
-                  /* data: URL 不需要回收，让链接一直可用，用户在新浏览器里也能点 */
+                  /* 不加 download 属性 —— 让链接打开同域名下的下载页，
+                     用户在那个页面里点按钮，blob 在浏览器自己的上下文里创建，可以正常下载 */
                 >
-                  ⬇️ 点击保存方案 Word
+                  ⬇️ 打开下载页保存 Word
                 </a>
               ) : (
                 <button className="btn btn-secondary" disabled={wordGenerating}

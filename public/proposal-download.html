@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>朝曦培训方案 · 下载</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;
+      background:linear-gradient(180deg,#FFFFFF 0%,#F2FBF5 50%,#EAF6EF 100%);
+      min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+      padding:24px;color:#1A1A2E;
+    }
+    .card{
+      background:#fff;border:1px solid #E4E4E7;border-radius:18px;
+      padding:32px 24px;max-width:380px;width:100%;
+      box-shadow:0 12px 40px rgba(0,0,0,.08);text-align:center;
+    }
+    .logo{
+      width:56px;height:56px;border-radius:12px;background:#2D6A4F;color:#fff;
+      display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;
+      margin:0 auto 18px;font-family:'Noto Serif SC',serif;
+    }
+    h1{font-size:18px;font-weight:700;margin-bottom:6px}
+    .sub{font-size:12px;color:#71717A;margin-bottom:22px;line-height:1.6}
+    .btn{
+      display:block;width:100%;padding:14px;border-radius:11px;border:none;
+      background:linear-gradient(135deg,#2D6A4F,#40916C);color:#fff;
+      font-size:15px;font-weight:700;cursor:pointer;
+      box-shadow:0 6px 18px rgba(45,106,79,.3);
+      text-decoration:none;text-align:center;
+    }
+    .btn:active{opacity:.85}
+    .filename{
+      background:#F4F4F5;border-radius:8px;padding:9px 12px;margin-bottom:18px;
+      font-size:12px;color:#52525B;word-break:break-all;
+    }
+    .tip{
+      margin-top:16px;padding:12px 14px;border-radius:10px;
+      background:#FEF3C7;border:1px solid #FCD34D;
+      font-size:12px;color:#92400E;line-height:1.7;text-align:left;display:none;
+    }
+    .tip.show{display:block}
+    .err{
+      margin-top:16px;padding:12px 14px;border-radius:10px;
+      background:#FEF2F2;border:1px solid #FCA5A5;
+      font-size:12px;color:#DC2626;line-height:1.6;display:none;
+    }
+    .err.show{display:block}
+    .ok{
+      margin-top:16px;padding:12px 14px;border-radius:10px;
+      background:#F0FDF4;border:1px solid #BBF7D0;
+      font-size:12px;color:#065F46;line-height:1.6;display:none;
+    }
+    .ok.show{display:block}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">曦</div>
+    <h1>朝曦培训方案</h1>
+    <p class="sub">点击下方按钮即可保存方案到本机</p>
+    <div class="filename" id="fname">准备中…</div>
+    <button class="btn" id="dl">⬇️ 保存方案 Word</button>
+    <div class="tip" id="wechat-tip">
+      <strong>检测到当前在微信内：</strong><br/>
+      微信无法直接下载 Word 文件。请点击右上角「···」→ 选择「在浏览器中打开」→ 再次点击「保存方案 Word」即可下载。
+    </div>
+    <div class="ok"  id="ok"></div>
+    <div class="err" id="err"></div>
+  </div>
+
+  <script>
+    (function () {
+      const hash = location.hash.slice(1)
+      const sep  = hash.indexOf('|')
+      const fnameEl = document.getElementById('fname')
+      const btn     = document.getElementById('dl')
+      const okEl    = document.getElementById('ok')
+      const errEl   = document.getElementById('err')
+      const tipEl   = document.getElementById('wechat-tip')
+
+      function showErr(msg){ errEl.textContent = '⚠️ ' + msg; errEl.classList.add('show') }
+      function showOk(msg){ okEl.textContent = msg; okEl.classList.add('show') }
+
+      if (sep < 0) { showErr('链接缺少文件数据，请回到上一页重新生成'); btn.disabled = true; return }
+
+      const b64      = hash.slice(0, sep)
+      const filename = decodeURIComponent(hash.slice(sep + 1))
+      fnameEl.textContent = filename
+
+      // 微信内置浏览器提示
+      const ua = navigator.userAgent.toLowerCase()
+      const inWechat = /micromessenger/.test(ua)
+      if (inWechat) tipEl.classList.add('show')
+
+      btn.addEventListener('click', function (e) {
+        e.preventDefault()
+        try {
+          const bytes = atob(b64)
+          const arr   = new Uint8Array(bytes.length)
+          for (let i = 0; i < bytes.length; i++) arr[i] = bytes.charCodeAt(i)
+          const blob = new Blob([arr], {
+            type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+          })
+          const url = URL.createObjectURL(blob)
+          const a   = document.createElement('a')
+          a.href = url; a.download = filename; a.style.display = 'none'
+          document.body.appendChild(a)
+          a.click()
+          setTimeout(function () {
+            try { document.body.removeChild(a) } catch (_) {}
+            URL.revokeObjectURL(url)
+          }, 1500)
+          if (!inWechat) showOk('✓ 已开始下载，请在通知栏或下载文件夹查看')
+        } catch (e) {
+          showErr('解码失败：' + (e && e.message || e))
+        }
+      })
+    })()
+  </script>
+</body>
+</html>
