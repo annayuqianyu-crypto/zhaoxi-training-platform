@@ -141,7 +141,15 @@ async function downloadWordDoc(order, editForm, courseIds, outline, skuMatches) 
   })
   const blob = await Packer.toBlob(doc)
   const filename = `朝曦培训方案_${order.id}_${new Date().toLocaleDateString('zh-CN').replace(/\//g,'')}.docx`
-  const url = URL.createObjectURL(blob)
+  // 用 data: URL 而非 blob: URL —— blob URL 是浏览器上下文私有的，
+  // 微信"在浏览器中打开"切换上下文后会失效（显示 about:blank）。
+  // data URL 自包含整个文件内容，跨浏览器上下文都能用。
+  const url = await new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload  = () => resolve(reader.result)
+    reader.onerror = () => reject(new Error('文件编码失败'))
+    reader.readAsDataURL(blob)
+  })
   return { url, filename }
 }
 
@@ -888,13 +896,7 @@ ${skuIndex}
                     textDecoration:'none',
                     display:'inline-flex', alignItems:'center', justifyContent:'center', gap:6,
                   }}
-                  onClick={() => {
-                    // 点完之后 5 秒回收 blob URL，避免反复点失败
-                    setTimeout(() => {
-                      try { URL.revokeObjectURL(wordReady.url) } catch {}
-                      setWordReady(null)
-                    }, 5000)
-                  }}
+                  /* data: URL 不需要回收，让链接一直可用，用户在新浏览器里也能点 */
                 >
                   ⬇️ 点击保存方案 Word
                 </a>
