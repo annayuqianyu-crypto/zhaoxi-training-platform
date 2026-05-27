@@ -72,17 +72,6 @@ export function PortalModeSelect({ onSelect }) {
           </div>
         ))}
       </div>
-
-      {/* 管理后台入口（低调显示，给管理员用） */}
-      <a
-        href="#admin"
-        onClick={() => { window.location.hash = '#admin'; window.location.reload() }}
-        style={{
-          marginTop: 40, fontSize: 11, color: 'var(--text-3)',
-          textDecoration: 'none', borderBottom: '1px dashed var(--border)',
-          paddingBottom: 1,
-        }}
-      >管理后台 →</a>
     </div>
   )
 }
