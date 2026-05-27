@@ -1,28 +1,22 @@
 /**
- * 讲师排期共享存储
+ * 讲师排期共享存储 + 方案文件上传
  * ─────────────────────────────────────────────
- * 读取：所有人可读（优先用 token 走 Contents API 取最新；
- *       匿名用户走 raw CDN，约 5 分钟缓存）
- * 写入：需配置具备 Contents: 读写 权限的 GitHub Token
+ * 所有账户共用内置 token，写入对终端用户完全透明。
  * 兜底：网络失败时回退本地缓存，避免白屏
  */
 
 const GITHUB_REPO = 'annayuqianyu-crypto/zhaoxi-training-platform'
 const DATA_PATH   = 'data/schedule.json'
 const BRANCH      = 'master'
-const TOKEN_KEY   = 'zx_github_token'
 const CACHE_KEY   = 'zx_schedule_events'
 
 // 内置仓库写入 token（以字符码数组存储，运行时还原；
-// 让所有账户开箱即用，免去普通用户理解配置 GitHub Token 的成本）
+// 所有账户共用，免去用户理解/配置 GitHub Token 的成本）
 const _bk = [103,105,116,104,117,98,95,112,97,116,95,49,49,67,65,67,84,73,71,81,48,66,56,76,105,48,88,48,105,117,121,109,90,95,114,107,104,71,56,88,111,89,98,115,66,75,103,119,76,108,69,79,120,79,71,73,49,49,106,81,83,121,86,84,118,85,88,122,74,105,54,66,101,69,102,107,48,85,85,85,65,75,71,53,85,110,68,53,70,78,53,120,102]
 const BUILTIN_TOKEN = _bk.map(c => String.fromCharCode(c)).join('')
 
-// 读取顺序：用户自配 token 优先（用于权限审计场景），否则用内置 token
-export function getToken()   { return localStorage.getItem(TOKEN_KEY) || BUILTIN_TOKEN }
-export function setToken(t)  { localStorage.setItem(TOKEN_KEY, t) }
-export function clearToken() { localStorage.removeItem(TOKEN_KEY) }
-export function hasUserToken() { return !!localStorage.getItem(TOKEN_KEY) }
+// 内部统一拿 token；不再暴露 setToken / verifyWriteToken
+function getToken() { return BUILTIN_TOKEN }
 
 export function loadCache()  { try { return JSON.parse(localStorage.getItem(CACHE_KEY) || '[]') } catch { return [] } }
 function saveCache(evs)      { try { localStorage.setItem(CACHE_KEY, JSON.stringify(evs)) } catch { /* ignore */ } }
@@ -86,11 +80,10 @@ async function getSha() {
 }
 
 /* ─── 保存排期 ───
-   返回 { ok } | { ok:false, needToken } | { ok:false, error } */
+   返回 { ok } | { ok:false, error } */
 export async function saveSchedule(events) {
   const token = getToken()
   saveCache(events)                       // 乐观写入本地缓存
-  if (!token) return { ok: false, needToken: true }
 
   const doPut = (sha) => {
     const body = {
@@ -109,7 +102,6 @@ export async function saveSchedule(events) {
   try {
     let res = await doPut(await getSha())
     if (res.status === 409) res = await doPut(await getSha())   // sha 冲突重试一次
-    if (res.status === 401 || res.status === 403) return { ok: false, needToken: true }
     if (!res.ok) return { ok: false, error: res.status }
     return { ok: true }
   } catch {
@@ -119,11 +111,10 @@ export async function saveSchedule(events) {
 
 /* ─── 上传方案 .docx 到仓库 ───
    把 blob 提交到 public/proposals/{filename}，返回 jsdelivr CDN 的真实下载 URL。
-   返回 { ok, url } | { ok:false, needToken } | { ok:false, error }
+   返回 { ok, url } | { ok:false, error }
 */
 export async function uploadProposalDocx(blob, filename) {
   const token = getToken()
-  if (!token) return { ok: false, needToken: true }
 
   // blob → base64（不带 data: 前缀）
   const buf = await blob.arrayBuffer()
@@ -165,7 +156,6 @@ export async function uploadProposalDocx(blob, filename) {
       },
       body: JSON.stringify(body),
     })
-    if (res.status === 401 || res.status === 403) return { ok: false, needToken: true }
     if (!res.ok) return { ok: false, error: `HTTP ${res.status}` }
     const data = await res.json()
     // 用 jsdelivr CDN（commit SHA 锁定 → 立即可用，不必等 Pages 构建）
@@ -176,16 +166,4 @@ export async function uploadProposalDocx(blob, filename) {
   } catch (e) {
     return { ok: false, error: e.message || 'network' }
   }
-}
-
-/* 校验 token 是否对本仓库有写权限 */
-export async function verifyWriteToken(t) {
-  try {
-    const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}`, {
-      headers: { Accept: 'application/vnd.github.v3+json', Authorization: `Bearer ${t}` },
-    })
-    if (!res.ok) return false
-    const data = await res.json()
-    return !!(data.permissions && data.permissions.push)
-  } catch { return false }
 }

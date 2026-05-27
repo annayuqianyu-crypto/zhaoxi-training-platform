@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import { INSTRUCTORS } from '../data/mock'
-import { fetchSchedule, saveSchedule, loadCache, getToken, setToken, verifyWriteToken } from '../data/scheduleStore'
+import { fetchSchedule, saveSchedule, loadCache } from '../data/scheduleStore'
 import { useMobile } from '../MobileContext'
 
 /* ─── Event type colours (individual view) ─── */
@@ -65,11 +65,7 @@ export function Schedule() {
   const [form,   setForm]  = useState({})
 
   /* ── 共享同步状态 ── */
-  const [syncState, setSyncState]   = useState('loading')   // loading | synced | offline | needToken | saving
-  const [tokenModal, setTokenModal] = useState(false)
-  const [tokenInput, setTokenInput] = useState('')
-  const [tokenError, setTokenError] = useState('')
-  const [tokenSaving, setTokenSaving] = useState(false)
+  const [syncState, setSyncState]   = useState('loading')   // loading | synced | offline | saving
 
   /* ── 从云端加载（首次自动迁移本地数据） ── */
   async function reload() {
@@ -82,16 +78,11 @@ export function Schedule() {
       return
     }
     const remoteN = normalize(remote)
-    // 云端为空但本地有数据 → 尝试迁移上传
+    // 云端为空但本地有数据 → 直接迁移上传（内置 token 保证写入可用）
     if (remoteN.length === 0 && localBefore.length > 0) {
-      if (getToken()) {
-        const r = await saveSchedule(localBefore)
-        setEvents(localBefore)
-        setSyncState(r.ok ? 'synced' : (r.needToken ? 'needToken' : 'offline'))
-      } else {
-        setEvents(localBefore)        // 先展示本地，提示配置 token 同步
-        setSyncState('needToken')
-      }
+      const r = await saveSchedule(localBefore)
+      setEvents(localBefore)
+      setSyncState(r.ok ? 'synced' : 'offline')
       return
     }
     setEvents(remoteN)
@@ -105,22 +96,6 @@ export function Schedule() {
     setEvents(updated)
     setSyncState('saving')
     const r = await saveSchedule(updated)
-    if (r.ok)            setSyncState('synced')
-    else if (r.needToken) { setSyncState('needToken'); setTokenModal(true) }
-    else                 setSyncState('offline')
-  }
-
-  /* ── Token 配置 ── */
-  async function handleSaveToken() {
-    const t = tokenInput.trim()
-    if (!t) { setTokenError('请输入 token'); return }
-    setTokenSaving(true); setTokenError('')
-    const ok = await verifyWriteToken(t)
-    if (!ok) { setTokenError('验证失败：token 无效或无本仓库写权限'); setTokenSaving(false); return }
-    setToken(t)
-    setTokenModal(false); setTokenInput(''); setTokenSaving(false)
-    // 配置成功后：把当前本地排期同步上去，再重新拉取
-    const r = await saveSchedule(events)
     setSyncState(r.ok ? 'synced' : 'offline')
   }
 
@@ -213,7 +188,6 @@ export function Schedule() {
             {syncState === 'saving'    && '保存中…'}
             {syncState === 'loading'   && '加载中…'}
             {syncState === 'offline'   && '未连接'}
-            {syncState === 'needToken' && '查看模式'}
           </span>
         </div>
       ) : (
@@ -225,15 +199,13 @@ export function Schedule() {
             <span style={{ fontSize:12, fontWeight:600, display:'flex', alignItems:'center', gap:5,
               color: syncState === 'synced' ? '#059669'
                 : syncState === 'saving' || syncState === 'loading' ? '#6B7280'
-                : syncState === 'needToken' ? '#6B7280' : '#DC2626' }}>
+                : '#DC2626' }}>
               {syncState === 'synced'    && '☁ 已同步'}
               {syncState === 'saving'    && '⏳ 保存中…'}
               {syncState === 'loading'   && '⏳ 加载中…'}
               {syncState === 'offline'   && '⚠ 未连接云端'}
-              {syncState === 'needToken' && '👁 查看模式'}
             </span>
             <button className="btn btn-secondary btn-sm" onClick={reload} title="重新拉取云端最新排期">⟳ 刷新</button>
-            <button className="btn btn-secondary btn-sm" onClick={() => setTokenModal(true)} title="配置写入权限 Token">⚙ Token</button>
             <button className="btn btn-primary btn-sm" onClick={() => {
               const date = dateFmt(year, month, now.getDate())
               setForm({ date, title: '', instructorId: tab === 'all' ? '' : tab, type: '外部培训', location: '', note: '' })
@@ -675,37 +647,6 @@ export function Schedule() {
         </div>
       )}
 
-      {/* ════════ Token 配置 Modal ════════ */}
-      {tokenModal && (
-        <div style={{ position: 'fixed', inset: 0, background: '#00000055', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1100 }}
-          onClick={() => setTokenModal(false)}>
-          <div style={{ background: 'var(--bg-card)', borderRadius: 16, padding: 28, width: 480, maxWidth: '95vw', boxShadow: '0 20px 60px #00000030' }}
-            onClick={e => e.stopPropagation()}>
-            <h3 style={{ fontSize: 16, fontWeight: 700, margin: '0 0 4px' }}>配置 GitHub Token</h3>
-            <p style={{ fontSize: 12, color: 'var(--text-3)', margin: '0 0 18px', lineHeight: 1.6 }}>
-              用于把排期写入云端，让所有账号共享。仅存储在本浏览器。<br/>
-              <strong>查看排期无需 token</strong>，仅添加/编辑/删除需要。
-            </p>
-            <div className="form-group">
-              <label className="form-label">GitHub Personal Access Token</label>
-              <input className="form-input" type="password" value={tokenInput}
-                onChange={e => { setTokenInput(e.target.value); setTokenError('') }}
-                placeholder="github_pat_..." style={{ fontFamily: 'monospace' }} autoFocus />
-              {tokenError && <div style={{ color: '#EF4444', fontSize: 12, marginTop: 6 }}>{tokenError}</div>}
-            </div>
-            <div style={{ background: 'var(--bg-page)', borderRadius: 8, padding: '10px 14px', fontSize: 12, color: 'var(--text-3)', lineHeight: 1.8 }}>
-              Token 需要 <strong>Contents：读和写</strong> 权限<br/>
-              创建地址：github.com/settings/tokens?type=beta
-            </div>
-            <div style={{ display: 'flex', gap: 10, marginTop: 22, justifyContent: 'flex-end' }}>
-              <button className="btn btn-secondary" onClick={() => setTokenModal(false)}>取消</button>
-              <button className="btn btn-primary" onClick={handleSaveToken} disabled={tokenSaving}>
-                {tokenSaving ? '验证中…' : '验证并保存'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </>
   )
 }

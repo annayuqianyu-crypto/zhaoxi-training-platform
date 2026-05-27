@@ -905,10 +905,6 @@ ${skuIndex}
                       // 2) 上传到 GitHub → 拿到一个真实 https URL（短，以 .docx 结尾，
                       //    和讲师介绍 docx 的行为完全一致，能跨越微信→浏览器）
                       const r = await uploadProposalDocx(blob, filename)
-                      if (r.needToken) {
-                        setDownloadError('NEED_TOKEN')
-                        return
-                      }
                       if (!r.ok) {
                         setDownloadError('上传失败：' + (r.error || '未知错误'))
                         return
@@ -944,9 +940,7 @@ ${skuIndex}
                 background: '#FEF2F2', border: '1px solid #FCA5A5',
                 fontSize: 12.5, color: '#DC2626', lineHeight: 1.6,
               }}>
-                ⚠️ {downloadError === 'NEED_TOKEN'
-                  ? '云端写入凭证已失效，请联系管理员更新内置 Token'
-                  : downloadError}
+                ⚠️ {downloadError}
               </div>
             )}
           </>
