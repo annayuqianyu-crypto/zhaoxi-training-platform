@@ -141,28 +141,8 @@ async function downloadWordDoc(order, editForm, courseIds, outline, skuMatches) 
   })
   const blob = await Packer.toBlob(doc)
   const filename = `朝曦培训方案_${order.id}_${new Date().toLocaleDateString('zh-CN').replace(/\//g,'')}.docx`
-
-  // 微信内置浏览器不支持 .docx 下载，直接抛错让上层显示引导
-  const ua = navigator.userAgent.toLowerCase()
-  if (/micromessenger/.test(ua)) {
-    const err = new Error('WECHAT_BLOCKED')
-    err.code = 'WECHAT_BLOCKED'
-    throw err
-  }
-
   const url = URL.createObjectURL(blob)
-  const a   = document.createElement('a')
-  a.href = url
-  a.download = filename
-  a.rel = 'noopener'
-  a.style.display = 'none'
-  document.body.appendChild(a)   // 必须 append 到 DOM，否则手机端常失败
-  a.click()
-  // 延迟移除和回收，给浏览器留出启动下载的时间
-  setTimeout(() => {
-    document.body.removeChild(a)
-    URL.revokeObjectURL(url)
-  }, 1500)
+  return { url, filename }
 }
 
 /* ─── AI helpers ─── */
@@ -253,6 +233,7 @@ export function CourseMatch({ navigate, portalMode = false, user = null }) {
   const [selectedInstructors, setSelectedInstructors]   = useState([])
   const [wordGenerating, setWordGenerating]             = useState(false)
   const [downloadError, setDownloadError]               = useState('')
+  const [wordReady, setWordReady]                       = useState(null)  // { url, filename }
   const [saved, setSaved]                               = useState(false)
 
   /* ─── AI state ─── */
@@ -894,49 +875,63 @@ ${skuIndex}
               justifyContent: isMobile ? 'stretch' : 'flex-end',
               flexDirection: isMobile ? 'column' : 'row',
             }}>
-              <button className="btn btn-secondary" disabled={wordGenerating}
-                style={isMobile ? { width:'100%' } : undefined}
-                onClick={async () => {
-                  setWordGenerating(true)
-                  setDownloadError('')
-                  try {
-                    await downloadWordDoc(order, editForm, editCourseIds, editOutline, skuMatches)
-                  } catch (e) {
-                    if (e.code === 'WECHAT_BLOCKED') {
-                      setDownloadError('WECHAT')
-                    } else {
-                      console.error('下载方案失败', e)
-                      setDownloadError(e.message || '下载失败，请重试')
-                    }
-                  } finally { setWordGenerating(false) }
-                }}>
-                {wordGenerating ? '⏳ 生成中…' : '⬇️ 下载方案 Word'}
-              </button>
+              {/* 还没生成 → 显示生成按钮；已生成 → 显示真链接 <a> 由用户点击下载 */}
+              {wordReady ? (
+                <a
+                  href={wordReady.url}
+                  download={wordReady.filename}
+                  className="btn btn-secondary"
+                  style={{
+                    ...(isMobile ? { width:'100%' } : undefined),
+                    background:'#D1FAE5', color:'#065F46',
+                    border:'1px solid #6EE7B7', fontWeight:700,
+                    textDecoration:'none',
+                    display:'inline-flex', alignItems:'center', justifyContent:'center', gap:6,
+                  }}
+                  onClick={() => {
+                    // 点完之后 5 秒回收 blob URL，避免反复点失败
+                    setTimeout(() => {
+                      try { URL.revokeObjectURL(wordReady.url) } catch {}
+                      setWordReady(null)
+                    }, 5000)
+                  }}
+                >
+                  ⬇️ 点击保存方案 Word
+                </a>
+              ) : (
+                <button className="btn btn-secondary" disabled={wordGenerating}
+                  style={isMobile ? { width:'100%' } : undefined}
+                  onClick={async () => {
+                    setWordGenerating(true)
+                    setDownloadError('')
+                    try {
+                      const r = await downloadWordDoc(order, editForm, editCourseIds, editOutline, skuMatches)
+                      setWordReady(r)
+                    } catch (e) {
+                      console.error('生成方案失败', e)
+                      setDownloadError(e.message || '生成失败，请重试')
+                    } finally { setWordGenerating(false) }
+                  }}>
+                  {wordGenerating ? '⏳ 生成中…' : '📄 生成方案 Word'}
+                </button>
+              )}
               <button className="btn btn-primary" onClick={handleSave}
                 style={isMobile ? { width:'100%' } : undefined}>💾 保存草稿</button>
             </div>
 
-            {/* 下载错误提示 */}
-            {downloadError === 'WECHAT' && (
+            {/* 文件已生成后的提示 */}
+            {wordReady && (
               <div style={{
-                marginTop: 12, padding: '14px 16px', borderRadius: 10,
-                background: '#FEF3C7', border: '1px solid #FCD34D',
-                fontSize: 12.5, color: '#92400E', lineHeight: 1.7,
+                marginTop: 10, padding:'10px 14px', borderRadius:10,
+                background:'#F0FDF4', border:'1px solid #BBF7D0',
+                fontSize:12, color:'#065F46', lineHeight:1.7,
               }}>
-                <div style={{ fontWeight: 700, marginBottom: 6 }}>⚠️ 微信内不支持下载 Word 文件</div>
-                请点击微信右上角「··· 」→ 选择「在浏览器中打开」→ 再点击「下载方案 Word」即可保存到手机。
-                <button
-                  onClick={() => setDownloadError('')}
-                  style={{
-                    marginTop: 10, width: '100%', padding: '7px',
-                    border: '1px solid #FCD34D', background: '#FFFBEB',
-                    color: '#92400E', borderRadius: 7, fontSize: 12,
-                    fontWeight: 600, cursor: 'pointer',
-                  }}
-                >我知道了</button>
+                方案已生成。点击上方「保存方案 Word」即可下载到手机。
               </div>
             )}
-            {downloadError && downloadError !== 'WECHAT' && (
+
+            {/* 错误提示 */}
+            {downloadError && (
               <div style={{
                 marginTop: 12, padding: '12px 14px', borderRadius: 10,
                 background: '#FEF2F2', border: '1px solid #FCA5A5',
