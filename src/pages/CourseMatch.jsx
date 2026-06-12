@@ -201,7 +201,15 @@ async function callDeepSeekAPI(prompt) {
     const errText = await res.text().catch(() => '')
     throw new Error(`API 请求失败 (${res.status})${errText ? '：' + errText.slice(0, 100) : ''}`)
   }
-  const data = await res.json()
+  const rawText = await res.text()
+  let data
+  try { data = JSON.parse(rawText) } catch {
+    throw new Error(`Worker响应非JSON (${res.status})：${rawText.slice(0, 120)}`)
+  }
+  // 检查 DeepSeek 是否返回了 error 字段
+  if (data.error) {
+    throw new Error(`DeepSeek错误：${JSON.stringify(data.error).slice(0, 120)}`)
+  }
   let text = (data.choices?.[0]?.message?.content || '').trim()
   // Strip markdown code fences if present
   text = text.replace(/^```[\w]*\n?/, '').replace(/\n?```$/, '').trim()
@@ -213,7 +221,7 @@ async function callDeepSeekAPI(prompt) {
     if (match) {
       try { return JSON.parse(match[0]) } catch { /* fall through */ }
     }
-    throw new Error(`AI 返回格式异常，请重试（原始：${text.slice(0, 80)}）`)
+    throw new Error(`格式异常 (finish:${data.choices?.[0]?.finish_reason})：${text.slice(0, 120)}`)
   }
 }
 
