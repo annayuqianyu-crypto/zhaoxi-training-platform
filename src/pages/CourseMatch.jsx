@@ -194,7 +194,7 @@ async function callDeepSeekAPI(prompt) {
       model: DS_MODEL,
       messages: [{ role: 'user', content: prompt }],
       temperature: 0.3,
-      max_tokens: 2000,
+      max_tokens: 8000,
     }),
   })
   if (!res.ok) {
@@ -210,7 +210,9 @@ async function callDeepSeekAPI(prompt) {
   if (data.error) {
     throw new Error(`DeepSeek错误：${JSON.stringify(data.error).slice(0, 120)}`)
   }
-  let text = (data.choices?.[0]?.message?.content || '').trim()
+  // 推理模型可能将结果放在 reasoning_content，普通模型放在 content
+  const msg = data.choices?.[0]?.message || {}
+  let text = (msg.content || msg.reasoning_content || '').trim()
   // Strip markdown code fences if present
   text = text.replace(/^```[\w]*\n?/, '').replace(/\n?```$/, '').trim()
   try {
