@@ -11,9 +11,8 @@ import { SKU_CARDS } from '../data/skuCards'
 export const CONTEXT_KEY  = 'zx_coursematch_context'
 const OVERRIDE_KEY = 'zx_order_overrides'
 
-/* ─── DeepSeek API ─── */
-const DS_API_URL = 'https://api.deepseek.com/v1/chat/completions'
-const DS_API_KEY = 'sk-603a729e51d54a82bf8b8de3e06530b4'
+/* ─── DeepSeek API（通过 Cloudflare Worker 代理，key 由 Worker 注入） ─── */
+const DS_API_URL = 'https://zx-factordashboard-deepseek-proxy.annayuqianyu.workers.dev'
 const DS_MODEL   = 'deepseek-chat'
 
 const SKU_PAGE_MAP = Object.fromEntries(
@@ -190,7 +189,6 @@ async function callDeepSeekAPI(prompt) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${DS_API_KEY}`,
     },
     body: JSON.stringify({
       model: DS_MODEL,
