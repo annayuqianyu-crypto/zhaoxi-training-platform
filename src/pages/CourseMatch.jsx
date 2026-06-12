@@ -12,8 +12,8 @@ export const CONTEXT_KEY  = 'zx_coursematch_context'
 const OVERRIDE_KEY = 'zx_order_overrides'
 
 /* ─── DeepSeek API（通过 Cloudflare Worker 代理，key 由 Worker 注入） ─── */
-const DS_API_URL = 'https://zx-factordashboard-deepseek-proxy.annayuqianyu.workers.dev'
-const DS_MODEL   = 'deepseek-chat'
+const DS_API_URL = 'https://zx-external-trainingplatform.annayuqianyu.workers.dev'
+const DS_MODEL   = 'deepseek-v4-pro'
 
 const SKU_PAGE_MAP = Object.fromEntries(
   SKU_FULL.filter(s => s.pageUrl).map(s => [s.id, s.pageUrl])
